@@ -146,6 +146,9 @@
       <AdditionalLibraryDirectories>$(ProjectDir)Engine\Source\ThirdParty\Lua;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\studio\lib\x64;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\core\lib\x64;$(ProjectDir)Engine\Source\ThirdParty\DirectXTK\Lib\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DirectXTK.lib;lua.lib;fmodstudio_vc.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /D "$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\core\lib\x64\fmod.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

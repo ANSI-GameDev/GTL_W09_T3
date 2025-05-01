@@ -815,6 +815,10 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\CameraShakeBase.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\Shakes\SimpleCameraShakePattern.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\Shakes\WaveOscillatorCameraShakePattern.cpp" />
+    <ClCompile Include="Engine\Source\Contents\Actors\TriggerBox.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Math\MathUtility.cpp" />
+    <ClCompile Include="Engine\Source\Contents\Objects\DamageCameraShake.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\PerlinNoiseCameraShakePattern.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineTarzan.natvis" />
@@ -932,6 +936,9 @@
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Camera\CameraShakeBase.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Camera\Shakes\SimpleCameraShakePattern.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Camera\Shakes\WaveOscillatorCameraShakePattern.h" />
+    <ClInclude Include="Engine\Source\Contents\Actors\TriggerBox.h" />
+    <ClInclude Include="Engine\Source\Contents\Objects\DamageCameraShake.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Camera\PerlinNoiseCameraShakePattern.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\SlateShader.hlsl" />
@@ -968,6 +975,7 @@
     <None Include="Shaders\VertexBillBoardShader.hlsl" />
     <None Include="Shaders\ComputeDefine.hlsl" />
     <None Include="Shaders\StaticMeshPixelShaderWorldTangent.hlsl" />
+    <None Include="Shaders\CameraEffectShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\EditorShaderConstants.hlsli" />
@@ -986,6 +994,5 @@
     <FxCompile Include="Shaders\PointLightCubemapGS.hlsl" />
     <FxCompile Include="Shaders\CascadedShadowMap.hlsl" />
     <FxCompile Include="Shaders\LightPBR.hlsl" />
-    <FxCompile Include="Shaders\CameraEffectShader.hlsl" />
   </ItemGroup>
 </Project>
