@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{59a9c47a-6a98-4bc3-b529-aec7bcb32238}</ProjectGuid>
-    <RootNamespace>EngineSIU</RootNamespace>
+    <RootNamespace>EngineTarzan</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -669,7 +669,7 @@
     <Content Include="Engine\Source\ThirdParty\DirectXTK\Lib\x86\Release\DirectXTK.lib" />
     <Content Include="Engine\Source\ThirdParty\tinyfiledialogs\README.txt" />
     <Content Include="LuaScripts\template.lua" />
-    <Natvis Include="EngineSIU.natvis" />
+    <Natvis Include="EngineTarzan.natvis" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightGridGenerator.cpp" />

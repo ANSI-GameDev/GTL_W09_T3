@@ -817,7 +817,7 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\Shakes\WaveOscillatorCameraShakePattern.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="EngineSIU.natvis" />
+    <Natvis Include="EngineTarzan.natvis" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Actors\FireballActor.h">
