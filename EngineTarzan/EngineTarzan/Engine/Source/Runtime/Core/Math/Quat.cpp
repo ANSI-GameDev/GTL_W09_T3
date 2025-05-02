@@ -77,6 +77,16 @@ FQuat FQuat::operator*(const FQuat& Other) const
         );
 }
 
+bool FQuat::operator==(const FQuat& Other) const
+{
+    return X == Other.X && Y == Other.Y && Z == Other.Z && W == Other.W;
+}
+
+bool FQuat::operator!=(const FQuat& Other) const
+{
+    return X != Other.X || Y != Other.Y || Z != Other.Z || W != Other.W;
+}
+
 FVector FQuat::RotateVector(const FVector& V) const
 {
     // v' = q * v * q^(-1) 구현
@@ -334,9 +344,9 @@ FQuat FQuat::MakeFromRotationMatrix(const FMatrix& M)
     return Q;
 }
 
-FVector4 FQuat::VectorQuaternionRotateVector(const FQuat& Quat, FVector4 VectorW0)
+FVector4 FQuat::VectorQuaternionRotateVector(const FQuat& Quat, const FVector4 VectorW0)
 {
-    const FVector4 Q = FVector4(Quat.W, Quat.X, Quat.Y, Quat.Z);
+    const FVector4 Q = FVector4(Quat.X, Quat.Y, Quat.Z, Quat.W);
     const FVector4 QW = FVector4(Quat.Z, Quat.Z, Quat.Z, Quat.Z);
     FVector4 T = FVector4::CrossProduct(Q, VectorW0);
     T = FVector4(T.X + T.X, T.Y + T.Y, T.Z + T.Z, T.W + T.W);

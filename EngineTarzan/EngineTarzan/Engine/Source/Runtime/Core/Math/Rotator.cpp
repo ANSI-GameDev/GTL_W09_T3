@@ -159,6 +159,11 @@ FMatrix FRotator::ToMatrix() const
     return FMatrix::GetRotationMatrix(*this);
 }
 
+FRotator FRotator::Clamp()
+{
+    return FRotator(ClampAxis(Pitch), ClampAxis(Yaw), ClampAxis(Roll));
+}
+
 FRotator FRotator::MakeLookAtRotation(const FVector& From, const FVector& To)
 {
     FVector Dir = To - From;

@@ -74,6 +74,91 @@ const float* FMatrix::operator[](int row) const
     return M[row];
 }
 
+FVector FMatrix::ExtractScale(const float Tolerance)
+{
+    FVector Scale3D(0, 0, 0);
+
+    // For each row, find magnitude, and if its non-zero re-scale so its unit length.
+    const float SquareSum0 = (M[0][0] * M[0][0]) + (M[0][1] * M[0][1]) + (M[0][2] * M[0][2]);
+    const float SquareSum1 = (M[1][0] * M[1][0]) + (M[1][1] * M[1][1]) + (M[1][2] * M[1][2]);
+    const float SquareSum2 = (M[2][0] * M[2][0]) + (M[2][1] * M[2][1]) + (M[2][2] * M[2][2]);
+
+    if (SquareSum0 > Tolerance)
+    {
+        const float Scale0 = FMath::Sqrt(SquareSum0);
+        Scale3D.X = Scale0;
+        const float InvScale0 = 1.f / Scale0;
+        M[0][0] *= InvScale0;
+        M[0][1] *= InvScale0;
+        M[0][2] *= InvScale0;
+    }
+    else
+    {
+        Scale3D.X = 0;
+    }
+
+    if (SquareSum1 > Tolerance)
+    {
+        const float Scale1 = FMath::Sqrt(SquareSum1);
+        Scale3D.X = Scale1;
+        const float InvScale1 = 1.f / Scale1;
+        M[1][0] *= InvScale1;
+        M[1][1] *= InvScale1;
+        M[1][2] *= InvScale1;
+    }
+    else
+    {
+        Scale3D.Y	 = 0;
+    }
+
+    if (SquareSum2 > Tolerance)
+    {
+        const float Scale2 = FMath::Sqrt(SquareSum2);
+        Scale3D.Z = Scale2;
+        const float InvScale2 = 1.f / Scale2;
+        M[2][0] *= InvScale2;
+        M[2][1] *= InvScale2;
+        M[2][2] *= InvScale2;
+    }
+    else
+    {
+        Scale3D.Z = 0;
+    }
+
+    return Scale3D;
+}
+
+float FMatrix::Determinant() const
+{
+    const float* m = &M[0][0];
+    return
+        m[0] * (m[5] * (m[10] * m[15] - m[11] * m[14]) - m[6] * (m[9] * m[15] - m[11] * m[13]) + m[7] * (m[9] * m[14] - m[10] * m[13])) -
+        m[1] * (m[4] * (m[10] * m[15] - m[11] * m[14]) - m[6] * (m[8] * m[15] - m[11] * m[12]) + m[7] * (m[8] * m[14] - m[10] * m[12])) +
+        m[2] * (m[4] * (m[9] * m[15] - m[11] * m[13]) - m[5] * (m[8] * m[15] - m[11] * m[12]) + m[7] * (m[8] * m[13] - m[9] * m[12])) -
+        m[3] * (m[4] * (m[9] * m[14] - m[10] * m[13]) - m[5] * (m[8] * m[14] - m[10] * m[12]) + m[6] * (m[8] * m[13] - m[9] * m[12]));
+}
+
+FVector FMatrix::GetTranslation() const
+{
+    return FVector(M[3][0], M[3][1], M[3][2]);
+}
+
+FMatrix FMatrix::LookAtLH(const FVector& EyePosition, const FVector& FocusPoint, const FVector& WorldUp)
+{
+    const FVector Forward = (FocusPoint - EyePosition).GetSafeNormal();
+    const FVector Right = FVector::CrossProduct(WorldUp, Forward).GetSafeNormal();
+    const FVector Up = FVector::CrossProduct(Forward, Right).GetSafeNormal();
+
+    // row major
+    FMatrix Result;
+    Result.M[0][0] = Right.X; Result.M[0][1] = Up.X; Result.M[0][2] = Forward.X; Result.M[0][3] = 0.0f;
+    Result.M[1][0] = Right.Y; Result.M[1][1] = Up.Y; Result.M[1][2] = Forward.Y; Result.M[1][3] = 0.0f;
+    Result.M[2][0] = Right.Z; Result.M[2][1] = Up.Z; Result.M[2][2] = Forward.Z; Result.M[2][3] = 0.0f;
+    Result.M[3][0] = -FVector::DotProduct(Right, EyePosition); Result.M[3][1] = -FVector::DotProduct(Up, EyePosition); Result.M[3][2] = -FVector::DotProduct(Forward, EyePosition); Result.M[3][3] = 1.0f;
+
+    return Result;
+}
+
 // 전치 행렬
 FMatrix FMatrix::Transpose(const FMatrix& Mat) {
     FMatrix Result;
@@ -286,6 +371,10 @@ FMatrix FMatrix::GetTranslationMatrix(const FVector& position)
 FMatrix FMatrix::GetRotationMatrix(const FRotator& InRotation)
 {
     return CreateRotationMatrix(InRotation.Roll, InRotation.Pitch, InRotation.Yaw);
+    // // 1) FRotator → FQuat 변환
+    // const FQuat Q = InRotation.ToQuaternion();
+    //
+    // return GetRotationMatrix(Q);
 }
 
 FMatrix FMatrix::GetRotationMatrix(const FQuat& InRotation)

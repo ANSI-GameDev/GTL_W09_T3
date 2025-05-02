@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "FTransform.h"
 #include "Serialization/Archive.h"
 
 struct FVector;
@@ -27,6 +28,20 @@ public:
     FMatrix operator/(float Scalar) const;
     float* operator[](int row);
     const float* operator[](int row) const;
+    FVector ExtractScale(float Tolerance = SMALL_NUMBER);
+    float Determinant() const;
+    FVector GetTranslation() const;
+
+    /**
+         * 뷰 변환 행렬을 생성합니다.
+         *
+         * @param EyePosition 카메라의 포지션입니다.
+         * @param FocusPoint 카메라가 바라보는 곳의 포지션입니다.
+         * @param WorldUp 카메라의 위쪽 방향입니다.
+         * @return 뷰 변환 행렬을 반환합니다.
+         */
+    static FMatrix LookAtLH(const FVector& EyePosition, const FVector& FocusPoint, const FVector& WorldUp);
+
 
     // 유틸리티 함수
     static FMatrix Transpose(const FMatrix& Mat);
