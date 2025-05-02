@@ -221,6 +221,15 @@ public:
     bool IsNearlyZero(float Tolerance = SMALL_NUMBER) const;
     bool IsZero() const;
 
+    FORCEINLINE static FVector Min(const FVector& A, const FVector& B)
+    {
+        return { FMath::Min(A.X, B.X), FMath::Min(A.Y, B.Y), FMath::Min(A.Z, B.Z) };
+    }
+
+    FORCEINLINE static FVector Max(const FVector& A, const FVector& B)
+    {
+        return { FMath::Max(A.X, B.X), FMath::Max(A.Y, B.Y), FMath::Max(A.Z, B.Z) };
+    }
     
     FString ToString() const;
     bool InitFromString(const FString& InSourceString);
