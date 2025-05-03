@@ -63,7 +63,7 @@ struct FRotator
     FVector RotateVector(const FVector& Vec) const;
     FMatrix ToMatrix() const;
 
-    FRotator Clamp();
+    //FRotator Clamp();
     
     static float ClampAxis(float Angle);
     FRotator GetNormalized() const;
