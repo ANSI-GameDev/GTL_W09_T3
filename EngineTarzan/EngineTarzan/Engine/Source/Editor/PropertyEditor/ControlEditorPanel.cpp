@@ -575,7 +575,7 @@ void ControlEditorPanel::CreatePIEButton(const ImVec2 ButtonSize, ImFont* IconFo
 void ControlEditorPanel::CreateSRTButton(ImVec2 ButtonSize)
 {
     const UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
-    AEditorPlayer* Player = Engine->GetEditorPlayer();
+    UEditorPlayer* Player = Engine->GetEditorPlayer();
 
     constexpr ImVec4 ActiveColor = ImVec4(0.00f, 0.00f, 0.85f, 1.0f);
 

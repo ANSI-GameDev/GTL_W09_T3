@@ -26,6 +26,9 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnRawKeyboardInputDelegate, const FKeyEvent
 DECLARE_MULTICAST_DELEGATE(FOnPIEModeStart);
 DECLARE_MULTICAST_DELEGATE(FOnPIEModeEnd);
 
+DECLARE_MULTICAST_DELEGATE(FOnStaticMeshViewerStart);
+DECLARE_MULTICAST_DELEGATE(FOnStaticMeshViewerEnd);
+
 class FSlateAppMessageHandler
 {
 public:
@@ -79,6 +82,9 @@ public:
 
     FOnPIEModeStart OnPIEModeStartDelegate;
     FOnPIEModeEnd OnPIEModeEndDelegate;
+
+    FOnStaticMeshViewerStart OnStaticMeshViewerStartDelegate;
+    FOnStaticMeshViewerEnd OnStaticMeshViewerEndDelegate;
 
 private:
     struct EModifierKey

@@ -291,6 +291,11 @@ void FRenderer::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
     QUICK_SCOPE_CYCLE_COUNTER(Renderer_Render_CPU)
     QUICK_GPU_SCOPE_CYCLE_COUNTER(Renderer_Render_GPU, *GPUTimingManager)
 
+    if (GEngine->GetWorld()->WorldType == EWorldType::StaticMeshViewer)
+    {
+        
+    }
+    
     BeginRender(Viewport);
 
     /**

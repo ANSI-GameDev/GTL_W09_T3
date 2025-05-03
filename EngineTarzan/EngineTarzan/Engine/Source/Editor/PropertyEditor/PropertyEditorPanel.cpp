@@ -2,8 +2,6 @@
 
 #include <algorithm>
 #include <string>
-//#include <windows.h>
-//#include <tchar.h>
 
 #include "World/World.h"
 #include "Actors/Player.h"
@@ -34,7 +32,6 @@
 #include "LuaScripts/LuaScriptComponent.h"
 #include "LuaScripts/LuaScriptFileUtils.h"
 #include "imgui/imgui_bezier.h"
-#include "imgui/imgui_curve.h"
 
 void PropertyEditorPanel::Render()
 {
@@ -84,7 +81,7 @@ void PropertyEditorPanel::Render()
 
     if (TargetComponent != nullptr)
     {
-        AEditorPlayer* Player = Engine->GetEditorPlayer();
+        UEditorPlayer* Player = Engine->GetEditorPlayer();
         RenderForSceneComponent(TargetComponent, Player);
     }
 
@@ -201,7 +198,7 @@ void PropertyEditorPanel::HSVToRGB(const float H, const float S, const float V, 
 }
 
 
-void PropertyEditorPanel::RenderForSceneComponent(USceneComponent* SceneComponent, AEditorPlayer* Player) const
+void PropertyEditorPanel::RenderForSceneComponent(USceneComponent* SceneComponent, UEditorPlayer* Player) const
 {
     ImGui::SetItemDefaultFocus();
     // TreeNode 배경색을 변경 (기본 상태)
