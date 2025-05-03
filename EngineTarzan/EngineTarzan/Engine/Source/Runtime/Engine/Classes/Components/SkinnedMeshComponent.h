@@ -11,7 +11,7 @@ public:
     USkinnedMeshComponent() = default;
 
 protected:
-    USkeletalMesh* SkeletalMesh;
+    USkeletalMesh* SkeletalMesh = nullptr;
 
     /*virtual UObject* Duplicate(UObject* InOuter) override;
     virtual void GetProperties(TMap<FString, FString>& OutProperties) const override;
