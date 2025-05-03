@@ -59,11 +59,11 @@ struct FRotator
 
     FRotator FromQuaternion(const FQuat& InQuat) const;
     FQuat ToQuaternion() const;
+    
+    // 가리키는 전방(Forward) 방향의 단위 벡터를 구하는 함수
     FVector ToVector() const;
     FVector RotateVector(const FVector& Vec) const;
     FMatrix ToMatrix() const;
-
-    //FRotator Clamp();
     
     static float ClampAxis(float Angle);
     FRotator GetNormalized() const;
@@ -74,6 +74,8 @@ struct FRotator
 
     static float NormalizeAxis(float Angle);
     static FRotator MakeLookAtRotation(const FVector& From, const FVector& To);
+
+    FRotator GetInverse() const;
 };
 
 inline FArchive& operator<<(FArchive& Ar, FRotator& R)

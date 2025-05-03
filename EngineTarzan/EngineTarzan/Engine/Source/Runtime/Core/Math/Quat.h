@@ -67,7 +67,7 @@ struct FQuat
 
     static FQuat MakeFromRotationMatrix(const FMatrix& M);
 
-    FQuat GetInverse() const { return FQuat (-X, -Y, -Z, W); }
+    FQuat GetInverse() const;
 
     static FVector4 VectorQuaternionRotateVector(const FQuat& Quat, FVector4 VectorW0);
     static FVector4 VectorQuaternionInverseRotatedVector(const FQuat& Q, const FVector4& W0);

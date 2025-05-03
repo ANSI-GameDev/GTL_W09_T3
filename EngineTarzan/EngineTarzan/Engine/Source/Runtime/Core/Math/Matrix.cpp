@@ -355,10 +355,6 @@ FMatrix FMatrix::GetTranslationMatrix(const FVector& position)
 FMatrix FMatrix::GetRotationMatrix(const FRotator& InRotation)
 {
     return CreateRotationMatrix(InRotation.Roll, InRotation.Pitch, InRotation.Yaw);
-    // // 1) FRotator → FQuat 변환
-    // const FQuat Q = InRotation.ToQuaternion();
-    //
-    // return GetRotationMatrix(Q);
 }
 
 FMatrix FMatrix::GetRotationMatrix(const FQuat& InRotation)

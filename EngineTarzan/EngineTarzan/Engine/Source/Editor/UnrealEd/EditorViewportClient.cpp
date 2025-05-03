@@ -472,12 +472,12 @@ void FEditorViewportClient::UpdateViewMatrix()
         GetViewInfo(ViewInfo);
 
         FMatrix RotationMatrix = ViewInfo.Rotation.ToMatrix();
-        FVector FinalUp = FMatrix::TransformVector(FVector::UpVector, RotationMatrix);
+        //FVector FinalUp = FMatrix::TransformVector(FVector::UpVector, RotationMatrix);
         
         View = JungleMath::CreateViewMatrix(
             ViewInfo.Location,
             ViewInfo.Location + ViewInfo.Rotation.ToVector(),
-            FinalUp
+            FVector::UpVector
         );
     }
     else

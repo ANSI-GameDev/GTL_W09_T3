@@ -174,6 +174,23 @@ FRotator FRotator::MakeLookAtRotation(const FVector& From, const FVector& To)
     return FRotator(Pitch, Yaw, Roll);
 }
 
+FRotator FRotator::GetInverse() const
+{
+    // 1) 현재 Rotator → 쿼터니언  
+    const FQuat Q = ToQuaternion();
+
+    // 2) 쿼터니언 역연산  
+    const FQuat InvQ = Q.GetInverse();
+
+    // 3) 역쿼터니언 → Rotator  
+    FRotator InvRot = InvQ.Rotator();
+
+    // 4) 각도 범위 정리(Optional)  
+    InvRot.Normalize();  
+
+    return InvRot;
+}
+
 float FRotator::ClampAxis(float Angle)
 {
     Angle = FMath::Fmod(Angle, 360.0f);

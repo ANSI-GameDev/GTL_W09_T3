@@ -139,7 +139,7 @@ void UDirectionalLightComponent::UpdateViewMatrix()
 
     // 5. View Matrix 생성
     // 이제 CreateViewMatrix 내부에서 zAxis = normalize(Target - Eye) = normalize(ViewForwardDirection) = LightDirection 이 됨
-    ViewMatrices[0] = JungleMath::CreateViewMatrix(EyePosition, TargetPosition, UpVector);
+    ViewMatrices[0] = JungleMath::CreateViewMatrix(EyePosition, TargetPosition, FVector::UpVector);
 }
 
 
