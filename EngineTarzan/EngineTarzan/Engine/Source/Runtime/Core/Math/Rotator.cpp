@@ -159,6 +159,11 @@ FMatrix FRotator::ToMatrix() const
     return FMatrix::GetRotationMatrix(*this);
 }
 
+// FRotator FRotator::Clamp()
+// {
+//     return FRotator(ClampAxis(Pitch), ClampAxis(Yaw), ClampAxis(Roll));
+// }
+
 FRotator FRotator::MakeLookAtRotation(const FVector& From, const FVector& To)
 {
     FVector Dir = To - From;
@@ -167,6 +172,23 @@ FRotator FRotator::MakeLookAtRotation(const FVector& From, const FVector& To)
     float Pitch = std::atan2(Dir.Z, DistanceXY) * 180.0f / PI;
     float Roll = 0.0f;
     return FRotator(Pitch, Yaw, Roll);
+}
+
+FRotator FRotator::GetInverse() const
+{
+    // 1) 현재 Rotator → 쿼터니언  
+    const FQuat Q = ToQuaternion();
+
+    // 2) 쿼터니언 역연산  
+    const FQuat InvQ = Q.GetInverse();
+
+    // 3) 역쿼터니언 → Rotator  
+    FRotator InvRot = InvQ.Rotator();
+
+    // 4) 각도 범위 정리(Optional)  
+    InvRot.Normalize();  
+
+    return InvRot;
 }
 
 float FRotator::ClampAxis(float Angle)
