@@ -1,5 +1,6 @@
 #pragma once
 #include "Container/Array.h"
+#include "Math/FTransform.h"
 #include "UObject/NameTypes.h"
 
 
@@ -24,7 +25,7 @@ struct FReferenceSkeleton
 
 private:
     TArray<FMeshBoneInfo> RefBonInfo;
-    //TArray<FTransform>    RefBonePose;
+    TArray<FTransform>    RefBonePose;
 
 
     bool bOnlyOneRootAllowed;
