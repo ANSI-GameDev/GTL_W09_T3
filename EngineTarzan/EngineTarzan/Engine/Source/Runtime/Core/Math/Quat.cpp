@@ -23,7 +23,7 @@ FQuat::FQuat(const FMatrix& InMatrix)
 
     if (trace > 0.0f) 
     {
-        float InvS = FMath::InvSqrt(trace + 1.f);
+        const float InvS = FMath::InvSqrt(trace + 1.f);
         this->W = 0.5f * (1.f / InvS);
         S = 0.5f * InvS;
 
@@ -48,7 +48,7 @@ FQuat::FQuat(const FMatrix& InMatrix)
  
         S = InMatrix.M[i][i] - InMatrix.M[j][j] - InMatrix.M[k][k] + 1.0f;
 
-        float InvS = FMath::InvSqrt(S);
+        const float InvS = FMath::InvSqrt(S);
 
         float qt[4];
         qt[i] = 0.5f * (1.f / InvS);
@@ -75,6 +75,16 @@ FQuat FQuat::operator*(const FQuat& Other) const
             W * Other.Z + X * Other.Y - Y * Other.X + Z * Other.W,
             W * Other.W - X * Other.X - Y * Other.Y - Z * Other.Z
         );
+}
+
+bool FQuat::operator==(const FQuat& Other) const
+{
+    return X == Other.X && Y == Other.Y && Z == Other.Z && W == Other.W;
+}
+
+bool FQuat::operator!=(const FQuat& Other) const
+{
+    return X != Other.X || Y != Other.Y || Z != Other.Z || W != Other.W;
 }
 
 FVector FQuat::RotateVector(const FVector& V) const
@@ -334,9 +344,22 @@ FQuat FQuat::MakeFromRotationMatrix(const FMatrix& M)
     return Q;
 }
 
-FVector4 FQuat::VectorQuaternionRotateVector(const FQuat& Quat, FVector4 VectorW0)
+FQuat FQuat::GetInverse() const
 {
-    const FVector4 Q = FVector4(Quat.W, Quat.X, Quat.Y, Quat.Z);
+    if (IsNormalized())
+    {
+        return FQuat(-X, -Y, -Z, W);
+    }
+    else
+    {
+        FQuat NormalizedQuat = GetNormalized();
+        return FQuat(-NormalizedQuat.X, -NormalizedQuat.Y, -NormalizedQuat.Z, NormalizedQuat.W);
+    }
+}
+
+FVector4 FQuat::VectorQuaternionRotateVector(const FQuat& Quat, const FVector4 VectorW0)
+{
+    const FVector4 Q = FVector4(Quat.X, Quat.Y, Quat.Z, Quat.W);
     const FVector4 QW = FVector4(Quat.Z, Quat.Z, Quat.Z, Quat.Z);
     FVector4 T = FVector4::CrossProduct(Q, VectorW0);
     T = FVector4(T.X + T.X, T.Y + T.Y, T.Z + T.Z, T.W + T.W);

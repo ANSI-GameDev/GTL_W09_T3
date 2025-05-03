@@ -27,8 +27,14 @@ struct FQuat
 
     explicit FQuat(const FMatrix& InMatrix);
 
+    //explicit FQuat(const FVector& Rotation);
+
     // 쿼터니언의 곱셈 연산 (회전 결합)
     FQuat operator*(const FQuat& Other) const;
+
+    bool operator==(const FQuat& Other) const;
+
+    bool operator!=(const FQuat& Other) const;
 
     // (쿼터니언) 벡터 회전
     FVector RotateVector(const FVector& V) const;
@@ -61,7 +67,7 @@ struct FQuat
 
     static FQuat MakeFromRotationMatrix(const FMatrix& M);
 
-    FQuat GetInverse() const { return FQuat (-X, -Y, -Z, W); }
+    FQuat GetInverse() const;
 
     static FVector4 VectorQuaternionRotateVector(const FQuat& Quat, FVector4 VectorW0);
     static FVector4 VectorQuaternionInverseRotatedVector(const FQuat& Q, const FVector4& W0);

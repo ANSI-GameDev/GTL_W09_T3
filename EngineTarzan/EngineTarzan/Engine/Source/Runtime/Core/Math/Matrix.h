@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "FTransform.h"
 #include "Serialization/Archive.h"
 
 struct FVector;
@@ -27,6 +28,9 @@ public:
     FMatrix operator/(float Scalar) const;
     float* operator[](int row);
     const float* operator[](int row) const;
+    FVector ExtractScale(float Tolerance = SMALL_NUMBER);
+    float Determinant() const;
+    FVector GetTranslation() const;
 
     // 유틸리티 함수
     static FMatrix Transpose(const FMatrix& Mat);

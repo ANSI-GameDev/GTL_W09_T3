@@ -333,20 +333,20 @@ struct FMath
 
 	[[nodiscard]] static FORCEINLINE float UnwindDegrees(float A)
 	{
-		while (A > 180.0f)
-		{
-			A -= 360.0f;
-		}
-		while (A < -180.0f)
-		{
-			A += 360.0f;
-		}
-		return A;
+        // 1) 360으로 나눈 나머지를 구하되, A가 음수일 때도 올바르게 처리
+        A = Fmod(A + 180.0f, 360.0f);
+        // 2) fmodf 결과가 음수면 한 바퀴(360도) 더해주고
+        if (A < 0.0f)  
+        {
+            A += 360.0f;
+        }
+        // 3) 다시 -180~+180 범위로 이동
+        return A - 180.0f;
 	}
 
     [[nodiscard]] static float Fmod(float X, float Y)
 	{
-	    const float AbsY = FMath::Abs(Y);
+	    const float AbsY = Abs(Y);
 	    if (AbsY <= SMALL_NUMBER)
 	    {
 	        return 0.0;

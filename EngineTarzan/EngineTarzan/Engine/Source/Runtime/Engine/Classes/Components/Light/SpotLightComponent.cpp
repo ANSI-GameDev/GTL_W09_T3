@@ -212,7 +212,7 @@ void USpotLightComponent::UpdateViewMatrix()
     Up = JungleMath::FVectorRotate(Up, SpotLightRot);
 
     // 개선된 Up 벡터를 사용하여 View Matrix 생성
-    ViewMatrices[0] = JungleMath::CreateViewMatrix(SpotLightPos, SpotLightPos + Forward, Up);
+    ViewMatrices[0] = JungleMath::CreateViewMatrix(SpotLightPos, SpotLightPos + Forward, FVector::UpVector);
 }
 
 void USpotLightComponent::UpdateProjectionMatrix()
