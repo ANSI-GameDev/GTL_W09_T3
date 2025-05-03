@@ -24,14 +24,19 @@ struct FSoftSkinVertex
 
     //friend FArchive& operator<<(FArchive& Ar, FSoftSkinVertex& V);
 };
+
+/** 에디터 내부에서 LOD 편집·쿠킹 로직(FSkeletalMeshBuilder)이 읽어들여 런타임용 FSkeletalMeshRenderData로 변환 */
 class FSkeletalMeshLODModel
 {
 public:
-    TArray<FSoftSkinVertex> Vertices;       // 정점 데이터
-    TArray<uint32> Indices;                 // 인덱스 데이터
-
+    TArray<FSoftSkinVertex>  Vertices;           // 정점 데이터
+    TArray<uint32>           Indices;            // 인덱스 데이터
+    TArray<int32>            RequiredBones;      // 렌더링에 필요한 본 인덱스
+    TArray<FMatrix>          RefBasesInvMatrix;  // 역바인드 포즈 행렬
 
     uint32 NumVertices;
     uint32 NumTexCoords;
+
+
 };
 
