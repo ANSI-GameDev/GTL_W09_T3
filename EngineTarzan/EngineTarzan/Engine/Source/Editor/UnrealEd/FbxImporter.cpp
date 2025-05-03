@@ -3,6 +3,10 @@
 
 #include "Define.h"
 #include "ReferenceSkeleton.h"
+#include "Rendering/SkeletalMeshLODModel.h"
+
+TMap<FbxNode*, int32> FFbxImporter::NodeToBoneIndex;
+FbxAMatrix            FFbxImporter::JointPostConvert;
 
 bool FFbxImporter::ParseReferenceSkeleton(const FString& InFilePath, FReferenceSkeleton& OutRefSkeleton)
 {
@@ -28,6 +32,8 @@ bool FFbxImporter::ParseReferenceSkeleton(const FString& InFilePath, FReferenceS
 
     // Root 노드부터 재귀 빌드
     BuildReferenceSkeleton(Scene->GetRootNode(), OutRefSkeleton, INDEX_NONE, 0);
+
+    ComputeJointPostConvert(Scene);
 
     // SDK 정리
     SdkMgr->Destroy();
@@ -66,6 +72,8 @@ void FFbxImporter::BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& Out
 
         ThisParent = OutRefSkeleton.AddBone(BoneName, ParentIndex, BonePose);
 
+        NodeToBoneIndex.Add(Node, ThisParent);
+
         // 트리 구조 형태 출력
         FString Prefix;
         if (Depth > 0)
@@ -86,4 +94,37 @@ void FFbxImporter::BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& Out
     {
         BuildReferenceSkeleton(Node->GetChild(i), OutRefSkeleton, ThisParent, Depth + 1);
     }
+}
+
+FMatrix FFbxImporter::ConvertFbxAMatrix(const FbxAMatrix& M)
+{
+    // double[16] → float[16] 순서 그대로 복사
+    FMatrix Out;
+    const double* Src = reinterpret_cast<const double*>(&M);
+    float* Dst = reinterpret_cast<float*>(&Out);
+    for (int i = 0; i < 16; ++i) Dst[i] = (float)Src[i];
+    return Out;
+}
+
+void FFbxImporter::ComputeJointPostConvert(FbxScene* Scene)
+{
+    // 1) FBX 씬 축계
+    FbxAxisSystem SceneAxis = Scene->GetGlobalSettings().GetAxisSystem();
+    // 2)  2) 언리얼 축계: Z-Up, ParityOdd(front=+X), Left-Handed
+    FbxAxisSystem UnrealAxis(FbxAxisSystem::eZAxis, FbxAxisSystem::eParityEven, FbxAxisSystem::eLeftHanded);
+
+    // 3) 축 변환 행렬: SceneAxis → UnrealAxis
+    FbxAMatrix Mscene, Munreal;
+    SceneAxis.GetMatrix(Mscene);
+    UnrealAxis.GetMatrix(Munreal);
+    FbxAMatrix AxisConv = Munreal * Mscene.Inverse();
+
+    // 4) 단위 변환: FBX 단위 → 언리얼(cm)
+    FbxSystemUnit SysUnit = Scene->GetGlobalSettings().GetSystemUnit();
+    double Scale = 1.0 / SysUnit.GetScaleFactor();
+    FbxAMatrix UnitScale; UnitScale.SetIdentity();
+    UnitScale.SetS(FbxVector4(Scale, Scale, Scale));
+
+    // 최종 보정 매트릭스
+    JointPostConvert = UnitScale * AxisConv;
 }

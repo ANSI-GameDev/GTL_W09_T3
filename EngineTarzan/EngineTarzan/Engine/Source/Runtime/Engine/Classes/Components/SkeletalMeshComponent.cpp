@@ -10,6 +10,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     SkeletalMesh= FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
     FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
 
+    FFbxImporter::ParseSkeletalMeshLODModel(SkeletalMesh->ImportedModel, *SkeletalMesh->ImportedModel);
 
 }
 
