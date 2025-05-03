@@ -19,14 +19,15 @@ public:
     FSkeletalMeshRenderData* GetSkeletalMeshRenderData() const;
 
 
-private:
+public:
 
     /** RawData 저장용 Imported Model [Unreal에선 LODModel 배열로 관리] */
     FSkeletalMeshLODModel* ImportedModel;
 
-    FReferenceSkeleton RefSkeleton;
-
     /** 런타임용 렌더링 리소스 */
-     FSkeletalMeshRenderData* SkeletalMeshRenderData;
+     FSkeletalMeshRenderData* SkelMeshRenderData;
+
+    /** 계층구조, Bone Info 및 Transform 배열 저장 */
+    FReferenceSkeleton RefSkeleton;
 };
 

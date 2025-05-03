@@ -9,6 +9,6 @@ void USkeletalMesh::SetImportedModel(FSkeletalMeshLODModel* InModel)
 
 FSkeletalMeshRenderData* USkeletalMesh::GetSkeletalMeshRenderData() const
 {
-    return SkeletalMeshRenderData;
+    return SkelMeshRenderData;
 }
 

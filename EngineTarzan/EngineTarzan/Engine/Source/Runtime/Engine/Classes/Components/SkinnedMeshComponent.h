@@ -2,19 +2,22 @@
 #include "Components/MeshComponent.h"
 
 class USkeletalMesh;
+class FSkeletalMeshObjectCPUSkin;
 
 class USkinnedMeshComponent : public UMeshComponent
 {
     DECLARE_CLASS(USkinnedMeshComponent, UMeshComponent)
 
 public:
-    USkinnedMeshComponent() = default;
+    USkinnedMeshComponent();
+    void TickComponent(float DeltaTime) override;
 
     const TArray<FTransform>& GetComponentSpaceTransforms() const;
 
 protected:
+    FSkeletalMeshObjectCPUSkin* MeshObject;
     /** 매 프레임 변경되는 Runtime Bone Transform - 렌더 스레드 별도일 때의 Size=2 */
-    TArray<FTransform> ComponentSpaceTransformsArray[2]; 
+    TArray<FTransform> ComponentSpaceTransformsArray; 
 
     USkeletalMesh* SkeletalMesh = nullptr;
 

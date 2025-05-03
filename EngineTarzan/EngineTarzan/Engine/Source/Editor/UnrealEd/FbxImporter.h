@@ -6,6 +6,7 @@
 struct FReferenceSkeleton;
 class FString;
 class USkeletalMesh;
+class FMatrix;
 
 class FFbxImporter
 {
@@ -19,5 +20,12 @@ public:
 private:
     // FBX 노드 재귀 순회하여 Skeleton 노드만 RefSkeleton에 추가
     static void BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& OutRefSkeleton, uint32 ParentIndex, int32 Depth);
+
+private:
+    /** FBX→언리얼 축·단위 보정 행렬 (GetJointPostConversionMatrix()) */
+    FbxAMatrix JointPostConvert;
+
+    /** FBX 행렬 → 엔진 FMatrix 변환 헬퍼 */
+    FMatrix ConvertFbxAMatrix(const FbxAMatrix& M);
 };
 
