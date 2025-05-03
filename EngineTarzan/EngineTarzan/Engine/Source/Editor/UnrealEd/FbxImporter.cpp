@@ -73,9 +73,9 @@ void FFbxImporter::BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& Out
             Prefix = TEXT("  "); // 첫 들여쓰기
             for (int32 i = 1; i < Depth; ++i)
             {
-                Prefix += TEXT("|  "); 
+                Prefix += TEXT("  "); 
             }
-            Prefix += TEXT("=="); 
+            Prefix += TEXT("|__"); 
         }
         // 루트 노드는 Prefix없이
         UE_LOG(LogLevel::Error, TEXT("%s Bone: %s (ParentIndex: %d, MyIndex: %d)"), *Prefix, *BoneName.ToString(), ParentIndex, ThisParent);
