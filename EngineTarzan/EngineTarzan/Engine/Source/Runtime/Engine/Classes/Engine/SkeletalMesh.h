@@ -11,8 +11,8 @@ class USkeletalMesh : public UObject
 {
     DECLARE_CLASS(USkeletalMesh, UObject)
 public:
-    USkeletalMesh() = default;
-
+    USkeletalMesh();
+    void Initialize();
 
     void SetImportedModel(FSkeletalMeshLODModel* InModel);
 
