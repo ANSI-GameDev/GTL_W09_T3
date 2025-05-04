@@ -174,7 +174,12 @@ void UEditorEngine::OpenSkeletalMeshViewer()
     Handler->OnStaticMeshViewerStartDelegate.Broadcast();
 
     StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::SkeletalMeshViewer, FString("StaticMeshViwerWorld"));
+    // TODO : 일단 Test용 액터 스폰
     StaticMeshViewerWorld->SpawnActor<ACube>();
+    
+    ADirectionalLight* dirLight = StaticMeshViewerWorld->SpawnActor<ADirectionalLight>();
+    dirLight->SetActorRotation(FRotator(30, 0, 0));
+    
 
     FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::SkeletalMeshViewer);
 
