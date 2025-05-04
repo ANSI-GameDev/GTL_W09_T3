@@ -34,8 +34,8 @@ void FSkeletalMeshViewportClient::Initialize(EViewScreenLocation InViewportIndex
 {
     ViewportIndex = static_cast<int32>(InViewportIndex);
     
-    PerspectiveCamera.SetLocation(FVector(10, 0, 0));
-    PerspectiveCamera.SetRotation(FRotator(0, 0, 0));
+    PerspectiveCamera.SetLocation(FVector(-10.0f, 0.f, 0.0f));
+    PerspectiveCamera.SetRotation(FRotator(0, 0.f, 0.f));
     
     Viewport = new FViewport(InViewportIndex);
     Viewport->Initialize(InRect);
