@@ -8,6 +8,9 @@
     내부적으로 PIE, Editor World 두 가지 형태로 관리.
 */
 
+DECLARE_MULTICAST_DELEGATE(FOnOpenSkeletalMeshViewerDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnCloseSkeletalMeshViewerDelegate);
+
 class AActor;
 class USceneComponent;
 
@@ -65,10 +68,9 @@ public:
 
 public:
     UEditorPlayer* GetEditorPlayer() const;
-    
+
 private:
     UEditorPlayer* EditorPlayer = nullptr;
-
 };
 
 

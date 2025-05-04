@@ -105,11 +105,13 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
     Handler->OnStaticMeshViewerStartDelegate.AddLambda([this]()
     {
         this->RegisterStaticMeshViewerInputDelegates();
+        ActiveViewportClient = SkeletalMeshViewportClient;
     });
 
     Handler->OnStaticMeshViewerEndDelegate.AddLambda([this]()
     {
         this->RegisterEditorInputDelegates();
+        ActiveViewportClient = ViewportClients[0];
     });
 }
 
@@ -197,12 +199,10 @@ bool SLevelEditor::IsMultiViewport() const
 void SLevelEditor::SetSkeletalMeshViewportClient(const bool bInSkeletalMeshViewMode)
 {
     // 멀티뷰포트 모드는 항상 해제
-    bMultiViewportMode      = false;
+    bMultiViewportMode      = false; 
     // 바로 전달된 값으로 설정
     bSkeletalMeshViewMode   = bInSkeletalMeshViewMode;
-
-    ResizeViewports();
-
+    
     if (UEditorEngine* EdEngine = Cast<UEditorEngine>(GEngine))
     {
         if (bSkeletalMeshViewMode)
@@ -210,6 +210,8 @@ void SLevelEditor::SetSkeletalMeshViewportClient(const bool bInSkeletalMeshViewM
         else
             EdEngine->CloseSkeletalMeshViewer();
     }
+    
+    ResizeViewports();
 }
 
 bool SLevelEditor::IsSkeletalMeshViewMode() const

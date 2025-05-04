@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Classes/Engine/AssetManager.h"
 #include "Components/Light/DirectionalLightComponent.h"
+#include "LevelEditor/SLevelEditor.h"
 #include "UObject/UObjectIterator.h"
 
 namespace PrivateEditorSelection
@@ -173,6 +174,7 @@ void UEditorEngine::OpenSkeletalMeshViewer()
     Handler->OnStaticMeshViewerStartDelegate.Broadcast();
 
     StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::StaticMeshViewer, FString("StaticMeshViwerWorld"));
+    StaticMeshViewerWorld->SpawnActor<ACube>();
 
     FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::StaticMeshViewer);
 
