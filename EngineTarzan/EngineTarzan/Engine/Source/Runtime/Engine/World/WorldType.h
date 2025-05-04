@@ -10,5 +10,5 @@ enum class EWorldType
     GamePreview,
     GameRPC,
     Inactive,
-    StaticMeshViewer,
+    SkeletalMeshViewer,
 };

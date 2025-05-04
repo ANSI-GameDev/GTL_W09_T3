@@ -26,11 +26,10 @@ void UnrealEd::Render() const
         Panels["OutlinerPanel"]->Render();
         Panels["PropertyPanel"]->Render();
     }
-    //
-    // for (const auto& Panel : Panels)
-    // {
-    //     Panel.Value->Render();
-    // }
+    else if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalMeshViewer)
+    {
+        // TODO : SkeletalMeshViewer Panel
+    }
 }
 
 void UnrealEd::AddEditorPanel(const FString& PanelId, const std::shared_ptr<UEditorPanel>& EditorPanel)

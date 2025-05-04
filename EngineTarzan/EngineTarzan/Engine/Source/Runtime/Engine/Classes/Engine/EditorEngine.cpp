@@ -173,12 +173,12 @@ void UEditorEngine::OpenSkeletalMeshViewer()
 
     Handler->OnStaticMeshViewerStartDelegate.Broadcast();
 
-    StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::StaticMeshViewer, FString("StaticMeshViwerWorld"));
+    StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::SkeletalMeshViewer, FString("StaticMeshViwerWorld"));
     StaticMeshViewerWorld->SpawnActor<ACube>();
 
-    FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::StaticMeshViewer);
+    FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::SkeletalMeshViewer);
 
-    StaticMeshViewerWorld->WorldType = EWorldType::StaticMeshViewer;
+    StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
 
     ViwerWorldContext.SetCurrentWorld(StaticMeshViewerWorld);
     ActiveWorld = StaticMeshViewerWorld;
