@@ -24,10 +24,14 @@ public:
 
     UWorld* PIEWorld = nullptr;
     UWorld* EditorWorld = nullptr;
+    UWorld* StaticMeshViewerWorld = nullptr;
 
     void StartPIE();
     void BindEssentialObjects();
     void EndPIE();
+
+    void OpenSkeletalMeshViewer();
+    void CloseSkeletalMeshViewer();
 
     // 주석은 UE에서 사용하던 매개변수.
     FWorldContext& GetEditorWorldContext(/*bool bEnsureIsGWorld = false*/);

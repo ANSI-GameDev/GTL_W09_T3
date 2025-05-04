@@ -4,6 +4,7 @@
 #include "PropertyEditor/ControlEditorPanel.h"
 #include "PropertyEditor/OutlinerEditorPanel.h"
 #include "PropertyEditor/PropertyEditorPanel.h"
+#include "World/World.h"
 
 void UnrealEd::Initialize()
 {
@@ -19,10 +20,17 @@ void UnrealEd::Initialize()
 
 void UnrealEd::Render() const
 {
-    for (const auto& Panel : Panels)
+    if (GEngine->ActiveWorld->WorldType == EWorldType::Editor || GEngine->ActiveWorld->WorldType == EWorldType::PIE)
     {
-        Panel.Value->Render();
+        Panels["ControlPanel"]->Render();
+        Panels["OutlinerPanel"]->Render();
+        Panels["PropertyPanel"]->Render();
     }
+    //
+    // for (const auto& Panel : Panels)
+    // {
+    //     Panel.Value->Render();
+    // }
 }
 
 void UnrealEd::AddEditorPanel(const FString& PanelId, const std::shared_ptr<UEditorPanel>& EditorPanel)

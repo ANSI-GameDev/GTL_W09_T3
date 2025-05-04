@@ -27,6 +27,9 @@ public:
     void SetEnableMultiViewport(bool bIsEnable);
     bool IsMultiViewport() const;
 
+    void SetSkeletalMeshViewportClient(bool bInSkeletalMeshViewMode);
+    bool IsSkeletalMeshViewMode() const;
+
     void RegisterEditorInputDelegates();
     void RegisterPIEInputDelegates();
 
@@ -49,6 +52,8 @@ private:
     FVector TargetDiff;
 
     bool bMultiViewportMode;
+
+    bool bSkeletalMeshViewMode = false;
     
     uint32 EditorWidth;
     uint32 EditorHeight;

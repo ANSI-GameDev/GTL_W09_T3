@@ -12,7 +12,6 @@
 
 #include "UObject/ObjectFactory.h"
 #include "BaseGizmos/TransformGizmo.h"
-#include "Camera/CameraComponent.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "SlateCore/Input/Events.h"
 
@@ -56,7 +55,7 @@ void FEditorViewportClient::Initialize(EViewScreenLocation InViewportIndex, cons
 
 void FEditorViewportClient::Tick(const float DeltaTime)
 {
-    if (GEngine->ActiveWorld->WorldType == EWorldType::Editor)
+    if (GEngine->ActiveWorld->WorldType == EWorldType::Editor || GEngine->ActiveWorld->WorldType == EWorldType::StaticMeshViewer)
     {
         UpdateEditorCameraMovement(DeltaTime);
     }
@@ -252,10 +251,21 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
         }
         case 'M':
         {
+            UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
+            
+            if (Engine->ActiveWorld->WorldType != EWorldType::Editor) return;
+                
             FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
             SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
             LevelEd->SetEnableMultiViewport(!LevelEd->IsMultiViewport());
             break;
+        }
+        // TODO : 나중에 UI 버튼으로 빼기
+        case 'P':
+        {
+            FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
+            SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+            LevelEd->SetSkeletalMeshViewportClient(!LevelEd->IsSkeletalMeshViewMode());
         }
         default:
             break;
@@ -268,6 +278,9 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
         case VK_DELETE:
         {
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
+                
+            if (Engine->ActiveWorld->WorldType != EWorldType::Editor) return;
+                
             if (Engine)
             {
                 USceneComponent* SelectedComponent = Engine->GetSelectedComponent();

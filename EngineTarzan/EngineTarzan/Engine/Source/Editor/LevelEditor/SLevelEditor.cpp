@@ -106,6 +106,11 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
     {
         this->RegisterStaticMeshViewerInputDelegates();
     });
+
+    Handler->OnStaticMeshViewerEndDelegate.AddLambda([this]()
+    {
+        this->RegisterEditorInputDelegates();
+    });
 }
 
 void SLevelEditor::Tick(float DeltaTime)
@@ -114,6 +119,8 @@ void SLevelEditor::Tick(float DeltaTime)
     {
         Viewport->Tick(DeltaTime);
     }
+
+    SkeletalMeshViewportClient->Tick(DeltaTime);
 }
 
 void SLevelEditor::Release()
@@ -185,6 +192,29 @@ void SLevelEditor::SetEnableMultiViewport(bool bIsEnable)
 bool SLevelEditor::IsMultiViewport() const
 {
     return bMultiViewportMode;
+}
+
+void SLevelEditor::SetSkeletalMeshViewportClient(const bool bInSkeletalMeshViewMode)
+{
+    // 멀티뷰포트 모드는 항상 해제
+    bMultiViewportMode      = false;
+    // 바로 전달된 값으로 설정
+    bSkeletalMeshViewMode   = bInSkeletalMeshViewMode;
+
+    ResizeViewports();
+
+    if (UEditorEngine* EdEngine = Cast<UEditorEngine>(GEngine))
+    {
+        if (bSkeletalMeshViewMode)
+            EdEngine->OpenSkeletalMeshViewer();
+        else
+            EdEngine->CloseSkeletalMeshViewer();
+    }
+}
+
+bool SLevelEditor::IsSkeletalMeshViewMode() const
+{
+    return bSkeletalMeshViewMode;
 }
 
 void SLevelEditor::LoadConfig()
@@ -666,7 +696,38 @@ void SLevelEditor::RegisterStaticMeshViewerInputDelegates()
             {
             case EKeys::LeftMouseButton:
             {
-                // TODO : 마우스 왼클릭 시 할 동작 정의
+                if (const UEditorEngine* EdEngine = Cast<UEditorEngine>(GEngine))
+                {
+                    if (const AActor* SelectedActor = EdEngine->GetSelectedActor())
+                    {
+                        USceneComponent* TargetComponent = nullptr;
+                        if (USceneComponent* SelectedComponent = EdEngine->GetSelectedComponent())
+                        {
+                            TargetComponent = SelectedComponent;
+                        }
+                        else if (AActor* SelectedActor = EdEngine->GetSelectedActor())
+                        {
+                            TargetComponent = SelectedActor->GetRootComponent();
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+                        // 초기 Actor와 Cursor의 거리차를 저장
+                        const FViewportCamera* ViewTransform = SkeletalMeshViewportClient->GetViewportType() == LVT_Perspective
+                                                            ? &SkeletalMeshViewportClient->PerspectiveCamera
+                                                            : &SkeletalMeshViewportClient->OrthogonalCamera;
+
+                        FVector RayOrigin, RayDir;
+                        SkeletalMeshViewportClient->DeprojectFVector2D(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
+
+                        const FVector TargetLocation = TargetComponent->GetWorldLocation();
+                        const float TargetDist = FVector::Distance(ViewTransform->GetLocation(), TargetLocation);
+                        const FVector TargetRayEnd = RayOrigin + RayDir * TargetDist;
+                        TargetDiff = TargetLocation - TargetRayEnd;
+                    }
+                }
                 break;
             }
             case EKeys::RightMouseButton:

@@ -3,12 +3,17 @@
 #include "UnrealClient.h"
 #include "BaseGizmos/TransformGizmo.h"
 #include "Engine/Engine.h"
+#include "PropertyEditor/ShowFlags.h"
 #include "World/World.h"
 
 FSkeletalMeshViewportClient::FSkeletalMeshViewportClient()
+    : FEditorViewportClient()
 {
-    PerspectiveCamera.SetLocation(FVector(10, 0, 0));
-    PerspectiveCamera.SetRotation(FRotator(0, 0, 0));
+    using Flags = EEngineShowFlags::Type;
+    Flags OnlyPrimsAndShadow = static_cast<Flags>(Flags(EEngineShowFlags::SF_Primitives) | Flags(EEngineShowFlags::SF_Shadow));
+    SetShowFlag(OnlyPrimsAndShadow);
+    SetViewMode(EViewModeIndex::VMI_Lit_BlinnPhong);
+    SetViewportType(ELevelViewportType::LVT_Perspective);
 }
 
 FSkeletalMeshViewportClient::~FSkeletalMeshViewportClient()
@@ -29,8 +34,8 @@ void FSkeletalMeshViewportClient::Initialize(EViewScreenLocation InViewportIndex
 {
     ViewportIndex = static_cast<int32>(InViewportIndex);
     
-    PerspectiveCamera.SetLocation(FVector(8.0f, 8.0f, 8.f));
-    PerspectiveCamera.SetRotation(FVector(0.0f, 45.0f, -135.0f));
+    PerspectiveCamera.SetLocation(FVector(10, 0, 0));
+    PerspectiveCamera.SetRotation(FRotator(0, 0, 0));
     
     Viewport = new FViewport(InViewportIndex);
     Viewport->Initialize(InRect);
@@ -41,13 +46,7 @@ void FSkeletalMeshViewportClient::Initialize(EViewScreenLocation InViewportIndex
 
 void FSkeletalMeshViewportClient::Tick(float DeltaTime)
 {
-    if (GEngine->ActiveWorld->WorldType == EWorldType::StaticMeshViewer)
-    {
-        UpdateEditorCameraMovement(DeltaTime);
-    }
-    UpdateViewMatrix();
-    UpdateProjectionMatrix();
-    GizmoActor->Tick(DeltaTime);
+    FEditorViewportClient::Tick(DeltaTime);
 }
 
 void FSkeletalMeshViewportClient::InputKey(const FKeyEvent& InKeyEvent)
