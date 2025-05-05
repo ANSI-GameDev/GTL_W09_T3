@@ -267,37 +267,43 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
                 return rawIdx;
             }
         };
-    // 섹션 파싱: 재질별 폴리곤 그룹화
+    // --- 섹션 파싱: 재질별 폴리곤 그룹화 ---
     LodModel.Sections.Empty();
     if (materialLayer)
     {
-        // 임시 맵: materialIndex -> Section
+        // 1) materialIndex → Section 임시 맵
         TMap<int32, FSkelMeshSection> sectionMap;
         int32 polyCount = Mesh->GetPolygonCount();
         for (int32 p = 0; p < polyCount; ++p)
         {
-            int rawIdx = GetRawIndex(materialLayer, 0, 0, p);
+            // rawIdx / matIdx 계산
+            int rawIdx = GetRawIndex(materialLayer, /*cp*/0, /*idxCtr*/0, /*poly*/p);
             int32 matIdx = GetFinalIndex(materialLayer, rawIdx);
+
+            // 해당 머티리얼 섹션이 없으면 새로 생성
             FSkelMeshSection* sec = sectionMap.Find(matIdx);
             if (!sec)
             {
                 FSkelMeshSection newSec;
-                newSec.MaterialIndex = matIdx;
-                newSec.BaseIndex = 0;      // 추후 갱신
-                newSec.NumTriangles = 0;
-                newSec.BaseVertexIndex = 0;      // 동일
+                newSec.MaterialIndex = matIdx;  // 머티리얼 슬롯
+                newSec.BaseIndex = 0;       // 나중에 채움
+                newSec.NumTriangles = 0;       // 누적할 카운터
+                newSec.BaseVertexIndex = 0;       // VB 오프셋 (통합 VB 시 사용)
                 sectionMap.Add(matIdx, newSec);
                 sec = sectionMap.Find(matIdx);
             }
-            sec->NumTriangles++;
+
+            // 이 폴리곤이 삼각형으로 분해됐을 때의 트라이 갯수만큼 누적
+            sec->NumTriangles += (Mesh->GetPolygonSize(p) - 2);
         }
-        // BaseIndex 설정
-        uint32 runningIndex = 0;
+
+        // 2) BaseIndex(IB 오프셋) 계산하고 LodModel.Sections 에 추가
+        uint32 runningTri = 0;
         for (auto& Pair : sectionMap)
         {
             FSkelMeshSection& sec = Pair.Value;
-            sec.BaseIndex = runningIndex * 3;
-            runningIndex += sec.NumTriangles;
+            sec.BaseIndex = runningTri * 3;      // 인덱스 버퍼에서 시작 위치 (triangle count × 3)
+            runningTri += sec.NumTriangles;   // 다음 섹션을 위해 누적
             LodModel.Sections.Add(sec);
         }
     }

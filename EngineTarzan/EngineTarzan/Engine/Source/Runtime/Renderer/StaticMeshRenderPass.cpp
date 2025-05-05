@@ -420,7 +420,11 @@ void FStaticMeshRenderPass::RenderSkeletalPrimitive(const FSkeletalMeshRenderDat
         Graphics->DeviceContext->IASetIndexBuffer(IndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
     }
 
-    Graphics->DeviceContext->DrawIndexed(IndexInfo.NumIndices, 0, 0);
+    for (auto& subset : RenderData->MaterialSubsets)
+    {
+        Graphics->DeviceContext->DrawIndexed(subset.IndexCount, subset.IndexStart, 0);
+        
+    }
     
 }
 
