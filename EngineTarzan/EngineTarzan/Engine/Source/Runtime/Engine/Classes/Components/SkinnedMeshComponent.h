@@ -14,6 +14,8 @@ public:
 
     const TArray<FTransform>& GetComponentSpaceTransforms() const;
 
+    USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
+
 protected:
     FSkeletalMeshObjectCPUSkin* MeshObject;
     /** 매 프레임 변경되는 Runtime Bone Transform - 렌더 스레드 별도일 때의 Size=2 */
