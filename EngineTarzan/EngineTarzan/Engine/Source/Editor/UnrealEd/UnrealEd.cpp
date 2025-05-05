@@ -4,6 +4,7 @@
 #include "PropertyEditor/ControlEditorPanel.h"
 #include "PropertyEditor/OutlinerEditorPanel.h"
 #include "PropertyEditor/PropertyEditorPanel.h"
+#include "PropertyEditor/USkeletalMeshViewerPanel.h"
 #include "World/World.h"
 
 void UnrealEd::Initialize()
@@ -16,6 +17,9 @@ void UnrealEd::Initialize()
     
     auto PropertyPanel = std::make_shared<PropertyEditorPanel>();
     Panels["PropertyPanel"] = PropertyPanel;
+
+    auto SkeletalMeshViewerPanel = std::make_shared<USkeletalMeshViewerPanel>();
+    Panels["SkeletalMeshViewerPanel"] = SkeletalMeshViewerPanel;
 }
 
 void UnrealEd::Render() const
@@ -28,7 +32,7 @@ void UnrealEd::Render() const
     }
     else if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalMeshViewer)
     {
-        // TODO : SkeletalMeshViewer Panel
+        Panels["SkeletalMeshViewerPanel"]->Render();
     }
 }
 

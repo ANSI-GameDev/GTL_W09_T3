@@ -79,6 +79,7 @@ void ControlEditorPanel::Render()
     ImGui::SameLine();
     CreateModifyButton(IconSize, IconFont);
     ImGui::SameLine();
+    CreateViewerButton(IconSize, IconFont);
     ImGui::SameLine();
     CreateLightSpawnButton(IconSize, IconFont);
     ImGui::SameLine();
@@ -471,6 +472,18 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
         }
         ImGui::EndPopup();
     }
+}
+
+void ControlEditorPanel::CreateViewerButton(ImVec2 ButtonSize, ImFont* IconFont)
+{
+    ImGui::PushFont(IconFont);
+    if (ImGui::Button("\ue999", ButtonSize))
+    {
+        FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
+        SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+        LevelEd->SetSkeletalMeshViewportClient(!LevelEd->IsSkeletalMeshViewMode());
+    }
+    ImGui::PopFont();
 }
 
 void ControlEditorPanel::CreateFlagButton()
