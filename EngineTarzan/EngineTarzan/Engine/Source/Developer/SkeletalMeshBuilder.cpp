@@ -55,27 +55,29 @@ void FSkeletalMeshBuilder::ConvertLODModelToRenderData(
         OutRenderData.Vertices.Add(Dst);
     }
 
-    // 인덱스 및 머티리얼 서브셋 구성
+    // 2) 인덱스 & 머티리얼 서브셋 구성
     OutRenderData.Indices.Empty();
     OutRenderData.MaterialSubsets.Empty();
+
     for (const FSkelMeshSection& Sec : LODModel.Sections)
     {
         FMaterialSubset Subset;
-        Subset.MaterialIndex = Sec.MaterialIndex;
-        Subset.IndexStart = OutRenderData.Indices.Num();
-        Subset.IndexCount = Sec.NumTriangles * 3;
+        Subset.MaterialIndex = Sec.MaterialIndex;        // 머티리얼 슬롯
+        Subset.IndexStart = OutRenderData.Indices.Num(); // 지금까지 들어간 인덱스 수
+        Subset.IndexCount = Sec.NumTriangles * 3;       // 섹션의 인덱스 개수
 
-        // 섹션의 삼각형별 인덱스 복사
-        for (uint32 Tri = 0; Tri < Sec.NumTriangles; ++Tri)
+        // Sec.BaseIndex 에서 시작해, Sec.NumTriangles만큼 3개씩 복사
+        for (uint32 tri = 0; tri < Sec.NumTriangles; ++tri)
         {
-            uint32 Base = Sec.BaseIndex + Tri * 3;
-            OutRenderData.Indices.Add(LODModel.Indices[Base + 0]);
-            OutRenderData.Indices.Add(LODModel.Indices[Base + 1]);
-            OutRenderData.Indices.Add(LODModel.Indices[Base + 2]);
+            uint32 base = Sec.BaseIndex + tri * 3;
+            OutRenderData.Indices.Add(LODModel.Indices[base + 0]);
+            OutRenderData.Indices.Add(LODModel.Indices[base + 1]);
+            OutRenderData.Indices.Add(LODModel.Indices[base + 2]);
         }
 
         OutRenderData.MaterialSubsets.Add(Subset);
     }
+
 
     // 바운딩 박스 계산
     if (OutRenderData.Vertices.Num() > 0)
