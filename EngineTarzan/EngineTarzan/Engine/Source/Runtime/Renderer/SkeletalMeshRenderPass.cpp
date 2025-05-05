@@ -271,7 +271,7 @@ void FSkeletalMeshRenderPass::UpdateLitUnlitConstant(int32 isLit) const
     BufferManager->UpdateConstantBuffer(TEXT("FLitUnlitConstants"), Data);
 }
 
-void FSkeletalMeshRenderPass::RenderPrimitive(FSkeletalMeshRenderData* RenderData, TArray<FStaticMaterial*> Materials, TArray<UMaterial*> OverrideMaterials, int SelectedSubMeshIndex) const
+void FSkeletalMeshRenderPass::RenderSkeletalPrimitive(FSkeletalMeshRenderData* RenderData) const
 {
     UINT Stride = sizeof(FStaticMeshVertex);
     UINT Offset = 0;
@@ -294,44 +294,39 @@ void FSkeletalMeshRenderPass::RenderPrimitive(FSkeletalMeshRenderData* RenderDat
         return;
     }
 
-    for (int SubMeshIndex = 0; SubMeshIndex < RenderData->MaterialSubsets.Num(); SubMeshIndex++)
+    for (auto& subset : RenderData->MaterialSubsets)
     {
-        uint32 MaterialIndex = RenderData->MaterialSubsets[SubMeshIndex].MaterialIndex;
+        // 1. MaterialIndex 가져오기
+        uint32 MaterialIndex = subset.MaterialIndex;
 
-        FSubMeshConstants SubMeshData = (SubMeshIndex == SelectedSubMeshIndex) ? FSubMeshConstants(true) : FSubMeshConstants(false);
+        //Graphics->DeviceContext->DrawIndexed(subset.IndexCount, subset.IndexStart,0);
 
-        BufferManager->UpdateConstantBuffer(TEXT("FSubMeshConstants"), SubMeshData);
-
-        if (0 < OverrideMaterials.Num() && OverrideMaterials[MaterialIndex] != nullptr)
+        // 2. RenderData->Materials 에서 해당 MaterialInfo 가져오기
+        //    (MaterialIndex 유효성 검사 포함)
+        if (MaterialIndex < (uint32)RenderData->Materials.Num())
         {
-            MaterialUtils::UpdateMaterial(BufferManager, Graphics, OverrideMaterials[MaterialIndex]->GetMaterialInfo());
+            const FObjMaterialInfo& MatInfo = RenderData->Materials[MaterialIndex];
+
+            // 3. MaterialUtils::UpdateMaterial 호출 (★★★ 추가된 부분 ★★★)
+            MaterialUtils::UpdateMaterial(BufferManager, Graphics, MatInfo);
+
+            // (선택 사항) 스태틱 메시처럼 SubMesh 선택 하이라이팅이 필요하다면 여기에 FSubMeshConstants 업데이트 추가
+            // FSubMeshConstants SubMeshData = ... ;
+            // BufferManager->UpdateConstantBuffer(TEXT("FSubMeshConstants"), SubMeshData);
         }
-        else if (0 < Materials.Num() && Materials[MaterialIndex] != nullptr)
+        else
         {
-            MaterialUtils::UpdateMaterial(BufferManager, Graphics, Materials[MaterialIndex]->Material->GetMaterialInfo());
+            // 오류 처리: 유효하지 않은 MaterialIndex. 기본 재질을 사용하거나 경고 로그 출력
+            UE_LOG(LogLevel::Warning, TEXT("Skeletal Mesh %s: Invalid MaterialIndex %u found in subset. Max index is %d. Using default/previous material."),
+                *FString(RenderData->ObjectName), MaterialIndex, RenderData->Materials.Num() - 1);
+            // 기본 재질 업데이트 또는 그냥 넘어가기 (현재는 이전 재질 상태 유지)
+            // MaterialUtils::UpdateMaterial(BufferManager, Graphics, GetDefaultMaterialInfo());
+            // 혹은 continue; 로 이 서브셋 그리기를 건너뛸 수 있음
         }
 
-        uint32 StartIndex = RenderData->MaterialSubsets[SubMeshIndex].IndexStart;
-        uint32 IndexCount = RenderData->MaterialSubsets[SubMeshIndex].IndexCount;
-        Graphics->DeviceContext->DrawIndexed(IndexCount, StartIndex, 0);
+        // 4. DrawIndexed 호출 (기존 코드)
+        Graphics->DeviceContext->DrawIndexed(subset.IndexCount, subset.IndexStart, 0);
     }
-}
-
-void FSkeletalMeshRenderPass::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) const
-{
-    UINT Stride = sizeof(FStaticMeshVertex);
-    UINT Offset = 0;
-    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &Offset);
-    Graphics->DeviceContext->Draw(numVertices, 0);
-}
-
-void FSkeletalMeshRenderPass::RenderPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices) const
-{
-    UINT Stride = sizeof(FStaticMeshVertex);
-    UINT Offset = 0;
-    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &Stride, &Offset);
-    Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-    Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
 void FSkeletalMeshRenderPass::RenderAllSkeletalMeshes(const std::shared_ptr<FEditorViewportClient>& Viewport)
@@ -371,21 +366,7 @@ void FSkeletalMeshRenderPass::RenderAllSkeletalMeshes(const std::shared_ptr<FEdi
 
         UpdateObjectConstant(WorldMatrix, UUIDColor, bIsSelected);
 
-#pragma region W08
-        FDiffuseMultiplier DM = {};
-        DM.DiffuseMultiplier = 0.f;
-        if (AFish* Fish = Cast<AFish>(Comp->GetOwner()))
-        {
-            if (!Fish->IsDead())
-            {
-                DM.DiffuseMultiplier = 1.f - Fish->GetHealthPercent();
-            }
-        }
-        DM.DiffuseOverrideColor = FVector(0.55f, 0.45f, 0.067f);
-        BufferManager->UpdateConstantBuffer(TEXT("FDiffuseMultiplier"), DM);
-#pragma endregion W08
-
-        RenderPrimitive(RenderData, Comp->GetSkeletalMesh()->GetMaterials(), Comp->GetOverrideMaterials(), Comp->GetSelectedSubMeshIndex());
+        RenderSkeletalPrimitive(RenderData);
 
         if (Viewport->GetShowFlag() & static_cast<uint64>(EEngineShowFlags::SF_AABB))
         {
@@ -458,6 +439,6 @@ void FSkeletalMeshRenderPass::RenderAllSkeletalMeshesForPointLight(const std::sh
 
         //ShadowRenderPass->UpdateCubeMapConstantBuffer(PointLight, WorldMatrix);
 
-        RenderPrimitive(RenderData, Comp->GetSkeletalMesh()->GetMaterials(), Comp->GetOverrideMaterials(), Comp->GetSelectedSubMeshIndex());
+        RenderSkeletalPrimitive(RenderData);
     }
 }
