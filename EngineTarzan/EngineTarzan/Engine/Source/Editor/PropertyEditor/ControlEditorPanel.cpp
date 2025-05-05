@@ -73,8 +73,12 @@ void ControlEditorPanel::Render()
     CreateFlagButton();
     ImGui::SameLine();
     CreateModifyButton(IconSize, IconFont);
-    ImGui::SameLine();
-    CreateViewerButton(IconSize, IconFont);
+    if (GEngine->ActiveWorld->WorldType != EWorldType::PIE)
+    {
+        ImGui::SameLine();
+        CreateViewerButton(IconSize, IconFont);
+    }
+
     ImGui::SameLine();
     CreateLightSpawnButton(IconSize, IconFont);
     ImGui::SameLine();
