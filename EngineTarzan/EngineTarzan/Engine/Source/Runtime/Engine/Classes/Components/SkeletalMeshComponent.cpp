@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "SkeletalRenderCPUSkin.h"
+#include "Developer/SkeletalMeshBuilder.h"
 #include "Engine/SkeletalMesh.h"
 #include "Rendering/SkeletalMeshLODModel.h"
 #include "UnrealEd/FbxImporter.h"
@@ -17,9 +18,14 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
 
     FFbxImporter::ParseSkeletalMeshLODModel(
-        TEXT("Contents/FBX/Anime_character.fbx"),
+        TEXT("Contents/FBX/nathan.fbx"),
         *SkeletalMesh->ImportedModel,
         &SkeletalMesh->RefSkeleton
+    );
+
+    FSkeletalMeshBuilder::BuildRenderData(
+        *SkeletalMesh->ImportedModel,
+        *SkeletalMesh->SkelMeshRenderData
     );
 
     // --- 디버깅용 파일 출력 ---

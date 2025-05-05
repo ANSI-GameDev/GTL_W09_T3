@@ -12,12 +12,12 @@ enum
 struct FSoftSkinVertex
 {
     FVector Position;
+    FLinearColor Color;                   // Vertex Color
+    FVector4 TangentZ;              // Normal
     FVector TangentX;               // Tangent, U-Direction
     FVector TangentY;               // BiTangent, V-Direction
-    FVector4 TangentZ;              // Normal
 
     FVector2D UVs[MAX_TEXCOORDS];   // Texture Coordinates
-    FColor Color;                   // Vertex Color
 
     uint8 InfluenceBones[MAX_TOTAL_INFLUENCES];     // 영향을 주는 Bone Index Bones
     float InfluenceWeights[MAX_TOTAL_INFLUENCES];   // 위에 해당하는 가중치 값

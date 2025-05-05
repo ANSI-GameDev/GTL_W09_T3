@@ -353,6 +353,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\SkinnedMeshComponent.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Actors\SkeletalActor.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Rendering\SkeletalMeshLODModel.cpp" />
+    <ClCompile Include="Engine\Source\Developer\SkeletalMeshBuilder.cpp" />
     <ClCompile Include="SkeletalRenderCPUSkin.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <None Include="Shaders\CompositingShader.hlsl">
@@ -674,6 +675,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SkinnedMeshComponent.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Actors\SkeletalActor.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Rendering\SkeletalMeshLODModel.h" />
+    <ClInclude Include="Engine\Source\Developer\SkeletalMeshBuilder.h" />
     <ClInclude Include="SkeletalRenderCPUSkin.h" />
     <ClInclude Include="SoundManager.h" />
     <None Include="Shaders\EditorShaderConstants.hlsli">

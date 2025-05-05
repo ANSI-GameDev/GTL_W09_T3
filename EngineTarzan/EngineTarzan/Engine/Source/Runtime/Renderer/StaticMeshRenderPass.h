@@ -57,7 +57,7 @@ public:
 
 
     /* Skeletal Mesh 테스트 임시용 */
-    void RenderSkeletalPrimitive(FSkeletalMeshRenderData* RenderData, TArray<FStaticMaterial*> Materials, TArray<UMaterial*> OverrideMaterials, int SelectedSubMeshIndex) const;
+    void RenderSkeletalPrimitive(const FSkeletalMeshRenderData* RenderData) const;
     
 protected:
 
