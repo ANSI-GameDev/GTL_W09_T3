@@ -35,6 +35,8 @@
 #include "LuaScripts/LuaScriptFileUtils.h"
 #include "imgui/imgui_bezier.h"
 #include "imgui/imgui_curve.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 
 void PropertyEditorPanel::Render()
 {
@@ -140,6 +142,11 @@ void PropertyEditorPanel::Render()
     if (USpringArmComponent* SpringArmComponent = GetTargetComponent<USpringArmComponent>(SelectedActor, SelectedComponent))
     {
         RenderForSpringArmComponent(SpringArmComponent);
+    }
+
+    if (USkeletalMeshComponent* SkeletalMeshComponent = GetTargetComponent<USkeletalMeshComponent>(SelectedActor, SelectedComponent))
+    {
+        RenderForSkeletalMeshComponent(SkeletalMeshComponent);
     }
 
     ImGui::End();
@@ -925,6 +932,15 @@ void PropertyEditorPanel::RenderForSpringArmComponent(USpringArmComponent* Sprin
 
         ImGui::TreePop();
     }
+}
+
+void PropertyEditorPanel::RenderForSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent) const
+{
+    if (ImGui::SliderInt("Bone Index", &SkeletalMeshComponent->BoneIndex, 0, SkeletalMeshComponent->GetSkeletalMesh()->GetRefSkeleton().GetNumBones()))
+    {
+        SkeletalMeshComponent->ResetBoneTransform();
+    }
+    
 }
 
 void PropertyEditorPanel::RenderForMaterial(UStaticMeshComponent* StaticMeshComp)

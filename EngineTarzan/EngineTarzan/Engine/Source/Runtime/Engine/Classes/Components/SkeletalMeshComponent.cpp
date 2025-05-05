@@ -8,6 +8,8 @@
 #include "Rendering/SkeletalMeshLODModel.h"
 #include "UnrealEd/FbxImporter.h"
 #include "UObject/ObjectFactory.h"
+#include "Rendering/SkeletalMeshLODModel.h"
+#include "ReferenceSkeleton.h"
 
 USkeletalMeshComponent::USkeletalMeshComponent()
 {
@@ -18,14 +20,30 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     MeshObject = new FSkeletalMeshObjectCPUSkin;
     MeshObject->InitResources(this, SkeletalMesh->GetRenderData());
 
-
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
     FFbxImporter::ParseSkeletalMeshLODModel(
-        TEXT("Contents/FBX/nathan.fbx"),
+        TEXT("Contents/FBX/nathan3.fbx"),
         *SkeletalMesh->ImportedModel,
         &SkeletalMesh->RefSkeleton
     );
+
+    for (const auto& Vertex : SkeletalMesh->ImportedModel->Vertices)
+    {
+        BindPoseVertices.Add(Vertex);
+    }
+
+    WorldSpaceTransformArray.Empty();
+    for (auto& Transform : SkeletalMesh->RefSkeleton.GetBonePose())
+    {
+        WorldSpaceTransformArray.Add(Transform);
+    }
+
+    ComponentSpaceTransformsArray.Empty();
+    for (auto& Bone : SkeletalMesh->RefSkeleton.GetBoneInfo())
+    {
+        ComponentSpaceTransformsArray.Add(Bone.LocalTransform);
+    }
 
     FSkeletalMeshBuilder::BuildRenderData(
         *SkeletalMesh->ImportedModel,
@@ -175,10 +193,47 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
+    TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
+    RotateBonePitch(Bones[BoneIndex], 90.0f);
+    Super::TickComponent(DeltaTime);
+}
+
+void USkeletalMeshComponent::ResetBoneTransform()
+{
     ComponentSpaceTransformsArray.Empty();
+    WorldSpaceTransformArray.Empty();
     for (auto& Transform : SkeletalMesh->RefSkeleton.GetBonePose())
     {
-        ComponentSpaceTransformsArray.Add(Transform);
+        WorldSpaceTransformArray.Add(Transform);
     }
-    Super::TickComponent(DeltaTime);
+    for (auto& Bone : SkeletalMesh->RefSkeleton.GetBoneInfo())
+    {
+        ComponentSpaceTransformsArray.Add(Bone.LocalTransform);
+    }
+    SkeletalMesh->ImportedModel->Vertices.Empty();
+    for (const auto& Vertex : BindPoseVertices)
+    {
+        SkeletalMesh->ImportedModel->Vertices.Add(Vertex);
+    }
+}
+
+void USkeletalMeshComponent::RotateBonePitch(FMeshBoneInfo Bone, float angle)
+{
+    ComponentSpaceTransformsArray[Bone.MyIndex].RotatePitch(angle);
+    const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
+    const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
+    for (int32 i = 0; i < NumBones; ++i)
+    {
+        const int32 ParentIndex = Bones[i].ParentIndex;
+        const FTransform& Local = ComponentSpaceTransformsArray[i];
+        if (ParentIndex == -1)
+        {
+            WorldSpaceTransformArray[i] = Local;
+        }
+        else
+        {
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
+        }
+    }
+    UE_LOG(LogLevel::Display, "%s", *WorldSpaceTransformArray[BoneIndex].GetRotation().ToString());
 }

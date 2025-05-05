@@ -3,6 +3,7 @@
 
 class USkeletalMesh;
 class FSkeletalMeshObjectCPUSkin;
+struct FSoftSkinVertex;
 
 class USkinnedMeshComponent : public UMeshComponent
 {
@@ -13,6 +14,7 @@ public:
     void TickComponent(float DeltaTime) override;
 
     const TArray<FTransform>& GetComponentSpaceTransforms() const;
+    const TArray<FTransform>& GetWorldSpaceTransforms() const;
 
     USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
 
@@ -20,8 +22,11 @@ protected:
     FSkeletalMeshObjectCPUSkin* MeshObject;
     /** 매 프레임 변경되는 Runtime Bone Transform - 렌더 스레드 별도일 때의 Size=2 */
     TArray<FTransform> ComponentSpaceTransformsArray; 
+    TArray<FTransform> WorldSpaceTransformArray;
 
     USkeletalMesh* SkeletalMesh = nullptr;
+
+    TArray<FSoftSkinVertex> BindPoseVertices;
 
 
 protected:

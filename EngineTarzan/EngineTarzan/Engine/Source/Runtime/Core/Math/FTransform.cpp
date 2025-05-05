@@ -185,3 +185,22 @@ FTransform FTransform::Inverse() const
 
     return FTransform(RotatedTranslation, InverseRotation, FVector(InverseScale.X, InverseScale.Y, InverseScale.Z));
 }
+
+FTransform FTransform::operator*(const FTransform& Other) const
+{
+    FTransform Result;
+
+    // 1. 회전 누적 (자식 회전을 부모 회전에 적용)
+    Result.Rotation = Rotation * Other.Rotation;
+
+    // 2. 스케일 누적 (부모 스케일 기준으로 자식 스케일 조정)
+    Result.Scale = Scale * Other.Scale;
+
+    // 3. 위치 누적
+    // 자식 위치를 부모 트랜스폼 기준으로 변환
+    FVector ScaledPosition = Other.Position * Scale;
+    FVector RotatedPosition = Rotation.RotateVector(ScaledPosition);
+    Result.Position = Position + RotatedPosition;
+
+    return Result;
+}

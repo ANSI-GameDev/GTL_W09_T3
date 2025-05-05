@@ -10,6 +10,8 @@
 
 #include "Engine/SkeletalMesh.h"
 
+#include "Developer/SkeletalMeshBuilder.h"
+
 
 void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData)
 {
@@ -23,20 +25,22 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
     // 1. SkeletalMeshRenderData에서 Vertices, Indices 가져오기
     // 2. ComponentSpaceTransformsArray에서 Bone Transform 가져오기
     // 3. Vertex를 Bone Transform에 맞게 변환
-    // 4. 변환된 Vertex를 Weight를 적절히 적용하여 Skinning을 구현할 것
+    // 4. 변환된 Vertex를 Weight를 적절히 적용하여 Skinning을 구현할 것   
 
     //FSkeletalMeshLODModel*
     USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
     FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
 
     TArray<FTransform> BindPoseTransforms = Skeleton.GetBonePose();
-    TArray<FTransform> GlobalTransforms = InMeshComponent->GetComponentSpaceTransforms();
+    TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
 
     FSkeletalMeshLODModel* SkeletalMeshData = SkeletalMesh->GetImportedModel();
+    TArray<FSoftSkinVertex> Vertices = SkeletalMeshData->Vertices;
     for (auto& Vertex : SkeletalMeshData->Vertices)
     {
         SkinVertex(Vertex, BindPoseTransforms, GlobalTransforms);
     }
+    FSkeletalMeshBuilder::ConvertLODModelToRenderData(*SkeletalMeshData, *SkeletalMesh->GetRenderData());
 }
 
 void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FTransform> BindPoseTransforms, TArray<FTransform> GlobalTransforms)
@@ -71,11 +75,10 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FTra
     
     if (bHasBone)
     {
-        Vertex.Position = ResultPosition;
+        Vertex.Position = ResultPosition;  
         FVector Normal = FVector(ResultNormal.X, ResultNormal.Y, ResultNormal.Z).GetSafeNormal();
         Vertex.TangentZ = FVector4(Normal, Vertex.TangentZ.W);
         Vertex.TangentX = ResultTangent.GetSafeNormal();
-        
         Vertex.TangentY = (FVector::CrossProduct(Normal, Vertex.TangentX)) * Vertex.TangentZ.W;
     }
 }

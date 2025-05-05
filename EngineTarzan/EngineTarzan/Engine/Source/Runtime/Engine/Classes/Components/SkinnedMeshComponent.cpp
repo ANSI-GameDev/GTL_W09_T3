@@ -2,6 +2,7 @@
 
 #include "SkeletalRenderCPUSkin.h"
 #include "Engine/SkeletalMesh.h"
+#include "Rendering/SkeletalMeshLODModel.h"
 
 
 USkinnedMeshComponent::USkinnedMeshComponent()
@@ -27,4 +28,9 @@ void USkinnedMeshComponent::TickComponent(float DeltaTime)
 const TArray<FTransform>& USkinnedMeshComponent::GetComponentSpaceTransforms() const
 {
     return ComponentSpaceTransformsArray;
+}
+
+const TArray<FTransform>& USkinnedMeshComponent::GetWorldSpaceTransforms() const
+{
+    return WorldSpaceTransformArray;
 }

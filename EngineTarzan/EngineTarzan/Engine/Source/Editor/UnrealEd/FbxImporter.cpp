@@ -100,6 +100,7 @@ void FFbxImporter::BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& Out
     {
         BuildReferenceSkeleton(Node->GetChild(i), OutRefSkeleton, ThisParent, Depth + 1);
     }
+    OutRefSkeleton.ComputeGlobalTransform();
 }
 
 // --- 행렬 변환 유틸 ---
