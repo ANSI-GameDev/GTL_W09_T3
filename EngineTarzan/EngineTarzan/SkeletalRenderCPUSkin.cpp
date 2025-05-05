@@ -34,7 +34,9 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
     TArray<FTransform> BindPoseTransforms = Skeleton.GetBonePose();
     TArray<FTransform> GlobalTransforms = InMeshComponent->GetComponentSpaceTransforms();
 
-    for (auto& Vertex : SkeletalMesh->GetSkeletalMeshRenderData()->Vertices)
+    FSkeletalMeshLODModel* SkeletalMeshData = SkeletalMesh->GetImportedModel();
+
+    for (auto& Vertex : SkeletalMeshData->Vertices)
     {
         FVector OriginalPos = Vertex.Position;
         FVector Result = { 0,0,0 };
@@ -51,7 +53,6 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
             SkinMatrix = SkeletonPose * InverseBindPose;
             Result += FMatrix::TransformVector(OriginalPos, SkinMatrix) * Vertex.InfluenceWeights[i];
         }
-        FSkeletalMeshRenderData* SkeletalMeshRenderData = SkeletalMesh->GetSkeletalMeshRenderData();
         Vertex.Position = Result;
     }
 }
