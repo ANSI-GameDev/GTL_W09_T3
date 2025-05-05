@@ -302,11 +302,11 @@ void FSkeletalMeshRenderPass::RenderPrimitive(FSkeletalMeshRenderData* RenderDat
 
         BufferManager->UpdateConstantBuffer(TEXT("FSubMeshConstants"), SubMeshData);
 
-        if (OverrideMaterials[MaterialIndex] != nullptr)
+        if (0 < OverrideMaterials.Num() && OverrideMaterials[MaterialIndex] != nullptr)
         {
             MaterialUtils::UpdateMaterial(BufferManager, Graphics, OverrideMaterials[MaterialIndex]->GetMaterialInfo());
         }
-        else
+        else if (0 < Materials.Num() && Materials[MaterialIndex] != nullptr)
         {
             MaterialUtils::UpdateMaterial(BufferManager, Graphics, Materials[MaterialIndex]->Material->GetMaterialInfo());
         }
@@ -334,7 +334,7 @@ void FSkeletalMeshRenderPass::RenderPrimitive(ID3D11Buffer* pVertexBuffer, UINT 
     Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
-void FSkeletalMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorViewportClient>& Viewport)
+void FSkeletalMeshRenderPass::RenderAllSkeletalMeshes(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
     for (USkeletalMeshComponent* Comp : SkeletalMeshComponents)
     {
@@ -400,7 +400,7 @@ void FSkeletalMeshRenderPass::Render(const std::shared_ptr<FEditorViewportClient
 
     PrepareRenderState(Viewport);
 
-    RenderAllStaticMeshes(Viewport);
+    RenderAllSkeletalMeshes(Viewport);
 
     // 렌더 타겟 해제
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);

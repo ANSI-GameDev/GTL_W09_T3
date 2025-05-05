@@ -40,7 +40,7 @@ public:
 
     virtual void PrepareRenderState(const std::shared_ptr<FEditorViewportClient>& Viewport);
 
-    virtual void RenderAllStaticMeshes(const std::shared_ptr<FEditorViewportClient>& Viewport);
+    virtual void RenderAllSkeletalMeshes(const std::shared_ptr<FEditorViewportClient>& Viewport);
 
     void UpdateObjectConstant(const FMatrix& WorldMatrix, const FVector4& UUIDColor, bool bIsSelected) const;
 
