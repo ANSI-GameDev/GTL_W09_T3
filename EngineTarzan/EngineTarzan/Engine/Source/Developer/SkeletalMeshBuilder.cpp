@@ -53,6 +53,8 @@ void FSkeletalMeshBuilder::ConvertLODModelToRenderData(
         Dst.U = Src.UVs[0].X;
         Dst.V = Src.UVs[0].Y;
 
+        Dst.MaterialIndex = Src.MaterialIndex; // 머티리얼 슬롯 인덱스
+
         OutRenderData.Vertices.Add(Dst);
     }
 

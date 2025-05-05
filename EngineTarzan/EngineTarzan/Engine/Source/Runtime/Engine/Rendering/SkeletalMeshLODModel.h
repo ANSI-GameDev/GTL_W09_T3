@@ -23,6 +23,8 @@ struct FSoftSkinVertex
     uint8 InfluenceBones[MAX_TOTAL_INFLUENCES];     // 영향을 주는 Bone Index Bones
     float InfluenceWeights[MAX_TOTAL_INFLUENCES];   // 위에 해당하는 가중치 값
 
+    uint32 MaterialIndex = 0; // 머티리얼 슬롯 인덱스
+
     //friend FArchive& operator<<(FArchive& Ar, FSoftSkinVertex& V);
 };
 
