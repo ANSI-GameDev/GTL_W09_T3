@@ -25,11 +25,6 @@ struct FQuat
         : W(InW), X(InX), Y(InY), Z(InZ)
     {}
 
-    explicit FQuat(const FRotator& InRotator)
-    {
-        *this = InRotator.ToQuaternion();
-    }
-
     explicit FQuat(const FMatrix& InMatrix);
 
     //explicit FQuat(const FVector& Rotation);
