@@ -36,6 +36,11 @@ FSkeletalMeshRenderData* USkeletalMesh::GetSkeletalMeshRenderData() const
     return SkelMeshRenderData;
 }
 
+FSkeletalMeshRenderData* USkeletalMesh::GetRenderData() const
+{
+    return SkelMeshRenderData;
+}
+
 FSkeletalMeshLODModel* USkeletalMesh::GetImportedModel() const
 {
     return ImportedModel;

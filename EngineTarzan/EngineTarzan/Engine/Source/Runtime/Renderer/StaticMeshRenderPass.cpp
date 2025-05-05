@@ -338,7 +338,7 @@ void FStaticMeshRenderPass::RenderPrimitive(ID3D11Buffer* pVertexBuffer, UINT nu
 
 void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
-    for (UStaticMeshComponent* Comp : StaticMeshComponents)
+    /*for (UStaticMeshComponent* Comp : StaticMeshComponents)
     {
         if (!Comp || !Comp->GetStaticMesh())
         {
@@ -393,10 +393,11 @@ void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorV
         {
             FEngineLoop::PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetWorldLocation(), WorldMatrix);
         }
-    }
+    }*/
 
     for (USkeletalMeshComponent* Comp : TObjectRange<USkeletalMeshComponent>())
     {
+        
 		RenderSkeletalPrimitive(Comp->GetSkeletalMesh()->GetRenderData());
     }
 }
