@@ -86,7 +86,7 @@ void ATransformGizmo::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     // Editor 모드에서만 Tick.
-    if (GEngine->ActiveWorld->WorldType != EWorldType::Editor)
+    if (GEngine->ActiveWorld->WorldType != EWorldType::Editor && GEngine->ActiveWorld->WorldType != EWorldType::SkeletalMeshViewer)
     {
         return;
     }

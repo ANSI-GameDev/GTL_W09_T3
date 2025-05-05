@@ -35,6 +35,22 @@ UEditorPlayer::~UEditorPlayer()
 void UEditorPlayer::Initialize()
 {
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+    if (Handler == nullptr) return;
+    
+    for (const FDelegateHandle& Handle : InputDelegatesHandles)
+    {
+        Handler->OnKeyCharDelegate.Remove(Handle);
+        Handler->OnKeyDownDelegate.Remove(Handle);
+        Handler->OnKeyUpDelegate.Remove(Handle);
+        Handler->OnMouseDownDelegate.Remove(Handle);
+        Handler->OnMouseUpDelegate.Remove(Handle);
+        Handler->OnMouseDoubleClickDelegate.Remove(Handle);
+        Handler->OnMouseWheelDelegate.Remove(Handle);
+        Handler->OnMouseMoveDelegate.Remove(Handle);
+        Handler->OnRawMouseInputDelegate.Remove(Handle);
+        Handler->OnRawKeyboardInputDelegate.Remove(Handle);
+    }
+    
     InputDelegatesHandles.Add(Handler->OnMouseDownDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
     {
         const ImGuiIO& io = ImGui::GetIO();
@@ -140,6 +156,11 @@ void UEditorPlayer::PickActor(const FVector& pickPosition)
     float minDistance = FLT_MAX;
     for (const auto iter : TObjectRange<UPrimitiveComponent>())
     {
+        if (iter->GetWorld() != GEngine->ActiveWorld)
+        {
+            continue;
+        }
+        
         UPrimitiveComponent* pObj;
         if (iter->IsA<UPrimitiveComponent>() || iter->IsA<ULightComponentBase>())
         {

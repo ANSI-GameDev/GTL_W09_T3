@@ -669,7 +669,7 @@ void FEditorViewportClient::UpdateOrthoCameraLoc()
     }
 }
 
-void FEditorViewportClient::SetOthoSize(const float InValue)
+void FEditorViewportClient::SetOrthoSize(const float InValue)
 {
     OrthoSize += InValue;
     OrthoSize = FMath::Max(OrthoSize, 0.1f);
@@ -902,13 +902,44 @@ void FEditorViewportClient::HandleGizmoControl(const FPointerEvent& InMouseEvent
 
 void FEditorViewportClient::HandleMouseWheel(const FPointerEvent& InMouseEvent)
 {
-    if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton) && IsPerspective())
+    // ImGui 상호작용 중이면 휠 이벤트를 처리하지 않습니다.
+    if (ImGui::GetIO().WantCaptureMouse)
+        return;
+
+    float WheelDelta = InMouseEvent.GetWheelDelta();
+    if (WheelDelta == 0.0f)
+        return;
+
+    const bool bRightDown = InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton);
+
+    if (IsPerspective())
     {
-        const float Speed      = GetCameraSpeedScalar();
-        const float Adjustment = FMath::Sign(InMouseEvent.GetWheelDelta())
-                               * FMath::Loge(Speed + 1.0f) * 0.5f;
-        SetCameraSpeed(Speed + Adjustment);
+        if (bRightDown)
+        {
+            // 1) 우클릭+휠 → 카메라 속도 조절
+            float Speed      = GetCameraSpeedScalar();
+            float Adjustment = FMath::Sign(WheelDelta)
+                             * FMath::Loge(Speed + 1.0f) * 0.5f;
+            float NewSpeed   = FMath::Max(0.0f, Speed + Adjustment);
+            SetCameraSpeed(NewSpeed);
+        }
+        else
+        {
+            // 2) 휠만 → 카메라 앞뒤 이동
+            const FVector Loc     = PerspectiveCamera.GetLocation();
+            const FVector Forward = PerspectiveCamera.GetForwardVector();
+            PerspectiveCamera.SetLocation(
+                Loc + Forward * WheelDelta * 50.0f
+            );
+        }
     }
+    else
+    {
+        // 3) 오소그래픽 모드 → 사이즈 조절
+        const float CurrentOrtho = OrthoSize;
+        SetOrthoSize(CurrentOrtho - WheelDelta);
+    }
+    
 }
 
 FVector FViewportCamera::GetForwardVector() const

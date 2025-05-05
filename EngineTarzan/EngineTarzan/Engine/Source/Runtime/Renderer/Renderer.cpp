@@ -469,6 +469,12 @@ void FRenderer::RenderEditorOverlay(const std::shared_ptr<FEditorViewportClient>
     
     if (GEngine->ActiveWorld->WorldType != EWorldType::Editor)
     {
+        if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalMeshViewer)
+        {
+            QUICK_SCOPE_CYCLE_COUNTER(GizmoPass_CPU)
+            QUICK_GPU_SCOPE_CYCLE_COUNTER(GizmoPass_GPU, *GPUTimingManager)
+            GizmoRenderPass->Render(Viewport); // 기존 뎁스를 SRV로 전달해서 샘플 후 비교하기 위해 기즈모 전용 DSV 사용
+        }
         return;
     }
     
