@@ -14,7 +14,7 @@ enum class EAssetType : uint8
 struct FAssetInfo
 {
     FName AssetName;      // Asset의 이름
-    FPath PackagePath;    // Asset의 패키지 경로
+    FName PackagePath;    // Asset의 패키지 경로
     EAssetType AssetType; // Asset의 타입
     uint32 Size;          // Asset의 크기 (바이트 단위)
 };
@@ -48,4 +48,13 @@ public:
 
 private:
     void LoadObjFiles();
+
+    // 기본 콘텐츠 디렉토리 (파일 시스템 경로)
+    FPath ContentDirectory = FPath("Contents/");
+    
+    // 확장자별 필터 목록
+    TArray<FString> ObjExtensions      = { TEXT(".obj") };
+    TArray<FString> FbxExtensions      = { TEXT(".fbx") };
+    TArray<FString> TextureExtensions  = { TEXT(".png"), TEXT(".dds"), TEXT(".jpg") };
+    TArray<FString> MaterialExtensions = { TEXT(".mtl") };
 };

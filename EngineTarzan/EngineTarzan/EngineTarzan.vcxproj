@@ -451,6 +451,8 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
   <ItemGroup>
     <ClInclude Include="Engine\Source\Contents\Actors\TriggerBox.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Container\Path.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Container\StringConv.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Math\NumericLimits.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\Asset\SkeletalMeshAsset.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.h" />
     <ClInclude Include="Engine\Source\Editor\PropertyEditor\SkeletalMeshViewerControlPanel.h" />

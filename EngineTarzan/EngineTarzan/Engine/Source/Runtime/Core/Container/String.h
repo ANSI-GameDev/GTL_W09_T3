@@ -3,7 +3,9 @@
 #include <string>
 #include "CString.h"
 #include "ContainerAllocator.h"
+#include "StringConv.h"
 #include "Core/HAL/PlatformType.h"
+#include "Math/NumericLimits.h"
 
 /*
 # TCHAR가 ANSICHAR인 경우
@@ -55,16 +57,24 @@ private:
         FDefaultAllocator<ElementType>
     >;
 
+    using SizeType = FDefaultAllocator<ElementType>::SizeType;
+
+
     BaseStringType PrivateString;
 
-    friend struct std::hash<FString>;
+	friend struct std::hash<FString>;
     friend ElementType* GetData(FString&);
     friend const ElementType* GetData(const FString&);
 
 public:
     BaseStringType& GetContainerPrivate() { return PrivateString; }
     const BaseStringType& GetContainerPrivate() const { return PrivateString; }
+
+#if USE_WIDECHAR
+    explicit operator std::wstring() const { return std::wstring(PrivateString); }
+#else
     explicit operator std::string() const { return std::string(PrivateString); }
+#endif
 
     FString() = default;
     ~FString() = default;
@@ -76,85 +86,37 @@ public:
 
     FString(BaseStringType InString) : PrivateString(std::move(InString)) {}
 
+public:
 #if USE_WIDECHAR
-private:
-    static std::wstring ConvertToWideChar(const ANSICHAR* NarrowStr);
-
-public:
     FString(const std::wstring& InString) : PrivateString(InString) {}
-    FString(const std::string& InString) : PrivateString(ConvertToWideChar(InString.c_str())) {}
     FString(const WIDECHAR* InString) : PrivateString(InString) {}
-    FString(const ANSICHAR* InString) : PrivateString(ConvertToWideChar(InString)) {}
+    FString(const std::string& InString) : PrivateString(StringToWString(InString)) {}
+    FString(const ANSICHAR* InString) : PrivateString(StringToWString(InString)) {}
 #else
-public:
     FString(const std::string& InString) : PrivateString(InString) {}
     FString(const ANSICHAR* InString) : PrivateString(InString) {}
-    
-    explicit FString(const std::wstring& InString) : FString(InString.c_str()) {}
-    explicit FString(const WIDECHAR* InString)
-    {
-        if (!InString) // Null 체크
-        {
-            PrivateString = "";
-            return;
-        }
-
-        // Wide 문자열을 UTF-8 기반의 narrow 문자열로 변환
-        int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, InString, -1, nullptr, 0, nullptr, nullptr);
-        if (sizeNeeded <= 0) // 변환 실패 또는 빈 문자열
-        {
-            PrivateString = "";
-            return;
-        }
-
-        // sizeNeeded는 널 종료 문자를 포함한 길이입니다.
-        std::string narrowStr(sizeNeeded - 1, 0); // 널 문자 제외한 크기로 할당
-        WideCharToMultiByte(CP_UTF8, 0, InString, -1, &narrowStr[0], sizeNeeded, nullptr, nullptr);
-
-        PrivateString = narrowStr; // 변환된 문자열로 내부 데이터 초기화
-    }
+    FString(const std::wstring& InString) : FString(WStringToString(InString)) {}
+    FString(const WIDECHAR* InString) : FString(WStringToString(InString)) {}
 #endif
 
-#if USE_WIDECHAR
-    FORCEINLINE std::string ToAnsiString() const
+	FORCEINLINE std::string ToAnsiString() const
 	{
-		// Wide 문자열을 UTF-8 기반의 narrow 문자열로 변환
-		if (PrivateString.empty())
-		{
-			return std::string();
-		}
-		int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, PrivateString.c_str(), -1, nullptr, 0, nullptr, nullptr);
-		if (sizeNeeded <= 0)
-		{
-			return std::string();
-		}
-		std::string result(sizeNeeded, 0);
-		WideCharToMultiByte(CP_UTF8, 0, PrivateString.c_str(), -1, &result[0], sizeNeeded, nullptr, nullptr);
-		return result;
-	}
+#if USE_WIDECHAR
+		return WStringToString(std::wstring(PrivateString));
 #else
+        return std::string(PrivateString);
+#endif
+	}
+
 	FORCEINLINE std::wstring ToWideString() const
 	{
 #if USE_WIDECHAR
-		return PrivateString;
+		return std::wstring(PrivateString);
 #else
-        // Narrow 문자열을 UTF-8로 가정하고 wide 문자열로 변환
-        if (PrivateString.empty())
-        {
-            return std::wstring();
-        }
-        int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, PrivateString.c_str(), -1, nullptr, 0);
-        if (sizeNeeded <= 0)
-        {
-            return std::wstring();
-        }
-        // sizeNeeded에는 널 문자를 포함한 길이가 들어 있음
-        std::wstring wstr(sizeNeeded - 1, 0); // 널 문자를 제외한 크기로 초기화
-        MultiByteToWideChar(CP_UTF8, 0, PrivateString.c_str(), -1, wstr.data(), sizeNeeded);
-        return wstr;
+        return StringToWString(std::string(PrivateString));
 #endif
 	}
-#endif
+
 	template <typename Number>
 		requires std::is_integral_v<Number>
     static FString FromInt(Number Num);
@@ -168,41 +130,7 @@ public:
     /**
      * 문자열 내용을 기반으로 bool 값을 반환합니다.
      */
-    bool ToBool() const
-    {
-        // 빈 문자열은 false로 처리
-        if (IsEmpty())
-        {
-            return false;
-        }
-
-        // 가장 일반적인 경우: "true" 또는 "1" (대소문자 무관)
-        // Equals 함수가 이미 대소문자 무시 비교를 지원하므로 활용합니다.
-        if (Equals(TEXT("true"), ESearchCase::IgnoreCase))
-        {
-            return true;
-        }
-        if (Equals(TEXT("1"))) // "1"은 대소문자 구분이 의미 없음
-        {
-            return true;
-        }
-
-        // 그 외: "false" 또는 "0" (대소문자 무관)
-        // 이 경우들도 명시적으로 false를 반환하는 것이 안전합니다.
-        if (Equals(TEXT("false"), ESearchCase::IgnoreCase))
-        {
-            return false;
-        }
-        if (Equals(TEXT("0"))) // "0"도 대소문자 구분이 의미 없음
-        {
-            return false;
-        }
-
-        // 위 조건에 해당하지 않는 모든 다른 문자열은 false로 처리합니다.
-        // (예: "Yes", "No", "On", "Off" 등을 추가로 지원하고 싶다면 여기에 조건을 추가할 수 있습니다.)
-        // UE_LOG(LogTemp, Warning, TEXT("FString::ToBool() : Unrecognized string '%s' treated as false."), **this); // 필요시 경고 로그
-        return false;
-    }
+    bool ToBool() const;
 
     /**
      * 이 문자열의 시작 부분에서 Count개의 문자를 제외한 나머지를 복사하여 반환합니다.
@@ -252,6 +180,42 @@ public:
         ESearchDir::Type SearchDir = ESearchDir::FromStart, int32 StartPosition = -1
     ) const;
 
+    /**
+     * 문자열에서 특정 문자의 첫 번째 발생 위치를 찾습니다.
+     * @param CharToFind 찾을 문자.
+     * @param SearchCase 대소문자 구분 설정.
+     * @param SearchDir 검색 방향.
+     * @param StartPosition 검색 시작 위치.
+     * @return 문자를 찾으면 해당 인덱스를, 찾지 못하면 INDEX_NONE (-1)을 반환합니다.
+     */
+    int32 FindChar(
+        ElementType CharToFind, ESearchCase::Type SearchCase = ESearchCase::IgnoreCase,
+        ESearchDir::Type SearchDir = ESearchDir::FromStart, int32 StartPosition = 0
+    ) const;
+
+    /**
+     * 문자열의 지정된 부분 문자열을 반환합니다.
+     * @param Start 부분 문자열의 시작 인덱스.
+     * @param Count 부분 문자열의 길이. 지정하지 않으면 시작 위치부터 끝까지 반환합니다.
+     * @return 추출된 부분 문자열을 포함하는 새로운 FString 객체.
+     */
+    FString Mid(int32 Start, int32 Count = MAX_int32) const;
+
+    /**
+     * 문자열의 왼쪽에서 지정된 개수만큼의 문자를 반환합니다.
+     * @param Count 반환할 문자의 개수.
+     * @return 문자열의 왼쪽 부분을 포함하는 새로운 FString 객체.
+     */
+    FString Left(int32 Count) const;
+
+    /**
+     * 문자열 시작 부분에서 지정된 접두사를 제거합니다. (인라인 버전)
+     * @param InPrefix 제거할 접두사 문자열.
+     * @param SearchCase 대소문자 구분 설정.
+     * @return 접두사가 성공적으로 제거되었으면 true, 아니면 false를 반환합니다.
+     */
+    bool RemoveFromStart(const FString& InPrefix, ESearchCase::Type SearchCase = ESearchCase::IgnoreCase);
+
     void Reserve(int32 CharacterCount);
     void Resize(int32 CharacterCount);
 
@@ -280,6 +244,16 @@ public:
     FORCEINLINE const ElementType& operator[](int32 Index) const
     {
         return PrivateString[Index];
+    }
+    
+    FORCEINLINE bool operator<(const FString& Rhs) const
+    {
+        return GetContainerPrivate() < Rhs.GetContainerPrivate();
+    }
+
+    FORCEINLINE bool operator>(const FString& Rhs) const
+    {
+        return GetContainerPrivate() > Rhs.GetContainerPrivate();
     }
 public:
     // --- Printf 함수 ---
@@ -326,7 +300,7 @@ FString operator+(const FString& Lhs, const FString& Rhs)
 
 FORCEINLINE bool FString::operator==(const FString& Rhs) const
 {
-    return Equals(Rhs, ESearchCase::IgnoreCase);
+    return Equals(Rhs);
 }
 
 FORCEINLINE bool FString::operator==(const ElementType* Rhs) const
@@ -340,22 +314,21 @@ FORCEINLINE FString& FString::operator+=(const FString& SubStr)
     return *this;
 }
 
+FORCEINLINE FString::ElementType* GetData(FString& String)
+{
+    return String.PrivateString.data();
+}
+
+FORCEINLINE const FString::ElementType* GetData(const FString& String)
+{
+    return String.PrivateString.data();
+}
+
 template<>
 struct std::hash<FString>
 {
-	size_t operator()(const FString& Key) const noexcept
-	{
-		return hash<FString::BaseStringType>()(Key.PrivateString);
-	}
+    size_t operator()(const FString& Key) const noexcept
+    {
+        return hash<FString::BaseStringType>()(Key.PrivateString);
+    }
 };
-
-
-inline FString::ElementType* GetData(FString& String)
-{
-    return String.PrivateString.data();
-}
-
-inline const FString::ElementType* GetData(const FString& String)
-{
-    return String.PrivateString.data();
-}

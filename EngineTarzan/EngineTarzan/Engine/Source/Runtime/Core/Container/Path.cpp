@@ -27,6 +27,11 @@ FString FPath::Combine(const FString& A, const FString& B)
     return (PathType(GetData(A)) / PathType(GetData(B))).string();
 }
 
+FPath FPath::Combine(const FPath& Other) const
+{
+    return FPath(InternalPath / Other.InternalPath);
+}
+
 FString FPath::ChangeExtension(const FString& InPath, const FString& NewExt)
 {
     PathType p(GetData(InPath));
@@ -88,4 +93,9 @@ TArray<FString> FPath::ListDirectory(const FString& InPath, const bool bRecursiv
             Out.Add(E.path().string());
     }
     return Out;
+}
+
+FPath FPath::operator/(const FPath& Other) const
+{
+    return Combine(Other);
 }
