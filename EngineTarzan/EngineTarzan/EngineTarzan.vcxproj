@@ -189,6 +189,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClCompile Include="Engine\Source\Editor\PropertyEditor\SkeletalMeshViewerControlPanel.cpp" />
     <ClCompile Include="Engine\Source\Editor\PropertyEditor\SkeletalMeshViewerPanel.cpp" />
     <ClCompile Include="Engine\Source\Editor\UnrealEd\SkeletalMeshViewportClient.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Container\Path.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Math\FTransform.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Math\MathUtility.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.cpp" />
@@ -449,6 +450,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Source\Contents\Actors\TriggerBox.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Container\Path.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\Asset\SkeletalMeshAsset.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.h" />
     <ClInclude Include="Engine\Source\Editor\PropertyEditor\SkeletalMeshViewerControlPanel.h" />

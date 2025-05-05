@@ -1,6 +1,7 @@
 #pragma once
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
+#include "Container/Path.h"
 
 enum class EAssetType : uint8
 {
@@ -13,7 +14,7 @@ enum class EAssetType : uint8
 struct FAssetInfo
 {
     FName AssetName;      // Asset의 이름
-    FName PackagePath;    // Asset의 패키지 경로
+    FPath PackagePath;    // Asset의 패키지 경로
     EAssetType AssetType; // Asset의 타입
     uint32 Size;          // Asset의 크기 (바이트 단위)
 };
