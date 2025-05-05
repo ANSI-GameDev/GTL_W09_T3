@@ -6,7 +6,6 @@
 #include "Define.h"
 #include "Components/Light/PointLightComponent.h"
 
-struct FSkeletalMeshRenderData;
 struct FStaticMeshRenderData;
 class FShadowManager;
 class FDXDShaderManager;
@@ -54,10 +53,6 @@ public:
     void ReleaseShader();
 
     void ChangeViewMode(EViewModeIndex ViewMode);
-
-
-    /* Skeletal Mesh 테스트 임시용 */
-    void RenderSkeletalPrimitive(const FSkeletalMeshRenderData* RenderData) const;
     
 protected:
 

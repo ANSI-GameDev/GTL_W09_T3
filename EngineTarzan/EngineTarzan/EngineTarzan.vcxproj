@@ -130,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>FBXSDK_SHARED</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\Engine\Source\Runtime\Physics;$(ProjectDir)\Engine\Source\ThirdParty\include\Lua;$(ProjectDir)\Engine\Source\ThirdParty\include;$(ProjectDir)\Engine\Source\ThirdParty\DirectXTK\Include;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\studio\inc;$(ProjectDir)\Shaders;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\core\inc;$(ProjectDir)\Engine\Source\Runtime\InteractiveToolsFramework;$(ProjectDir)\Engine\Source\ThirdParty;$(ProjectDir)\Engine\Source\Runtime;$(ProjectDir)\Engine\Source\Runtime\Windows;$(ProjectDir)\Engine\Source\Editor;$(ProjectDir)\Engine\Source\Runtime\CoreUObject;$(ProjectDir)\Engine\Source\Runtime\Core;$(ProjectDir)\Engine\Source\Runtime\Launch;$(ProjectDir)\Engine\Source\Runtime\Engine;$(ProjectDir)\Engine\Source\Runtime\Engine\Classes;$(ProjectDir)\Engine\Source;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -158,7 +158,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>FBXSDK_SHARED</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\Engine\Source\Runtime\Physics;$(ProjectDir)\Engine\Source\ThirdParty\include\Lua;$(ProjectDir)\Engine\Source\ThirdParty\DirectXTK\Include;$(ProjectDir)\Engine\Source\ThirdParty\include;$(ProjectDir)\Shaders;$(ProjectDir)\Engine\Source\Runtime\InteractiveToolsFramework;$(ProjectDir)\Engine\Source\ThirdParty;$(ProjectDir)\Engine\Source\Runtime;$(ProjectDir)\Engine\Source\Runtime\Windows;$(ProjectDir)\Engine\Source\Editor;$(ProjectDir)\Engine\Source\Runtime\CoreUObject;$(ProjectDir)\Engine\Source\Runtime\Core;$(ProjectDir)\Engine\Source\Runtime\Launch;$(ProjectDir)\Engine\Source\Runtime\Engine;$(ProjectDir)\Engine\Source\Runtime\Engine\Classes;$(ProjectDir)\Engine\Source;$(ProjectDir);$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\studio\inc;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\core\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -354,7 +354,6 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\SkinnedMeshComponent.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Actors\SkeletalActor.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Rendering\SkeletalMeshLODModel.cpp" />
-    <ClCompile Include="Engine\Source\Developer\SkeletalMeshBuilder.cpp" />
     <ClCompile Include="SkeletalRenderCPUSkin.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <None Include="Shaders\CompositingShader.hlsl">
@@ -677,7 +676,6 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SkinnedMeshComponent.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Actors\SkeletalActor.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Rendering\SkeletalMeshLODModel.h" />
-    <ClInclude Include="Engine\Source\Developer\SkeletalMeshBuilder.h" />
     <ClInclude Include="SkeletalRenderCPUSkin.h" />
     <ClInclude Include="SoundManager.h" />
     <None Include="Shaders\EditorShaderConstants.hlsli">
