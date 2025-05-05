@@ -1,6 +1,6 @@
 #pragma once
-#include "Components/ActorComponent.h"
 #include "UnrealEd/EditorPanel.h"
+
 #include "LightGridGenerator.h"
 
 class ControlEditorPanel : public UEditorPanel
