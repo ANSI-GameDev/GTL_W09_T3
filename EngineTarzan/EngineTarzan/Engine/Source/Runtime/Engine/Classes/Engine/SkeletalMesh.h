@@ -34,5 +34,7 @@ public:
 
     /** 계층구조, Bone Info 및 Transform 배열 저장 */
     FReferenceSkeleton RefSkeleton;
+
+    TArray<FStaticMaterial*> materials;
 };
 

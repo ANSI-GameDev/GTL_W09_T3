@@ -820,10 +820,15 @@
     <ClCompile Include="Engine\Source\Contents\Objects\DamageCameraShake.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\PerlinNoiseCameraShakePattern.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Engine\SkeletalMesh.cpp" />
-    <ClCompile Include="SkinnedMeshComponent.cpp" />
-    <ClCompile Include="SkeletalMeshCompnent.cpp" />
-    <ClCompile Include="FbxImporter.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Math\FTransform.cpp" />
+    <ClCompile Include="Engine\Source\Editor\UnrealEd\FbxImporter.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\SkeletalMeshComponent.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\SkinnedMeshComponent.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Actors\SkeletalActor.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Rendering\SkeletalMeshLODModel.cpp" />
+    <ClCompile Include="Engine\Source\Developer\SkeletalMeshBuilder.cpp" />
+    <ClCompile Include="SkeletalRenderCPUSkin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineTarzan.natvis" />
@@ -945,10 +950,16 @@
     <ClInclude Include="Engine\Source\Contents\Objects\DamageCameraShake.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Camera\PerlinNoiseCameraShakePattern.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\SkeletalMesh.h" />
-    <ClInclude Include="SkinnedMeshComponent.h" />
-    <ClInclude Include="SkeletalMeshCompnent.h" />
-    <ClInclude Include="FbxImporter.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\Asset\SkeletalMeshAsset.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Math\FTransform.h" />
+    <ClInclude Include="Engine\Source\Editor\UnrealEd\FbxImporter.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SkeletalMeshComponent.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SkinnedMeshComponent.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Actors\SkeletalActor.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Rendering\SkeletalMeshLODModel.h" />
+    <ClInclude Include="Engine\Source\Developer\SkeletalMeshBuilder.h" />
+    <ClInclude Include="SkeletalRenderCPUSkin.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\SlateShader.hlsl" />
