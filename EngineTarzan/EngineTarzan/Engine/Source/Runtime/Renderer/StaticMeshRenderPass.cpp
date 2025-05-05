@@ -29,6 +29,7 @@
 #include "UnrealEd/EditorViewportClient.h"
 #include "Components/Light/PointLightComponent.h"
 #include "Contents/Actors/Fish.h"
+#include "Engine/SkeletalMesh.h"
 #include "Engine/Asset/SkeletalMeshAsset.h"
 
 
@@ -396,12 +397,12 @@ void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorV
 
     for (USkeletalMeshComponent* Comp : TObjectRange<USkeletalMeshComponent>())
     {
-        
+		RenderSkeletalPrimitive(Comp->GetSkeletalMesh()->GetRenderData());
     }
 }
 
 
-void FStaticMeshRenderPass::RenderSkeletalPrimitive(FSkeletalMeshRenderData* RenderData, TArray<FStaticMaterial*> Materials, TArray<UMaterial*> OverrideMaterials, int SelectedSubMeshIndex) const
+void FStaticMeshRenderPass::RenderSkeletalPrimitive(const FSkeletalMeshRenderData* RenderData) const
 {
     UINT Stride = sizeof(FStaticMeshVertex);
     UINT Offset = 0;
@@ -418,33 +419,8 @@ void FStaticMeshRenderPass::RenderSkeletalPrimitive(FSkeletalMeshRenderData* Ren
         Graphics->DeviceContext->IASetIndexBuffer(IndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
     }
 
-    if (RenderData->MaterialSubsets.Num() == 0)
-    {
-        Graphics->DeviceContext->DrawIndexed(RenderData->Indices.Num(), 0, 0);
-        return;
-    }
-
-    for (int SubMeshIndex = 0; SubMeshIndex < RenderData->MaterialSubsets.Num(); SubMeshIndex++)
-    {
-        uint32 MaterialIndex = RenderData->MaterialSubsets[SubMeshIndex].MaterialIndex;
-
-        FSubMeshConstants SubMeshData = (SubMeshIndex == SelectedSubMeshIndex) ? FSubMeshConstants(true) : FSubMeshConstants(false);
-
-        BufferManager->UpdateConstantBuffer(TEXT("FSubMeshConstants"), SubMeshData);
-
-        if (OverrideMaterials[MaterialIndex] != nullptr)
-        {
-            MaterialUtils::UpdateMaterial(BufferManager, Graphics, OverrideMaterials[MaterialIndex]->GetMaterialInfo());
-        }
-        else
-        {
-            MaterialUtils::UpdateMaterial(BufferManager, Graphics, Materials[MaterialIndex]->Material->GetMaterialInfo());
-        }
-
-        uint32 StartIndex = RenderData->MaterialSubsets[SubMeshIndex].IndexStart;
-        uint32 IndexCount = RenderData->MaterialSubsets[SubMeshIndex].IndexCount;
-        Graphics->DeviceContext->DrawIndexed(IndexCount, StartIndex, 0);
-    }
+    Graphics->DeviceContext->DrawIndexed(IndexInfo.NumIndices, 0, 0);
+    
 }
 
 void FStaticMeshRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
