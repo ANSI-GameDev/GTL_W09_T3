@@ -2,6 +2,7 @@
 #include "Container/Array.h"
 #include "Math/Color.h"
 #include "Math/Vector4.h"
+#include "Define.h"
 
 enum
 {
@@ -52,7 +53,8 @@ public:
     uint32 NumVertices;
     uint32 NumTexCoords;
 
-
     TArray<FSkelMeshSection> Sections; // 머티리얼별 인덱스 범위와 섹션 단위 본 맵
+
+    TArray<FStaticMaterial> Materials; // 머티리얼 슬롯
 };
 

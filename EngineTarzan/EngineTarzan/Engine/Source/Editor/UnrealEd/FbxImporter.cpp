@@ -4,7 +4,10 @@
 
 #include "Define.h"
 #include "ReferenceSkeleton.h"
+#include "Components/Material/Material.h"
+#include "Engine/FObjLoader.h"
 #include "Rendering/SkeletalMeshLODModel.h"
+#include "UObject/ObjectFactory.h"
 
 TMap<FbxNode*, int32> FFbxImporter::NodeToBoneIndex;
 FbxAMatrix            FFbxImporter::JointPostConvert;
@@ -221,7 +224,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     bool bResult = false;
     for (FbxMesh* ChildMesh : MeshList)
     {
-        bResult |= ParseSkeletalMeshLODModel(ChildMesh, LodModel, GlobalIdxCtr);
+        bResult |= ParseSkeletalMeshLODModel(ChildMesh, LodModel, GlobalIdxCtr, InFilePath);
     }
 
     // 6) 정리
@@ -230,9 +233,27 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     return bResult;
 }
 
-bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32 GlobalIdxCtr)
+bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32 GlobalIdxCtr,  const FString& InFilePath)
 {
     if (!Mesh) return false;
+
+    // 1) FBX 노드 머티리얼 파싱
+    {
+        FbxNode* Node = Mesh->GetNode();
+        int32 MatCount = Node->GetMaterialCount();
+        FString BasePath = FString(L"Contents/FBX/");
+        for (int32 i = 0; i < MatCount; ++i)
+        {
+            if (auto* Mat = Node->GetMaterial(i))
+            {
+                FStaticMaterial OutMat;
+                OutMat.Material = FObjectFactory::ConstructObject<UMaterial>(nullptr);
+                OutMat.MaterialSlotName = FName(Mat->GetName());
+                ParseFbxMaterialTextures(Mat, OutMat, BasePath);
+                LodModel.Materials.Add(OutMat);
+            }
+        }
+    }
 
     // 추가될 첫 정점 인덱스
     const uint32 MeshStartVert = LodModel.Vertices.Num();
@@ -530,3 +551,90 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
     return true;
 }
 
+//------------------------------------------------------------------------------
+// FFbxImporter::ParseFbxMaterialTextures
+// static helper to parse textures from an FBX material into a FStaticMaterial
+//------------------------------------------------------------------------------
+bool FFbxImporter::ParseFbxMaterialTextures(FbxSurfaceMaterial* InMaterial, FStaticMaterial& OutMat, const FString& BasePath)
+{
+    if (!InMaterial || !OutMat.Material)
+        return false;
+
+    FObjMaterialInfo& Info = OutMat.Material->GetMaterialInfo();
+    Info.TextureInfos.SetNum((int32)EMaterialTextureSlots::MTS_MAX);
+    bool bAnyTexture = false;
+
+    auto ParseSlot = [&](const char* PropName, EMaterialTextureSlots Slot, bool bSRGB, EMaterialTextureFlags Flag)
+        {
+            FbxProperty Prop = InMaterial->FindProperty(PropName);
+            if (Prop.IsValid() && Prop.GetSrcObjectCount<FbxFileTexture>() > 0)
+            {
+                auto* Tex = Prop.GetSrcObject<FbxFileTexture>(0);
+                FString FileName = FString(Tex->GetFileName());
+                FTextureInfo& TI = Info.TextureInfos[(int32)Slot];
+                TI.TextureName = FileName;
+
+                UE_LOG(LogLevel::Warning, TEXT("  Found Texture: Name='%s'"), *FileName);
+                FString FullPath;
+                // 절대 경로인지 확인 (간단한 방식: ':' 또는 '/' 로 시작하는지 확인)
+                if (FileName.Contains(TEXT(":")) || (!FileName.IsEmpty() && FileName[0] == TEXT('/'))) // <-- 수정된 코드
+                {
+                    FullPath = FileName; // 절대 경로면 그대로 사용
+                    UE_LOG(LogLevel::Warning, TEXT("  Using Absolute Path: '%s'"), *FullPath);
+                }
+                else
+                {
+                    // 상대 경로면 BasePath와 조합
+                    FullPath = BasePath + FileName;
+                    UE_LOG(LogLevel::Warning, TEXT("  Combining Relative Path: Base='%s', Full='%s'"), *BasePath, *FullPath);
+                }
+
+                UE_LOG(LogLevel::Warning, TEXT("  Attempting Path: '%s'"), *FullPath);
+                bool bLoaded = FObjLoader::CreateTextureFromFile(FullPath.ToWideString(), bSRGB);
+                UE_LOG(LogLevel::Warning, TEXT("  Load Result: %s"), bLoaded ? TEXT("Success") : TEXT("Failed"));
+                if (bLoaded)
+                {
+                    TI.TexturePath = FullPath.ToWideString();
+                    TI.bIsSRGB = bSRGB;
+                    Info.TextureFlag |= (uint16)Flag;
+                    bAnyTexture = true;
+                }
+                else {
+                    UE_LOG(LogLevel::Error, TEXT("  Property invalid or no texture found for %s"), PropName);
+                }
+            }
+        };
+
+    // 다양한 슬롯 파싱
+    ParseSlot(FbxSurfaceMaterial::sDiffuse, EMaterialTextureSlots::MTS_Diffuse, true, EMaterialTextureFlags::MTF_Diffuse);
+    ParseSlot(FbxSurfaceMaterial::sNormalMap, EMaterialTextureSlots::MTS_Normal, false, EMaterialTextureFlags::MTF_Normal);
+    if (!bAnyTexture)
+    {
+        ParseSlot(FbxSurfaceMaterial::sBump, EMaterialTextureSlots::MTS_Normal, false, EMaterialTextureFlags::MTF_Normal);
+        FbxProperty BumpProp = InMaterial->FindProperty(FbxSurfaceMaterial::sBumpFactor);
+        if (BumpProp.IsValid())
+        {
+            double BV = BumpProp.Get<FbxDouble>();
+            Info.BumpMultiplier = (float)BV;
+        }
+    }
+    ParseSlot(FbxSurfaceMaterial::sSpecular, EMaterialTextureSlots::MTS_Specular, true, EMaterialTextureFlags::MTF_Specular);
+    ParseSlot(FbxSurfaceMaterial::sShininess, EMaterialTextureSlots::MTS_Shininess, false, EMaterialTextureFlags::MTF_Shininess);
+    ParseSlot(FbxSurfaceMaterial::sAmbient, EMaterialTextureSlots::MTS_Ambient, true, EMaterialTextureFlags::MTF_Ambient);
+    ParseSlot(FbxSurfaceMaterial::sEmissive, EMaterialTextureSlots::MTS_Emissive, true, EMaterialTextureFlags::MTF_Emissive);
+
+    FbxProperty MetProp = InMaterial->FindProperty("Pm");
+    if (MetProp.IsValid())
+    {
+        Info.Metallic = (float)MetProp.Get<FbxDouble>();
+        ParseSlot("map_Pm", EMaterialTextureSlots::MTS_Metallic, false, EMaterialTextureFlags::MTF_Metallic);
+    }
+    FbxProperty RghProp = InMaterial->FindProperty("Pr");
+    if (RghProp.IsValid())
+    {
+        Info.Roughness = (float)RghProp.Get<FbxDouble>();
+        ParseSlot("map_Pr", EMaterialTextureSlots::MTS_Roughness, false, EMaterialTextureFlags::MTF_Roughness);
+    }
+
+    return bAnyTexture;
+}

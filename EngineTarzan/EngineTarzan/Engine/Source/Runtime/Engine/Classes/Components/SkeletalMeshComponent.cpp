@@ -5,6 +5,7 @@
 #include "SkeletalRenderCPUSkin.h"
 #include "Developer/SkeletalMeshBuilder.h"
 #include "Engine/SkeletalMesh.h"
+#include "Engine/Asset/SkeletalMeshAsset.h"
 #include "Rendering/SkeletalMeshLODModel.h"
 #include "UnrealEd/FbxImporter.h"
 #include "UObject/ObjectFactory.h"
@@ -18,7 +19,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
 
     FFbxImporter::ParseSkeletalMeshLODModel(
-        TEXT("Contents/FBX/link.fbx"),
+        TEXT("Contents/FBX/nathan.fbx"),
         *SkeletalMesh->ImportedModel,
         &SkeletalMesh->RefSkeleton
     );
@@ -161,6 +162,27 @@ USkeletalMeshComponent::USkeletalMeshComponent()
         ofs << f << " ";
     ofs << "\n";
 
+    // 7) Materials 덤프
+    ofs << "=== Materials ===\n";
+    for (int32 mi = 0; mi < SkeletalMesh->GetRenderData()->Materials.Num(); ++mi)
+    {
+        const FObjMaterialInfo& MI = SkeletalMesh->GetRenderData()->Materials[mi];
+        ofs << "[" << mi << "] Name=" << std::string(*MI.MaterialName) << "\n";
+        ofs << "  Diffuse=(" << MI.DiffuseColor.X << "," << MI.DiffuseColor.Y << "," << MI.DiffuseColor.Z << ")\n";
+        ofs << "  Specular=(" << MI.SpecularColor.X << "," << MI.SpecularColor.Y << "," << MI.SpecularColor.Z << ")\n";
+        ofs << "  Ambient=(" << MI.AmbientColor.X << "," << MI.AmbientColor.Y << "," << MI.AmbientColor.Z << ")\n";
+        ofs << "  Emissive=(" << MI.EmissiveColor.X << "," << MI.EmissiveColor.Y << "," << MI.EmissiveColor.Z << ")\n";
+        ofs << "  Metallic=" << MI.Metallic << " Roughness=" << MI.Roughness << "\n";
+        ofs << "  TextureFlag=0x" << std::hex << MI.TextureFlag << std::dec << "\n";
+        for (int32 ti = 0; ti < MI.TextureInfos.Num(); ++ti)
+        {
+            const FTextureInfo& TI = MI.TextureInfos[ti];
+            ofs << "    [" << ti << "] Name=" << *FString(TI.TextureName)
+                << " Path=" << *FString(TI.TexturePath)
+                << " sRGB=" << (TI.bIsSRGB ? "true" : "false") << "\n";
+        }
+        ofs << "\n";
+    }
     ofs.close();
 
     // 5) 렌더 리소스 초기화
