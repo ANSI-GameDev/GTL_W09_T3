@@ -267,40 +267,42 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
                 return rawIdx;
             }
         };
-    // 섹션 파싱: 재질별 폴리곤 그룹화
-    LodModel.Sections.Empty();
-    if (materialLayer)
-    {
-        // 임시 맵: materialIndex -> Section
-        TMap<int32, FSkelMeshSection> sectionMap;
-        int32 polyCount = Mesh->GetPolygonCount();
-        for (int32 p = 0; p < polyCount; ++p)
-        {
-            int rawIdx = GetRawIndex(materialLayer, 0, 0, p);
-            int32 matIdx = GetFinalIndex(materialLayer, rawIdx);
-            FSkelMeshSection* sec = sectionMap.Find(matIdx);
-            if (!sec)
-            {
-                FSkelMeshSection newSec;
-                newSec.MaterialIndex = matIdx;
-                newSec.BaseIndex = 0;      // 추후 갱신
-                newSec.NumTriangles = 0;
-                newSec.BaseVertexIndex = 0;      // 동일
-                sectionMap.Add(matIdx, newSec);
-                sec = sectionMap.Find(matIdx);
-            }
-            sec->NumTriangles++;
-        }
-        // BaseIndex 설정
-        uint32 runningIndex = 0;
-        for (auto& Pair : sectionMap)
-        {
-            FSkelMeshSection& sec = Pair.Value;
-            sec.BaseIndex = runningIndex * 3;
-            runningIndex += sec.NumTriangles;
-            LodModel.Sections.Add(sec);
-        }
-    }
+
+    // TODO : 일단 오류 떠서 주석처리함 나중에 주석 해제 
+    // // 섹션 파싱: 재질별 폴리곤 그룹화
+    // LodModel.Sections.Empty();
+    // if (materialLayer)
+    // {
+    //     // 임시 맵: materialIndex -> Section
+    //     TMap<int32, FSkelMeshSection> sectionMap;
+    //     int32 polyCount = Mesh->GetPolygonCount();
+    //     for (int32 p = 0; p < polyCount; ++p)
+    //     {
+    //         int rawIdx = GetRawIndex(materialLayer, 0, 0, p);
+    //         int32 matIdx = GetFinalIndex(materialLayer, rawIdx);
+    //         FSkelMeshSection* sec = sectionMap.Find(matIdx);
+    //         if (!sec)
+    //         {
+    //             FSkelMeshSection newSec;
+    //             newSec.MaterialIndex = matIdx;
+    //             newSec.BaseIndex = 0;      // 추후 갱신
+    //             newSec.NumTriangles = 0;
+    //             newSec.BaseVertexIndex = 0;      // 동일
+    //             sectionMap.Add(matIdx, newSec);
+    //             sec = sectionMap.Find(matIdx);
+    //         }
+    //         sec->NumTriangles++;
+    //     }
+    //     // BaseIndex 설정
+    //     uint32 runningIndex = 0;
+    //     for (auto& Pair : sectionMap)
+    //     {
+    //         FSkelMeshSection& sec = Pair.Value;
+    //         sec.BaseIndex = runningIndex * 3;
+    //         runningIndex += sec.NumTriangles;
+    //         LodModel.Sections.Add(sec);
+    //     }
+    // }
 
     // 2) 스킨 클러스터 처리
     int32 CPCount = Mesh->GetControlPointsCount();

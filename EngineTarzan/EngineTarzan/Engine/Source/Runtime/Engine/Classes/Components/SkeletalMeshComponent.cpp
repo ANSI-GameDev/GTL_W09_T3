@@ -87,20 +87,21 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     }
     ofs << "\n";
 
+    // TODO : 일단 주석 처리 나중에 해제
     // 3) Sections 덤프  ← 추가
-    ofs << "=== Sections ===\n";
-    for (int32 i = 0; i < L.Sections.Num(); ++i)
-    {
-        const auto& S = L.Sections[i];
-        ofs << "[" << i << "] MaterialIndex=" << S.MaterialIndex
-            << " BaseIndex=" << S.BaseIndex
-            << " NumTriangles=" << S.NumTriangles
-            << " BaseVertexIndex=" << S.BaseVertexIndex << "\n";
-        ofs << "    BoneMap: ";
-        for (int32 bi : S.BoneMap)
-            ofs << bi << " ";
-        ofs << "\n\n";
-    }
+    // ofs << "=== Sections ===\n";
+    // for (int32 i = 0; i < L.Sections.Num(); ++i)
+    // {
+    //     const auto& S = L.Sections[i];
+    //     ofs << "[" << i << "] MaterialIndex=" << S.MaterialIndex
+    //         << " BaseIndex=" << S.BaseIndex
+    //         << " NumTriangles=" << S.NumTriangles
+    //         << " BaseVertexIndex=" << S.BaseVertexIndex << "\n";
+    //     ofs << "    BoneMap: ";
+    //     for (int32 bi : S.BoneMap)
+    //         ofs << bi << " ";
+    //     ofs << "\n\n";
+    // }
 
     // 4) Vertices 덤프 (UV, Color, Influence까지) ← 확장
     ofs << "=== Vertices ===\n";

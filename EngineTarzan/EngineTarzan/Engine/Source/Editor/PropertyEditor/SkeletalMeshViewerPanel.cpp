@@ -1,10 +1,11 @@
 #include "SkeletalMeshViewerPanel.h"
 
+#include "ReferenceSkeleton.h"
 #include "Engine/EditorEngine.h"
 #include "Engine/Engine.h"
 
 // 선택된 본 인덱스 저장
-static int SelectedBoneIndex = INDEX_NONE;
+int USkeletalMeshViewerPanel::SelectedBoneIndex = INDEX_NONE;
 
 USkeletalMeshViewerPanel::USkeletalMeshViewerPanel()
 {
@@ -49,39 +50,39 @@ void USkeletalMeshViewerPanel::Render()
     /* Render Start */
     ImGui::Begin("BoneTree", nullptr, PanelFlags);
 
-    // if (CurrentRefSkeleton)
-    // {
-    //     const FReferenceSkeleton& RefSkel = *CurrentRefSkeleton;
-    //     // 트리 구조 렌더링
-    //     for (int32 i = 0; i < RefSkel.GetNumBones(); ++i)
-    //     {
-    //         if (RefSkel.GetBoneInfo()[i].ParentIndex == INDEX_NONE)
-    //             DrawBoneNode(RefSkel, i);
-    //     }
-    //
-    //     ImGui::Separator();
-    //
-    //     // 선택된 본 정보 출력
-    //     if (SelectedBoneIndex != INDEX_NONE)
-    //     {
-    //         const FMeshBoneInfo& Info = RefSkel.GetBoneInfo()[SelectedBoneIndex];
-    //         const FTransform& Pose  = RefSkel.GetBonePose()[SelectedBoneIndex];
-    //
-    //         FVector Pos   = Pose.GetTranslation();
-    //         FRotator Rot  = Pose.GetRotation().Rotator();
-    //         FVector Scale = Pose.GetScale3D();
-    //
-    //         ImGui::Text("본 이름: %s", TCHAR_TO_UTF8(*Info.Name.ToString()));
-    //         ImGui::Text("위치: %.3f, %.3f, %.3f", Pos.X,   Pos.Y,   Pos.Z);
-    //         ImGui::Text("회전: %.3f, %.3f, %.3f", Rot.Pitch, Rot.Yaw, Rot.Roll);
-    //         ImGui::Text("스케일: %.3f, %.3f, %.3f", Scale.X, Scale.Y, Scale.Z);
-    //     }
-    // }
+    if (CurrentRefSkeleton)
+    {
+        const FReferenceSkeleton& RefSkel = *CurrentRefSkeleton;
+        // 트리 구조 렌더링
+        for (int32 i = 0; i < RefSkel.GetNumBones(); ++i)
+        {
+            if (RefSkel.GetBoneInfo()[i].ParentIndex == INDEX_NONE)
+                DrawBoneNode(RefSkel, i);
+        }
+    
+        ImGui::Separator();
+    
+        // 선택된 본 정보 출력
+        if (SelectedBoneIndex != INDEX_NONE)
+        {
+            const FMeshBoneInfo& Info = RefSkel.GetBoneInfo()[SelectedBoneIndex];
+            const FTransform& Pose  = RefSkel.GetBonePose()[SelectedBoneIndex];
+    
+            FVector Pos   = Pose.GetPosition();
+            FRotator Rot  = Pose.GetRotation();
+            FVector Scale = Pose.GetScale();
+    
+            ImGui::Text("본 이름: %s", GetData(Info.Name.ToString()));
+            ImGui::Text("위치: %.3f, %.3f, %.3f", Pos.X,   Pos.Y,   Pos.Z);
+            ImGui::Text("회전: %.3f, %.3f, %.3f", Rot.Pitch, Rot.Yaw, Rot.Roll);
+            ImGui::Text("스케일: %.3f, %.3f, %.3f", Scale.X, Scale.Y, Scale.Z);
+        }
+    }
     
     ImGui::End();
 }
 
-void USkeletalMeshViewerPanel::OnResize(HWND hWnd)
+void USkeletalMeshViewerPanel::OnResize(const HWND hWnd)
 {
     RECT ClientRect;
     GetClientRect(hWnd, &ClientRect);
@@ -89,41 +90,43 @@ void USkeletalMeshViewerPanel::OnResize(HWND hWnd)
     Height = ClientRect.bottom - ClientRect.top;
 }
 
-void USkeletalMeshViewerPanel::DrawBoneNode(const FReferenceSkeleton& RefSkeletal, int32 BoneIndex)
+void USkeletalMeshViewerPanel::DrawBoneNode(const FReferenceSkeleton& RefSkeletal, const int32 BoneIndex)
 {
-    // 예시 코드
-    // // 본 이름 UTF-8 변환
-    // const FMeshBoneInfo& BoneInfo = RefSkeletal.GetBoneInfo()[BoneIndex];
-    // const char* BoneName = TCHAR_TO_UTF8(*BoneInfo.Name.ToString());
-    //
-    // // 이 본의 자식 인덱스를 수집
-    // TArray<int32> Children;
-    // for (int32 i = 0; i < RefSkeletal.GetNumBones(); ++i)
-    // {
-    //     if (RefSkeletal.GetBoneInfo()[i].ParentIndex == BoneIndex)
-    //     {
-    //         Children.Add(i);
-    //     }
-    // }
-    //
-    // // 트리 노드 플래그: 화살표, 선택 상태, 리프 노드
-    // ImGuiTreeNodeFlags flags = (Children.Num() > 0 ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf)
-    //     | (BoneIndex == SelectedBoneIndex ? ImGuiTreeNodeFlags_Selected : 0);
-    //
-    // // BoneIndex를 ID로 사용하고 이름 표시
-    // bool opened = ImGui::TreeNodeEx((void*)(intptr_t)BoneIndex, flags, "%s", BoneName);
-    // if (ImGui::IsItemClicked())
-    //     SelectedBoneIndex = BoneIndex;
-    //
-    // bool opened = ImGui::TreeNodeEx(BoneName, flags);
-    // if (opened)
-    // {
-    //     for (const int32 ChildIndex : Children)
-    //     {
-    //         DrawBoneNode(RefSkeletal, ChildIndex);
-    //     }
-    //     ImGui::TreePop();
-    // }
+    // 본 이름 UTF-8 변환
+    const FMeshBoneInfo& BoneInfo = RefSkeletal.GetBoneInfo()[BoneIndex];
+    const FString BoneName = BoneInfo.Name.ToString();
+    
+    // 이 본의 자식 인덱스를 수집
+    TArray<int32> Children;
+    for (int32 i = 0; i < RefSkeletal.GetNumBones(); ++i)
+    {
+        if (RefSkeletal.GetBoneInfo()[i].ParentIndex == BoneIndex)
+        {
+            Children.Add(i);
+        }
+    }
+
+    bool bHasChildren = Children.Num() > 0;
+    
+    // 트리 노드 플래그 설정: 항상 펼치고 전체 너비 사용
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
+    flags |= (bHasChildren ? ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_Leaf);
+    if (BoneIndex == SelectedBoneIndex)
+        flags |= ImGuiTreeNodeFlags_Selected;
+    
+    // BoneIndex를 ID로 사용하고 이름 표시
+    const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(BoneIndex)), flags, "%s", GetData(BoneName));
+    if (ImGui::IsItemClicked())
+        SelectedBoneIndex = BoneIndex;
+
+    if (opened)
+    {
+        for (const int32 ChildIndex : Children)
+        {
+            DrawBoneNode(RefSkeletal, ChildIndex);
+        }
+        ImGui::TreePop();
+    }
 }
 
 void USkeletalMeshViewerPanel::SetSkeleton(FReferenceSkeleton* RefSkeletal)
