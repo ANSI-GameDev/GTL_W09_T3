@@ -443,7 +443,7 @@ void FSkeletalMeshRenderPass::ClearRenderArr()
 }
 
 
-void FSkeletalMeshRenderPass::RenderAllStaticMeshesForPointLight(const std::shared_ptr<FEditorViewportClient>& Viewport, UPointLightComponent*& PointLight)
+void FSkeletalMeshRenderPass::RenderAllSkeletalMeshesForPointLight(const std::shared_ptr<FEditorViewportClient>& Viewport, UPointLightComponent*& PointLight)
 {
     for (USkeletalMeshComponent* Comp : SkeletalMeshComponents)
     {
