@@ -15,8 +15,12 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     SkeletalMesh= FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
     SkeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
 
-    //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
+    MeshObject = new FSkeletalMeshObjectCPUSkin;
+    MeshObject->InitResources(this, SkeletalMesh->GetRenderData());
 
+
+    //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
+    //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
     FFbxImporter::ParseSkeletalMeshLODModel(
         TEXT("Contents/FBX/nathan.fbx"),
         *SkeletalMesh->ImportedModel,
@@ -171,5 +175,10 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
+    ComponentSpaceTransformsArray.Empty();
+    for (auto& Transform : SkeletalMesh->RefSkeleton.GetBonePose())
+    {
+        ComponentSpaceTransformsArray.Add(Transform);
+    }
     Super::TickComponent(DeltaTime);
 }

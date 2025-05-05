@@ -6,6 +6,7 @@ ASkeletalActor::ASkeletalActor()
     UE_LOG(LogLevel::Error, TEXT("SkeletalActor::ASkeletalActor()"));
     SkeletalMeshComponent = AddComponent<USkeletalMeshComponent>();
     RootComponent = SkeletalMeshComponent;
+    SetActorTickInEditor(true);
 }
 
 USkeletalMeshComponent* ASkeletalActor::GetSkeletalMeshComponent() const

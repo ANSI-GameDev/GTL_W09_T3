@@ -17,7 +17,6 @@ public:
     void SetImportedModel(FSkeletalMeshLODModel* InModel);
     void SetSkeletalMeshRenderData(FSkeletalMeshRenderData* InRenderData);
     void SetRefSkeleton(const FReferenceSkeleton& InRefSkeleton);
-    FSkeletalMeshRenderData* GetSkeletalMeshRenderData() const;
 
     FSkeletalMeshRenderData* GetRenderData() const;
     FSkeletalMeshLODModel* GetImportedModel() const;

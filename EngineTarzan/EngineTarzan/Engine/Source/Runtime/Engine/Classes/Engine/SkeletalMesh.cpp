@@ -31,11 +31,6 @@ void USkeletalMesh::SetRefSkeleton(const FReferenceSkeleton& InRefSkeleton)
     RefSkeleton = InRefSkeleton;
 }
 
-FSkeletalMeshRenderData* USkeletalMesh::GetSkeletalMeshRenderData() const
-{
-    return SkelMeshRenderData;
-}
-
 FSkeletalMeshRenderData* USkeletalMesh::GetRenderData() const
 {
     return SkelMeshRenderData;
