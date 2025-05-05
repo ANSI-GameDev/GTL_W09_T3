@@ -9,6 +9,5 @@ enum class EWorldType
     EditorPreview,
     GamePreview,
     GameRPC,
-    Inactive,
-    SkeletalMeshViewer,
+    Inactive
 };

@@ -3,8 +3,6 @@
 #include "Define.h"
 #include "Container/Map.h"
 
-struct FPointerEvent;
-class FSkeletalMeshViewportClient;
 class SSplitterH;
 class SSplitterV;
 class UWorld;
@@ -27,15 +25,8 @@ public:
     void SetEnableMultiViewport(bool bIsEnable);
     bool IsMultiViewport() const;
 
-    void SetSkeletalMeshViewportClient(bool bInSkeletalMeshViewMode);
-    bool IsSkeletalMeshViewMode() const;
-
     void RegisterEditorInputDelegates();
     void RegisterPIEInputDelegates();
-
-    void RegisterStaticMeshViewerInputDelegates();
-
-    FVector GetTargetDiff() const { return TargetDiff; }
 
 private:
     SSplitterH* HSplitter;
@@ -43,7 +34,6 @@ private:
     
     std::shared_ptr<FEditorViewportClient> ViewportClients[4];
     std::shared_ptr<FEditorViewportClient> ActiveViewportClient;
-    std::shared_ptr<FSkeletalMeshViewportClient> SkeletalMeshViewportClient;
 
     /** 우클릭 시 캡처된 마우스 커서의 초기 위치 (스크린 좌표계) */
     FVector2D MousePinPosition;
@@ -52,8 +42,6 @@ private:
     FVector TargetDiff;
 
     bool bMultiViewportMode;
-
-    bool bSkeletalMeshViewMode = false;
     
     uint32 EditorWidth;
     uint32 EditorHeight;

@@ -7,11 +7,16 @@
 #include "Actors/FireballActor.h"
 
 #include "Components/Light/LightComponent.h"
+#include "Components/Light/PointLightComponent.h"
+#include "Components/Light/SpotLightComponent.h"
 #include "Components/SphereComp.h"
 #include "Components/ParticleSubUVComponent.h"
 #include "Components/TextComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/ProjectileMovementComponent.h"
 
 #include "Engine/FObjLoader.h"
+#include "Engine/StaticMeshActor.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "PropertyEditor/ShowFlags.h"
 #include "UnrealEd/EditorViewportClient.h"
@@ -74,12 +79,7 @@ void ControlEditorPanel::Render()
     CreateFlagButton();
     ImGui::SameLine();
     CreateModifyButton(IconSize, IconFont);
-    if (GEngine->ActiveWorld->WorldType != EWorldType::PIE)
-    {
-        ImGui::SameLine();
-        CreateViewerButton(IconSize, IconFont);
-    }
-
+    ImGui::SameLine();
     ImGui::SameLine();
     CreateLightSpawnButton(IconSize, IconFont);
     ImGui::SameLine();
@@ -479,18 +479,6 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
     }
 }
 
-void ControlEditorPanel::CreateViewerButton(ImVec2 ButtonSize, ImFont* IconFont)
-{
-    ImGui::PushFont(IconFont);
-    if (ImGui::Button("\ue999", ButtonSize))
-    {
-        FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
-        SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
-        LevelEd->SetSkeletalMeshViewportClient(true);
-    }
-    ImGui::PopFont();
-}
-
 void ControlEditorPanel::CreateFlagButton()
 {
     const std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
@@ -593,7 +581,7 @@ void ControlEditorPanel::CreatePIEButton(const ImVec2 ButtonSize, ImFont* IconFo
 void ControlEditorPanel::CreateSRTButton(ImVec2 ButtonSize)
 {
     const UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
-    UEditorPlayer* Player = Engine->GetEditorPlayer();
+    AEditorPlayer* Player = Engine->GetEditorPlayer();
 
     constexpr ImVec4 ActiveColor = ImVec4(0.00f, 0.00f, 0.85f, 1.0f);
 

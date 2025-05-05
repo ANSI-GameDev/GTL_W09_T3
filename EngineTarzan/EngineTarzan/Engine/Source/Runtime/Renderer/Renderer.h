@@ -63,10 +63,8 @@ public:
 protected:
     void BeginRender(const std::shared_ptr<FEditorViewportClient>& Viewport);
     void UpdateCommonBuffer(const std::shared_ptr<FEditorViewportClient>& Viewport) const;
-    void PrepareSkeletalViewerRender(FViewportResource* ViewportResource);
-    void PrepareSkeletalViewerRenderPass() const;
-    void PrepareEditorRender(FViewportResource* ViewportResource) const;
-    void PrepareAllRenderPass() const;
+    void PrepareRender(FViewportResource* ViewportResource) const;
+    void PrepareRenderPass() const;
     void RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& Viewport) const;
     void RenderPostProcess(const std::shared_ptr<FEditorViewportClient>& Viewport) const;
     void RenderEditorOverlay(const std::shared_ptr<FEditorViewportClient>& Viewport) const;

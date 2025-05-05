@@ -8,9 +8,6 @@
     내부적으로 PIE, Editor World 두 가지 형태로 관리.
 */
 
-DECLARE_MULTICAST_DELEGATE(FOnOpenSkeletalMeshViewerDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnCloseSkeletalMeshViewerDelegate);
-
 class AActor;
 class USceneComponent;
 
@@ -27,14 +24,10 @@ public:
 
     UWorld* PIEWorld = nullptr;
     UWorld* EditorWorld = nullptr;
-    UWorld* StaticMeshViewerWorld = nullptr;
 
     void StartPIE();
     void BindEssentialObjects();
     void EndPIE();
-
-    void OpenSkeletalMeshViewer();
-    void CloseSkeletalMeshViewer();
 
     // 주석은 UE에서 사용하던 매개변수.
     FWorldContext& GetEditorWorldContext(/*bool bEnsureIsGWorld = false*/);
@@ -67,10 +60,11 @@ public:
     void HoverComponent(USceneComponent* InComponent);
 
 public:
-    UEditorPlayer* GetEditorPlayer() const;
-
+    AEditorPlayer* GetEditorPlayer() const;
+    
 private:
-    UEditorPlayer* EditorPlayer = nullptr;
+    AEditorPlayer* EditorPlayer = nullptr;
+
 };
 
 
