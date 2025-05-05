@@ -3,6 +3,7 @@
 #include "ReferenceSkeleton.h"
 #include "Engine/EditorEngine.h"
 #include "Engine/Engine.h"
+#include "UnrealEd/ImGuiWidget.h"
 
 // 선택된 본 인덱스 저장
 int USkeletalMeshViewerPanel::SelectedBoneIndex = INDEX_NONE;
@@ -61,24 +62,29 @@ void USkeletalMeshViewerPanel::Render()
         }
     
         ImGui::Separator();
-    
+
+        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         // 선택된 본 정보 출력
         if (SelectedBoneIndex != INDEX_NONE)
         {
             const FMeshBoneInfo& Info = RefSkel.GetBoneInfo()[SelectedBoneIndex];
-            const FTransform& Pose  = RefSkel.GetBonePose()[SelectedBoneIndex];
-    
+            FTransform Pose = RefSkel.GetBonePose()[SelectedBoneIndex];
+
             FVector Pos   = Pose.GetPosition();
             FRotator Rot  = Pose.GetRotation();
             FVector Scale = Pose.GetScale();
-    
-            ImGui::Text("본 이름: %s", GetData(Info.Name.ToString()));
-            ImGui::Text("위치: %.3f, %.3f, %.3f", Pos.X,   Pos.Y,   Pos.Z);
-            ImGui::Text("회전: %.3f, %.3f, %.3f", Rot.Pitch, Rot.Yaw, Rot.Roll);
-            ImGui::Text("스케일: %.3f, %.3f, %.3f", Scale.X, Scale.Y, Scale.Z);
+
+            FImGuiWidget::DrawVec3Control("Location",  Pos, 0, 85);
+            ImGui::Spacing();
+            
+            FImGuiWidget::DrawRot3Control("Rotation", Rot, 0, 85);
+            ImGui::Spacing();
+            
+            FImGuiWidget::DrawVec3Control("Scale",  Scale, 0, 85);
+            ImGui::Spacing();            
         }
+        ImGui::PopStyleColor();
     }
-    
     ImGui::End();
 }
 
