@@ -422,7 +422,7 @@ void FStaticMeshRenderPass::RenderSkeletalPrimitive(const FSkeletalMeshRenderDat
 
     for (auto& subset : RenderData->MaterialSubsets)
     {
-        Graphics->DeviceContext->DrawIndexed(subset.IndexCount, subset.IndexStart, 0);
+        Graphics->DeviceContext->DrawIndexed(subset.IndexCount, subset.IndexStart,0);
         
     }
     
