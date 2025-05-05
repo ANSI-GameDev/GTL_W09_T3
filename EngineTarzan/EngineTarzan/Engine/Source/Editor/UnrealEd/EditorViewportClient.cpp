@@ -5,13 +5,13 @@
 #include "Math/JungleMath.h"
 #include "UnrealClient.h"
 #include "WindowsCursor.h"
+#include "BaseGizmos/GizmoBaseComponent.h"
 #include "World/World.h"
 #include "GameFramework/Actor.h"
 #include "Engine/EditorEngine.h"
 
 #include "UObject/ObjectFactory.h"
 #include "BaseGizmos/TransformGizmo.h"
-#include "Camera/CameraComponent.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "SlateCore/Input/Events.h"
 
@@ -49,11 +49,13 @@ void FEditorViewportClient::Initialize(EViewScreenLocation InViewportIndex, cons
 
     GizmoActor = FObjectFactory::ConstructObject<ATransformGizmo>(GEngine); // TODO : EditorEngine 외의 다른 Engine 형태가 추가되면 GEngine 대신 다른 방식으로 넣어주어야 함.
     GizmoActor->Initialize(this);
+
+    SetupRawMouseInputHandler();
 }
 
 void FEditorViewportClient::Tick(const float DeltaTime)
 {
-    if (GEngine->ActiveWorld->WorldType == EWorldType::Editor)
+    if (GEngine->ActiveWorld->WorldType == EWorldType::Editor || GEngine->ActiveWorld->WorldType == EWorldType::SkeletalMeshViewer)
     {
         UpdateEditorCameraMovement(DeltaTime);
     }
@@ -65,6 +67,23 @@ void FEditorViewportClient::Tick(const float DeltaTime)
 void FEditorViewportClient::Release() const
 {
     delete Viewport;
+
+    FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+    if (Handler == nullptr) return;
+    
+    for (const FDelegateHandle& Handle : InputDelegatesHandles)
+    {
+        Handler->OnKeyCharDelegate.Remove(Handle);
+        Handler->OnKeyDownDelegate.Remove(Handle);
+        Handler->OnKeyUpDelegate.Remove(Handle);
+        Handler->OnMouseDownDelegate.Remove(Handle);
+        Handler->OnMouseUpDelegate.Remove(Handle);
+        Handler->OnMouseDoubleClickDelegate.Remove(Handle);
+        Handler->OnMouseWheelDelegate.Remove(Handle);
+        Handler->OnMouseMoveDelegate.Remove(Handle);
+        Handler->OnRawMouseInputDelegate.Remove(Handle);
+        Handler->OnRawKeyboardInputDelegate.Remove(Handle);
+    }
 }
 
 void FEditorViewportClient::UpdateEditorCameraMovement(const float DeltaTime)
@@ -187,7 +206,7 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
     }
     else
     {
-        AEditorPlayer* EdPlayer = CastChecked<UEditorEngine>(GEngine)->GetEditorPlayer();
+        UEditorPlayer* EdPlayer = CastChecked<UEditorEngine>(GEngine)->GetEditorPlayer();
         switch (InKeyEvent.GetCharacter())
         {
         case 'W':
@@ -232,10 +251,21 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
         }
         case 'M':
         {
+            UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
+            
+            if (Engine->ActiveWorld->WorldType != EWorldType::Editor) return;
+                
             FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
             SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
             LevelEd->SetEnableMultiViewport(!LevelEd->IsMultiViewport());
             break;
+        }
+        // TODO : 나중에 UI 버튼으로 빼기
+        case 'P':
+        {
+            FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
+            SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+            LevelEd->SetSkeletalMeshViewportClient(!LevelEd->IsSkeletalMeshViewMode());
         }
         default:
             break;
@@ -248,6 +278,9 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
         case VK_DELETE:
         {
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
+                
+            if (Engine->ActiveWorld->WorldType != EWorldType::Editor) return;
+                
             if (Engine)
             {
                 USceneComponent* SelectedComponent = Engine->GetSelectedComponent();
@@ -710,6 +743,172 @@ auto FEditorViewportClient::WriteIniFile(const FString& FilePath, const TMap<FSt
 void FEditorViewportClient::SetCameraSpeed(const float InValue)
 {
     CameraSpeed = FMath::Clamp(InValue, 0.1f, 200.0f);
+}
+
+void FEditorViewportClient::SetupRawMouseInputHandler()
+{
+    if (FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler())
+    {
+        InputDelegatesHandles.Add(
+            Handler->OnRawMouseInputDelegate.AddLambda(
+                [this](const FPointerEvent& InMouseEvent)
+                {
+                    HandleRawMouseInput(InMouseEvent);
+                }
+            )
+        );
+    }
+}
+
+void FEditorViewportClient::HandleRawMouseInput(const FPointerEvent& InMouseEvent)
+{
+    if (GEngineLoop.GetLevelEditor()->GetActiveViewportClient() != shared_from_this())
+    {
+        return;
+    }
+    
+    if (InMouseEvent.GetInputEvent() == IE_Axis && InMouseEvent.GetEffectingButton() == EKeys::Invalid)
+    {
+        HandleMouseMovement(InMouseEvent);
+    }
+    else if (InMouseEvent.GetEffectingButton() == EKeys::MouseWheelAxis)
+    {
+        HandleMouseWheel(InMouseEvent);
+    }
+}
+
+void FEditorViewportClient::HandleMouseMovement(const FPointerEvent& InMouseEvent)
+{
+    const bool bLeftDown  = InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton);
+    const bool bRightDown = InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton);
+
+    if (!bLeftDown && bRightDown)
+    {
+        // 우클릭 드래그 → 카메라 이동
+        MouseMove(InMouseEvent);
+    }
+    else if (!bRightDown && bLeftDown)
+    {
+        // 좌클릭 드래그 → 기즈모 제어
+        HandleGizmoControl(InMouseEvent);
+    }
+}
+
+void FEditorViewportClient::HandleGizmoControl(const FPointerEvent& InMouseEvent)
+{
+    if (UEditorEngine* EdEngine = Cast<UEditorEngine>(GEngine))
+    {
+        const UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(GetPickedGizmoComponent());
+        if (!Gizmo) return;
+
+        USceneComponent* TargetComp = EdEngine->GetSelectedComponent();
+        if (!TargetComp)
+        {
+            if (AActor* Actor = EdEngine->GetSelectedActor())
+                TargetComp = Actor->GetRootComponent();
+            else return;
+        }
+
+        // 카메라 정보
+        const FViewportCamera& Cam = (GetViewportType() == LVT_Perspective)
+            ? PerspectiveCamera : OrthogonalCamera;
+
+        // 스크린 → 월드 레이
+        FVector RayOrigin, RayDir;
+        DeprojectFVector2D(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
+        float Dist     = FVector::Distance(Cam.GetLocation(), TargetComp->GetWorldLocation());
+        FVector RayEnd = RayOrigin + RayDir * Dist;
+        FVector Desired = RayEnd + GEngineLoop.GetLevelEditor()->GetTargetDiff();
+
+        // 현재 트랜스폼
+        FVector NewLoc   = TargetComp->GetWorldLocation();
+        FQuat NewQuat  = TargetComp->GetWorldRotation().ToQuaternion();
+        FVector NewScale = TargetComp->GetWorldScale3D();
+
+        // 마우스 드래그량
+        const FVector2D Delta2D = InMouseEvent.GetCursorDelta();
+
+        // 축 벡터
+        const FVector Forward = TargetComp->GetForwardVector();
+        const FVector Right   = TargetComp->GetRightVector();
+        const FVector Up      = TargetComp->GetUpVector();
+
+        // 민감도 설정
+        constexpr float TranslSensitivity  = 1.0f;
+        constexpr float RotSensitivity     = 0.2f;
+        constexpr float ScaleSensitivity   = 0.005f;
+
+        // 월드/로컬 모드 구분
+        bool bWorld = (EdEngine->GetEditorPlayer()->GetCoordMode() == CDM_WORLD);
+
+        switch (Gizmo->GetGizmoType())
+        {
+        // --- 이동 ---
+        case UGizmoBaseComponent::ArrowX:
+            if (bWorld) NewLoc.X = Desired.X;
+            else        NewLoc += Forward * FVector::DotProduct(Desired - NewLoc, Forward);
+            break;
+        case UGizmoBaseComponent::ArrowY:
+            if (bWorld) NewLoc.Y = Desired.Y;
+            else        NewLoc += Right   * FVector::DotProduct(Desired - NewLoc, Right);
+            break;
+        case UGizmoBaseComponent::ArrowZ:
+            if (bWorld) NewLoc.Z = Desired.Z;
+            else        NewLoc += Up      * FVector::DotProduct(Desired - NewLoc, Up);
+            break;
+
+        // --- 회전 ---
+        case UGizmoBaseComponent::CircleX:
+        {
+            float Angle = Delta2D.Y * RotSensitivity;
+            FQuat DeltaQ(Forward, FMath::DegreesToRadians(Angle));
+            NewQuat = DeltaQ * NewQuat;
+        }
+        break;
+        case UGizmoBaseComponent::CircleY:
+        {
+            float Angle = Delta2D.Y * RotSensitivity;
+            FQuat DeltaQ(Right, FMath::DegreesToRadians(Angle));
+            NewQuat = DeltaQ * NewQuat;
+        }
+        break;
+        case UGizmoBaseComponent::CircleZ:
+        {
+            float Angle = Delta2D.Y * RotSensitivity;
+            FQuat DeltaQ(Up, FMath::DegreesToRadians(Angle));
+            NewQuat = DeltaQ * NewQuat;
+        }
+        break;
+        case UGizmoBaseComponent::ScaleX:
+            NewScale.X += Delta2D.Y * ScaleSensitivity;
+            break;
+        case UGizmoBaseComponent::ScaleY:
+            NewScale.Y += Delta2D.Y * ScaleSensitivity;
+            break;
+        case UGizmoBaseComponent::ScaleZ:
+            NewScale.Z += Delta2D.Y * ScaleSensitivity;
+            break;
+
+        default:
+            break;
+        }
+
+        // 최종 적용
+        TargetComp->SetWorldLocation(NewLoc);
+        TargetComp->SetWorldRotation(NewQuat.Rotator());
+        TargetComp->SetWorldScale3D(NewScale);
+    }
+}
+
+void FEditorViewportClient::HandleMouseWheel(const FPointerEvent& InMouseEvent)
+{
+    if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton) && IsPerspective())
+    {
+        const float Speed      = GetCameraSpeedScalar();
+        const float Adjustment = FMath::Sign(InMouseEvent.GetWheelDelta())
+                               * FMath::Loge(Speed + 1.0f) * 0.5f;
+        SetCameraSpeed(Speed + Adjustment);
+    }
 }
 
 FVector FViewportCamera::GetForwardVector() const
