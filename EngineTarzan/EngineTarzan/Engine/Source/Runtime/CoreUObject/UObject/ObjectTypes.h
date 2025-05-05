@@ -24,7 +24,6 @@ enum OBJECTS : uint8
     OBJ_GOALPLATFORM,
     OBJ_COIN,
     OBJ_TRIGGERBOX,
-    OBJ_SKELETALMESH,
     OBJ_END
 };
 
