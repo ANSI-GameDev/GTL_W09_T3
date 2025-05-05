@@ -175,13 +175,13 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     Importer->Destroy();
 
     // ─── 2.1) 씬 전체 Triangulate ──────────────────────────
-    
+
     FbxGeometryConverter geomConverter(SdkMgr);
     // true: 기존 폴리곤은 모두 삭제하고, 결과 메시만 남김
     geomConverter.Triangulate(Scene, /*replace=*/true);
-    
 
-    
+
+
     // 3) 축 + 단위 변환
     ConvertSceneToUnreal(Scene);
 
@@ -240,22 +240,25 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
     // 0) 노말·탄젠트 생성 및 레이어 찾기
     if (Mesh->GetLayerCount() == 0 || !Mesh->GetLayer(0)->GetNormals())
     {
-        Mesh->InitNormals(); Mesh->GenerateNormals(true);
+        Mesh->InitNormals();
+        Mesh->GenerateNormals(true);
     }
     if (!Mesh->GetLayer(0)->GetTangents())
     {
-        Mesh->InitTangents(); Mesh->GenerateTangentsData(0, true, true);
+        Mesh->InitTangents();
+        Mesh->GenerateTangentsData(0, true, true);
     }
     if (!Mesh->GetLayer(0)->GetBinormals())
     {
-        Mesh->InitBinormals(); Mesh->CreateElementBinormal();
+        Mesh->InitBinormals();
+        Mesh->CreateElementBinormal();
     }
 
     // 레이어 검색
     FbxLayerElementNormal* normalLayer = nullptr;
     FbxLayerElementTangent* tangentLayer = nullptr;
     FbxLayerElementBinormal* binormalLayer = nullptr;
-    FbxLayerElementVertexColor* colorLayer = nullptr;  
+    FbxLayerElementVertexColor* colorLayer = nullptr;
     FbxLayerElementMaterial* materialLayer = nullptr; // 섹션용 재질 레이어
     for (int li = 0; li < Mesh->GetLayerCount(); ++li)
     {
@@ -269,7 +272,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
 
     // UV 레이어 검색
     int32 uvCount = FMath::Min(Mesh->GetElementUVCount(), (int32)MAX_TEXCOORDS);
-    TArray<FbxGeometryElementUV*> uvLayers;  
+    TArray<FbxGeometryElementUV*> uvLayers;
     for (int32 ui = 0; ui < uvCount; ++ui)
     {
         uvLayers.Add(Mesh->GetElementUV(ui));
@@ -288,17 +291,17 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
     FbxAMatrix NormalMat = Geo.Inverse().Transpose();
 
     // 헬퍼 함수: 매핑 모드에 따른 rawIdx 계산
-    auto GetRawIndex = [&](auto* elem, int32 cp, int32 idxCtr, int32 p) -> int32  
-    {  
-        switch (elem->GetMappingMode())  
-        {  
-            case FbxGeometryElement::eByControlPoint:  return cp;  
-            case FbxGeometryElement::eByPolygonVertex: return idxCtr;  
-            case FbxGeometryElement::eByPolygon:       return p;  
-            case FbxGeometryElement::eAllSame:         return 0;  
-            default:                                   return idxCtr;  
-        }  
-    };  
+    auto GetRawIndex = [&](auto* elem, int32 cp, int32 idxCtr, int32 p) -> int32
+        {
+            switch (elem->GetMappingMode())
+            {
+            case FbxGeometryElement::eByControlPoint:  return cp;
+            case FbxGeometryElement::eByPolygonVertex: return idxCtr;
+            case FbxGeometryElement::eByPolygon:       return p;
+            case FbxGeometryElement::eAllSame:         return 0;
+            default:                                   return idxCtr;
+            }
+        };
     // 헬퍼 함수: 참조 모드에 따른 finalIdx 계산
     auto GetFinalIndex = [&](auto* elem, int rawIdx)
         {
@@ -360,28 +363,21 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
         for (auto& Pair : sectionMap)
         {
             FSkelMeshSection& sec = Pair.Value;
-            sec.BaseIndex        = runningTri * 3;     // IB 오프셋
-            sec.BaseVertexIndex  = MeshStartVert;      // VB 오프셋
-            runningTri          += sec.NumTriangles;
+            sec.BaseIndex = runningTri * 3;     // IB 오프셋
+            sec.BaseVertexIndex = MeshStartVert;      // VB 오프셋
+            runningTri += sec.NumTriangles;
             LodModel.Sections.Add(sec);
         }
     }
 
-    // 1) 변환
-    FbxNode* Node = Mesh->GetNode();
-    FbxAMatrix Geo; Geo.SetIdentity();
-    Geo.SetT(Node->GetGeometricTranslation(FbxNode::eSourcePivot)); Geo.SetR(Node->GetGeometricRotation(FbxNode::eSourcePivot)); Geo.SetS(Node->GetGeometricScaling(FbxNode::eSourcePivot));
-    Geo = Geo * JointPostConvert;
-    FbxAMatrix NormalMat = Geo.Inverse().Transpose();
-
-    // 2) 스킨 처리
+    // 2) 스킨 클러스터 처리
     int32 CPCount = Mesh->GetControlPointsCount();
     std::vector<std::vector<std::pair<int32, double>>> Influences(CPCount);
     TMap<int32, FbxAMatrix> BindPoseMap;
-    for (int di = 0;di < Mesh->GetDeformerCount(FbxDeformer::eSkin);++di)
+    for (int di = 0; di < Mesh->GetDeformerCount(FbxDeformer::eSkin); ++di)
     {
         auto* Skin = static_cast<FbxSkin*>(Mesh->GetDeformer(di, FbxDeformer::eSkin));
-        for (int ci = 0;ci < Skin->GetClusterCount();++ci)
+        for (int ci = 0; ci < Skin->GetClusterCount(); ++ci)
         {
             FbxCluster* Cluster = Skin->GetCluster(ci);
             FbxAMatrix Mlink, Minitial;
@@ -391,16 +387,28 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
 
             FbxNode* LinkNode = Cluster->GetLink();
             int32* FoundIdx = NodeToBoneIndex.Find(LinkNode);
-            if (!FoundIdx) { UE_LOG(LogLevel::Warning, TEXT("Unmapped bone: %s"), *FString(LinkNode->GetName())); continue; }
+            if (!FoundIdx)
+            {
+                UE_LOG(LogLevel::Warning, TEXT("Unmapped bone: %s"), *FString(LinkNode->GetName()));
+                continue;
+            }
             int32 BoneIdx = *FoundIdx;
-            if (!BindPoseMap.Contains(BoneIdx)) { BindPoseMap.Add(BoneIdx, Bind.Inverse()); LodModel.RequiredBones.Add(BoneIdx); }
+            if (!BindPoseMap.Contains(BoneIdx))
+            {
+                BindPoseMap.Add(BoneIdx, Bind.Inverse());
+                LodModel.RequiredBones.Add(BoneIdx);
+            }
             UE_LOG(LogLevel::Error, TEXT("Cluster %d -> Bone '%s' idx=%d"), ci, *FString(LinkNode->GetName()), BoneIdx);
-            int cnt = Cluster->GetControlPointIndicesCount(); int* cpis = Cluster->GetControlPointIndices(); double* wts = Cluster->GetControlPointWeights();
-            for (int k = 0;k < cnt;++k) Influences[cpis[k]].emplace_back(BoneIdx, wts[k]);
+
+            int cnt = Cluster->GetControlPointIndicesCount();
+            int* cpis = Cluster->GetControlPointIndices();
+            double* wts = Cluster->GetControlPointWeights();
+            for (int k = 0; k < cnt; ++k)
+                Influences[cpis[k]].emplace_back(BoneIdx, wts[k]);
         }
     }
 
-    // 3) RefBasesInvMatrix
+    // 3) RefBasesInvMatrix 채우기
     LodModel.RefBasesInvMatrix.Empty();
     for (int32 Bi : LodModel.RequiredBones)
     {
@@ -415,7 +423,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
     constexpr float UnitScale = 1.0f / 100.0f;
     uint32 idxCtr = 0;
     int32 polyCount = Mesh->GetPolygonCount();
-    for (int32 p = 0;p < polyCount;++p)
+    for (int32 p = 0; p < polyCount; ++p)
     {
         int32 triCnt = Mesh->GetPolygonSize(p) - 2;
         LodModel.Faces.AddUninitialized(triCnt);
@@ -456,52 +464,31 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
                         (uint8)(c.mAlpha * 255));
                 }
 
-                // Normal
+                // Normal ← 헬퍼 사용
                 if (normalLayer)
                 {
-                    int rawIdx = (normalLayer->GetMappingMode() == FbxLayerElement::eByControlPoint)
-                        ? cp
-                        : idxCtr;                                        // ← 매핑 모드 처리
-                    int finalIdx;
-                    if (normalLayer->GetReferenceMode() == FbxLayerElement::eDirect)
-                        finalIdx = rawIdx;
-                    else  // eIndexToDirect
-                        finalIdx = normalLayer->GetIndexArray().GetAt(rawIdx); // ← 참조 모드 처리
-
+                    int rawIdx = GetRawIndex(normalLayer, cp, idxCtr, p);
+                    int finalIdx = GetFinalIndex(normalLayer, rawIdx);
                     FbxVector4 n = normalLayer->GetDirectArray().GetAt(finalIdx);
                     n = NormalMat.MultT(n);
                     V.TangentZ = FVector4((float)n[0], (float)n[2], (float)n[1], 0);
                 }
 
-                // Tangent
+                // Tangent ← 헬퍼 사용
                 if (tangentLayer)
                 {
-                    int rawIdx = (tangentLayer->GetMappingMode() == FbxLayerElement::eByControlPoint)
-                        ? cp
-                        : idxCtr;                                        // ← 매핑 모드 처리
-                    int finalIdx;
-                    if (tangentLayer->GetReferenceMode() == FbxLayerElement::eDirect)
-                        finalIdx = rawIdx;
-                    else
-                        finalIdx = tangentLayer->GetIndexArray().GetAt(rawIdx); // ← 참조 모드 처리
-
+                    int rawIdx = GetRawIndex(tangentLayer, cp, idxCtr, p);
+                    int finalIdx = GetFinalIndex(tangentLayer, rawIdx);
                     FbxVector4 t = tangentLayer->GetDirectArray().GetAt(finalIdx);
                     t = NormalMat.MultT(t);
                     V.TangentX = FVector((float)t[0], (float)t[2], (float)t[1]);
                 }
 
-                // Binormal
+                // Binormal ← 헬퍼 사용
                 if (binormalLayer)
                 {
-                    int rawIdx = (binormalLayer->GetMappingMode() == FbxLayerElement::eByControlPoint)
-                        ? cp
-                        : idxCtr;                                        // ← 매핑 모드 처리
-                    int finalIdx;
-                    if (binormalLayer->GetReferenceMode() == FbxLayerElement::eDirect)
-                        finalIdx = rawIdx;
-                    else
-                        finalIdx = binormalLayer->GetIndexArray().GetAt(rawIdx); // ← 참조 모드 처리
-
+                    int rawIdx = GetRawIndex(binormalLayer, cp, idxCtr, p);
+                    int finalIdx = GetFinalIndex(binormalLayer, rawIdx);
                     FbxVector4 b = binormalLayer->GetDirectArray().GetAt(finalIdx);
                     b = NormalMat.MultT(b);
                     V.TangentY = FVector((float)b[0], (float)b[2], (float)b[1]);
@@ -509,24 +496,22 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
 
                 // Skin influences
                 auto& inf = Influences[cp];
-                std::sort(inf.begin(), inf.end(), [](auto& A, auto& B) {return A.second > B.second;});
-                inf.resize(FMath::Min((int)inf.size(), (int32)MAX_TOTAL_INFLUENCES));
-                float totalWeight = 0;
+                std::sort(inf.begin(), inf.end(), [](auto& A, auto& B) { return A.second > B.second; });  // 1) 가중치 내림차순 정렬
+                inf.resize(FMath::Min((int)inf.size(), (int32)MAX_TOTAL_INFLUENCES));                       // 2) 최대 인플루언스 개수로 클램핑
+                float totalW = 0.f;                                                                                     // 3) 총 가중치 계산
+                for (auto& pr : inf) { totalW += (float)pr.second; }
 
-                for (auto& pr : inf)
-                {
-                    totalWeight += (float)pr.second;
-                }
-                for (int32 i = 0;i < MAX_TOTAL_INFLUENCES;++i)
+                for (int32 i = 0; i < MAX_TOTAL_INFLUENCES; ++i)                                                        // 4) V에 본 인덱스와 정규화된 가중치 할당
                 {
                     if (i < inf.size())
                     {
                         V.InfluenceBones[i] = (uint8)inf[i].first;
-                        V.InfluenceWeights[i] = inf[i].second / totalWeight;
+                        V.InfluenceWeights[i] = inf[i].second / totalW;
                     }
                     else
                     {
-                        V.InfluenceBones[i] = 0;V.InfluenceWeights[i] = 0;
+                        V.InfluenceBones[i] = 0;
+                        V.InfluenceWeights[i] = 0.f;
                     }
                 }
 
@@ -539,6 +524,9 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
             }
         }
     }
-    LodModel.NumVertices = LodModel.Vertices.Num(); LodModel.NumTexCoords = uvCount;
+
+    LodModel.NumVertices = LodModel.Vertices.Num();
+    LodModel.NumTexCoords = uvCount;
     return true;
 }
+
