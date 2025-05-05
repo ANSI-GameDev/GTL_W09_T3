@@ -80,7 +80,7 @@ public:
     float OrthoZoom;
 };
 
-class FEditorViewportClient : public FViewportClient
+class FEditorViewportClient : public FViewportClient, public std::enable_shared_from_this<FEditorViewportClient>
 {
 public:
     FEditorViewportClient();
@@ -88,13 +88,12 @@ public:
 
     virtual void Draw(FViewport* Viewport) override;
     virtual UWorld* GetWorld() const override { return nullptr; }
-    void Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect);
-    void Tick(float DeltaTime);
+    virtual void Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect);
+    virtual void Tick(float DeltaTime);
     void Release() const;
 
-    void Input();
     void UpdateEditorCameraMovement(float DeltaTime);
-    void InputKey(const FKeyEvent& InKeyEvent);
+    virtual void InputKey(const FKeyEvent& InKeyEvent);
     void MouseMove(const FPointerEvent& InMouseEvent);
     void ResizeViewport(FRect Top, FRect Bottom, FRect Left, FRect Right);
 
@@ -126,7 +125,7 @@ public:
 
     FViewportResource* GetViewportResource();
 
-private:
+protected:
     FViewportResource* ViewportResourceCache = nullptr;
 
 public:
@@ -189,7 +188,7 @@ public:
     // Flag Test Code
     static void SetOthoSize(float InValue);
 
-private: // Input
+protected: // Input
     POINT PrevMousePos;
     bool bRightMouseDown = false;
 
@@ -239,8 +238,27 @@ public:
     void SetShowGizmo(bool bShow) { bShowGizmo = bShow; }
     bool IsShowGizmo() const { return bShowGizmo; }
 
-private:
+protected:
     ATransformGizmo* GizmoActor = nullptr;
     USceneComponent* PickedGizmoComponent = nullptr;
     bool bShowGizmo = true;
+
+public:
+    /** 한 번만 호출해서 RawMouseInput 처리기를 등록 */
+    void SetupRawMouseInputHandler();
+
+private:
+    /** 델리게이트에 바인딩 되는 최상위 핸들러 */
+    void HandleRawMouseInput(const FPointerEvent& InMouseEvent);
+
+    /** 마우스 이동/드래그 분기 처리 */
+    void HandleMouseMovement(const FPointerEvent& InMouseEvent);
+
+    /** 기즈모 제어 로직 추출 */
+    void HandleGizmoControl(const FPointerEvent& InMouseEvent);
+
+    /** 마우스 휠 처리 로직 */
+    void HandleMouseWheel(const FPointerEvent& InMouseEvent);
+protected:
+    TArray<FDelegateHandle> InputDelegatesHandles;
 };
