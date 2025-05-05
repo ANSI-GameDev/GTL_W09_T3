@@ -21,6 +21,7 @@
 #include "Components/StaticMeshComponent.h"
 
 #include "BaseGizmos/GizmoBaseComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Engine/EditorEngine.h"
 
 #include "PropertyEditor/ShowFlags.h"
@@ -28,6 +29,7 @@
 #include "UnrealEd/EditorViewportClient.h"
 #include "Components/Light/PointLightComponent.h"
 #include "Contents/Actors/Fish.h"
+#include "Engine/Asset/SkeletalMeshAsset.h"
 
 
 FStaticMeshRenderPass::FStaticMeshRenderPass()
@@ -390,6 +392,58 @@ void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorV
         {
             FEngineLoop::PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetWorldLocation(), WorldMatrix);
         }
+    }
+
+    for (USkeletalMeshComponent* Comp : TObjectRange<USkeletalMeshComponent>())
+    {
+        
+    }
+}
+
+
+void FStaticMeshRenderPass::RenderSkeletalPrimitive(FSkeletalMeshRenderData* RenderData, TArray<FStaticMaterial*> Materials, TArray<UMaterial*> OverrideMaterials, int SelectedSubMeshIndex) const
+{
+    UINT Stride = sizeof(FStaticMeshVertex);
+    UINT Offset = 0;
+
+    FVertexInfo VertexInfo;
+    BufferManager->CreateVertexBuffer(RenderData->ObjectName, RenderData->Vertices, VertexInfo);
+
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &VertexInfo.VertexBuffer, &Stride, &Offset);
+
+    FIndexInfo IndexInfo;
+    BufferManager->CreateIndexBuffer(RenderData->ObjectName, RenderData->Indices, IndexInfo);
+    if (IndexInfo.IndexBuffer)
+    {
+        Graphics->DeviceContext->IASetIndexBuffer(IndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    }
+
+    if (RenderData->MaterialSubsets.Num() == 0)
+    {
+        Graphics->DeviceContext->DrawIndexed(RenderData->Indices.Num(), 0, 0);
+        return;
+    }
+
+    for (int SubMeshIndex = 0; SubMeshIndex < RenderData->MaterialSubsets.Num(); SubMeshIndex++)
+    {
+        uint32 MaterialIndex = RenderData->MaterialSubsets[SubMeshIndex].MaterialIndex;
+
+        FSubMeshConstants SubMeshData = (SubMeshIndex == SelectedSubMeshIndex) ? FSubMeshConstants(true) : FSubMeshConstants(false);
+
+        BufferManager->UpdateConstantBuffer(TEXT("FSubMeshConstants"), SubMeshData);
+
+        if (OverrideMaterials[MaterialIndex] != nullptr)
+        {
+            MaterialUtils::UpdateMaterial(BufferManager, Graphics, OverrideMaterials[MaterialIndex]->GetMaterialInfo());
+        }
+        else
+        {
+            MaterialUtils::UpdateMaterial(BufferManager, Graphics, Materials[MaterialIndex]->Material->GetMaterialInfo());
+        }
+
+        uint32 StartIndex = RenderData->MaterialSubsets[SubMeshIndex].IndexStart;
+        uint32 IndexCount = RenderData->MaterialSubsets[SubMeshIndex].IndexCount;
+        Graphics->DeviceContext->DrawIndexed(IndexCount, StartIndex, 0);
     }
 }
 

@@ -242,17 +242,17 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
     FbxAMatrix NormalMat = Geo.Inverse().Transpose();
 
     // 헬퍼 함수: 매핑 모드에 따른 rawIdx 계산
-    auto GetRawIndex = [&](auto* elem, int32 cp, int32 idxCtr, int32 p) -> int32
-        {
-            switch (elem->GetMappingMode())
-            {
-            case FbxGeometryElement::eByControlPoint:  return cp;
-            case FbxGeometryElement::eByPolygonVertex: return idxCtr;
-            case FbxGeometryElement::eByPolygon:       return p;
-            case FbxGeometryElement::eAllSame:         return 0;
-            default:                                   return idxCtr;
-            }
-        };
+    auto GetRawIndex = [&](auto* elem, int32 cp, int32 idxCtr, int32 p) -> int32  
+    {  
+        switch (elem->GetMappingMode())  
+        {  
+            case FbxGeometryElement::eByControlPoint:  return cp;  
+            case FbxGeometryElement::eByPolygonVertex: return idxCtr;  
+            case FbxGeometryElement::eByPolygon:       return p;  
+            case FbxGeometryElement::eAllSame:         return 0;  
+            default:                                   return idxCtr;  
+        }  
+    };  
     // 헬퍼 함수: 참조 모드에 따른 finalIdx 계산
     auto GetFinalIndex = [&](auto* elem, int rawIdx)
         {
