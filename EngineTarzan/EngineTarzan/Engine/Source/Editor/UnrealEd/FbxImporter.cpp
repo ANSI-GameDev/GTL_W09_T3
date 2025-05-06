@@ -252,7 +252,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     return bResult;
 }
 
-bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32 GlobalIdxCtr,  const FString& InFilePath)
+bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32& GlobalIdxCtr,  const FString& InFilePath)
 {
     if (!Mesh) return false;
 
