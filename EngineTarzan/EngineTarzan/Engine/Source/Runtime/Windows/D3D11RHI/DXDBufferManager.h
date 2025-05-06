@@ -44,7 +44,7 @@ public:
     HRESULT CreateIndexBuffer(const FWString& KeyName, const TArray<T>& indices, FIndexInfo& OutIndexInfo, D3D11_USAGE Usage = D3D11_USAGE_DEFAULT, UINT CpuAccessFlags = 0);
 
     template<typename T>
-    HRESULT CreateDynamicVertexBuffer(const FString& KeyName, const TArray<T>& vertices, FVertexInfo& OutVertexInfo);
+    HRESULT CreateDynamicVertexBuffer(const FWString& KeyName, const TArray<T>& vertices, FVertexInfo& OutVertexInfo);
 
     // 템플릿 헬퍼 함수: 내부에서 버퍼 생성 로직 통합
     template<typename T>
@@ -72,7 +72,7 @@ public:
     void UpdateConstantBuffer(const FString& key, const TArray<T>& data) const;
 
     template<typename T>
-    void UpdateDynamicVertexBuffer(const FString& KeyName, const TArray<T>& vertices) const;
+    void UpdateDynamicVertexBuffer(const FWString& KeyName, const TArray<T>& vertices) const;
 
     void BindConstantBuffers(const TArray<FString>& Keys, UINT StartSlot, EShaderStage Stage) const;
     void BindConstantBuffer(const FString& Key, UINT StartSlot, EShaderStage Stage) const;
@@ -249,7 +249,7 @@ HRESULT FDXDBufferManager::CreateVertexBuffer(const FWString& KeyName, const TAr
 
 
 template<typename T>
-HRESULT FDXDBufferManager::CreateDynamicVertexBuffer(const FString& KeyName, const TArray<T>& vertices, FVertexInfo& OutVertexInfo)
+HRESULT FDXDBufferManager::CreateDynamicVertexBuffer(const FWString& KeyName, const TArray<T>& vertices, FVertexInfo& OutVertexInfo)
 {
     return CreateVertexBufferInternal(KeyName, vertices, OutVertexInfo, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 }
@@ -330,14 +330,14 @@ void FDXDBufferManager::UpdateConstantBuffer(const FString& key, const TArray<T>
 }
 
 template<typename T>
-void FDXDBufferManager::UpdateDynamicVertexBuffer(const FString& KeyName, const TArray<T>& vertices) const
+void FDXDBufferManager::UpdateDynamicVertexBuffer(const FWString& KeyName, const TArray<T>& vertices) const
 {
-    if (!VertexBufferPool.Contains(KeyName))
+    if (!TextAtlasVertexBufferPool.Contains(KeyName))
     {
-        UE_LOG(LogLevel::Error, TEXT("UpdateDynamicVertexBuffer 호출: 키 %s에 해당하는 버텍스 버퍼가 없습니다."), *KeyName);
+        UE_LOG(LogLevel::Error, TEXT("UpdateDynamicVertexBuffer 호출: 키 %s에 해당하는 버텍스 버퍼가 없습니다."), *FString(KeyName));
         return;
     }
-    FVertexInfo vbInfo = VertexBufferPool[KeyName];
+    FVertexInfo vbInfo = TextAtlasVertexBufferPool[KeyName];
 
     D3D11_MAPPED_SUBRESOURCE mapped;
     HRESULT hr = DXDeviceContext->Map(vbInfo.VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
