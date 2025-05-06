@@ -85,7 +85,7 @@ void OutlinerEditorPanel::Render()
         if (ImGui::IsItemClicked())
         {
             Engine->SelectActor(Actor);
-            Engine->DeselectComponent(Engine->GetSelectedComponent());
+            Engine->SelectComponent(Actor->GetRootComponent());
         }
 
         if (NodeOpen)
