@@ -72,7 +72,7 @@ void FFbxImporter::ConvertSceneToUnreal(FbxScene* Scene)
 
     // 먼저 FBX 씬에 설정된 축계 → 언리얼 축계로
     Scene->GetGlobalSettings().GetAxisSystem().ConvertScene(Scene);
-    UnrealAxis.ConvertScene(Scene);
+    UnrealAxis.DeepConvertScene(Scene);
 
     Scene->GetGlobalSettings().SetAxisSystem(UnrealAxis);
     // [Unused] position 에 scale 값 곱하여 구함 - 단위: FBX 기본(cm) → 언리얼 기본(m) (1/100)
