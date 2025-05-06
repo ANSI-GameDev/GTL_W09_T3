@@ -219,6 +219,24 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     LodModel.RefBasesInvMatrix.Empty();
     uint32 GlobalIdxCtr = 0;
 
+    LodModel.FilePath = InFilePath.ToWideString().substr(0,
+        InFilePath.ToWideString().find_last_of(L"\\/") + 1);
+    LodModel.ObjectName = InFilePath.ToWideString();
+    std::wstring wideName = LodModel.ObjectName.substr(InFilePath.ToWideString().find_last_of(L"\\/") + 1);;
+    std::string fileName(wideName.begin(), wideName.end());
+
+    // 마지막 '.'을 찾아 확장자를 제거
+    size_t dotPos = fileName.find_last_of('.');
+    if (dotPos != std::string::npos)
+    {
+        LodModel.DisplayName = fileName.substr(0, dotPos);
+    }
+    else
+    {
+        LodModel.DisplayName = fileName;
+    }
+    
+
     // 5) 씬 전체에서 모든 Mesh 노드를 수집해 각각 처리
     TArray<FbxMesh*> MeshList;
     CollectAllMeshes(Scene->GetRootNode(), MeshList);
