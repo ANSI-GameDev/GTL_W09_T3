@@ -42,6 +42,7 @@ class FSkeletalMeshLODModel
 {
 public:
     FWString ObjectName;         // LOD 모델 이름
+    FWString FilePath;           // FBX File Paths
     FString DisplayName;         // LOD 모델 표시 이름
 
 
