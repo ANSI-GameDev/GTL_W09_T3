@@ -13,7 +13,7 @@ void ShowFlags::Draw(const std::shared_ptr<FEditorViewportClient>& ActiveViewpor
         ImGui::OpenPopup("ShowFlags");
     }
 
-    const char* Items[] = { "AABB", "Primitives", "BillBoardText", "UUID", "Fog", "LightWireframe", "LightWireframeSelectedOnly", "Shadow", "Collision", "CollisionSelectedOnly" };
+    const char* Items[] = { "AABB", "Primitives","SkeletalMesh", "BillBoardText", "UUID", "Fog", "LightWireframe", "LightWireframeSelectedOnly", "Shadow", "Collision", "CollisionSelectedOnly" };
     const uint64 CurFlag = ActiveViewport->GetShowFlag();
 
     if (ImGui::BeginPopup("ShowFlags"))
@@ -22,6 +22,7 @@ void ShowFlags::Draw(const std::shared_ptr<FEditorViewportClient>& ActiveViewpor
         {
             static_cast<bool>(CurFlag & EEngineShowFlags::SF_AABB),
             static_cast<bool>(CurFlag & EEngineShowFlags::SF_Primitives),
+            static_cast<bool>(CurFlag & EEngineShowFlags::SF_SkeletalMesh),
             static_cast<bool>(CurFlag & EEngineShowFlags::SF_BillboardText),
             static_cast<bool>(CurFlag & EEngineShowFlags::SF_UUIDText),
             static_cast<bool>(CurFlag & EEngineShowFlags::SF_Fog),
@@ -56,37 +57,41 @@ uint64 ShowFlags::ConvertSelectionToFlags(const bool Selected[])
     }
     if (Selected[2])
     {
-        Flags |= static_cast<uint64>(EEngineShowFlags::SF_BillboardText);
+        Flags |= static_cast<uint64>(EEngineShowFlags::SF_SkeletalMesh);
     }
     if (Selected[3])
     {
-        Flags |= static_cast<uint64>(EEngineShowFlags::SF_UUIDText);
+        Flags |= static_cast<uint64>(EEngineShowFlags::SF_BillboardText);
     }
     if (Selected[4])
     {
-        Flags |= static_cast<uint64>(EEngineShowFlags::SF_Fog);
+        Flags |= static_cast<uint64>(EEngineShowFlags::SF_UUIDText);
     }
     if (Selected[5])
     {
-        Flags |= static_cast<uint64>(EEngineShowFlags::SF_LightWireframe);
+        Flags |= static_cast<uint64>(EEngineShowFlags::SF_Fog);
     }
     if (Selected[6])
+    {
+        Flags |= static_cast<uint64>(EEngineShowFlags::SF_LightWireframe);
+    }
+    if (Selected[7])
     {
         // Need SF_LightWireframe to Draw
         Flags |= static_cast<uint64>(EEngineShowFlags::SF_LightWireframe);
         Flags |= static_cast<uint64>(EEngineShowFlags::SF_LightWireframeSelectedOnly);
     }
-    if (Selected[7])
+    if (Selected[8])
     {
         Flags |= static_cast<uint64>(EEngineShowFlags::SF_Shadow);
     }
     
-    if (Selected[8])
+    if (Selected[9])
     {
         Flags |= static_cast<uint64>(EEngineShowFlags::SF_Collision);
     }
     
-    if (Selected[9])
+    if (Selected[10])
     {
         Flags |= static_cast<uint64>(EEngineShowFlags::SF_Collision);
         Flags |= static_cast<uint64>(EEngineShowFlags::SF_CollisionSelectedOnly);
