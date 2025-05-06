@@ -22,7 +22,8 @@ USkeletalMeshComponent::USkeletalMeshComponent()
         //TEXT("Contents/FBX/nathan.fbx"),
         //TEXT("Contents/FBX/tifa2.fbx"),
         //TEXT("Contents/FBX/tifa_noglove/tifanoglove.fbx"),
-        TEXT("Contents/FBX/tifamaterial/PC0002_00_BodyB.fbx"),
+        TEXT("Contents/FBX/aerith.fbx"),
+        //TEXT("Contents/FBX/tifamaterial/PC0002_00_BodyB.fbx"),
         *SkeletalMesh->ImportedModel,
         &SkeletalMesh->RefSkeleton
     );

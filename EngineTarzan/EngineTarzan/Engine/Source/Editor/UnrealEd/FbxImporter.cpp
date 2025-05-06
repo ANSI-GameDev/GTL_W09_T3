@@ -358,53 +358,112 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
         };
     // --- 섹션 파싱: 재질별 폴리곤 그룹화 ---
     //LodModel.Sections.Empty();
+    //if (materialLayer)
+    //{
+    //    // 1) materialIndex → Section 임시 맵
+    //    TMap<int32, FSkelMeshSection> sectionMap;
+    //    int32 polyCount = Mesh->GetPolygonCount();
+    //    for (int32 p = 0; p < polyCount; ++p)
+    //    {
+    //        // rawIdx / matIdx 계산
+    //        int rawIdx = GetRawIndex(materialLayer, /*cp*/0, /*idxCtr*/0, /*poly*/p);
+    //        int32 matIdx = GetFinalIndex(materialLayer, rawIdx);
+
+    //        // 해당 머티리얼 섹션이 없으면 새로 생성
+    //        FSkelMeshSection* sec = sectionMap.Find(matIdx);
+    //        if (!sec)
+    //        {
+    //            FSkelMeshSection newSec;
+    //            newSec.MaterialIndex = matIdx;  // 머티리얼 슬롯
+    //            newSec.BaseIndex = 0;       // 나중에 채움
+    //            newSec.NumTriangles = 0;       // 누적할 카운터
+    //            newSec.BaseVertexIndex = 0;       // VB 오프셋 (통합 VB 시 사용)
+    //            sectionMap.Add(matIdx, newSec);
+    //            sec = sectionMap.Find(matIdx);
+    //        }
+
+    //        // 이 폴리곤이 삼각형으로 분해됐을 때의 트라이 갯수만큼 누적
+    //        sec->NumTriangles += (Mesh->GetPolygonSize(p) - 2);
+    //    }
+
+    //    // 2) BaseIndex(IB 오프셋) 계산하고 LodModel.Sections 에 추가
+    //    /*
+    //    uint32 runningTri = 0;
+    //    for (auto& Pair : sectionMap)
+    //    {
+    //        FSkelMeshSection& sec = Pair.Value;
+    //        sec.BaseIndex = runningTri * 3;      // 인덱스 버퍼에서 시작 위치 (triangle count × 3)
+    //        runningTri += sec.NumTriangles;   // 다음 섹션을 위해 누적
+    //        LodModel.Sections.Add(sec);
+    //    }
+    //    */
+
+    //    // 2) BaseIndex(IB 오프셋) 와 BaseVertexIndex(VB 오프셋) 계산 후 추가
+    //    uint32 runningTri = 0;
+    //    for (auto& Pair : sectionMap)
+    //    {
+    //        FSkelMeshSection& sec = Pair.Value;
+    //        sec.BaseIndex = runningTri * 3;     // IB 오프셋
+    //        sec.BaseVertexIndex = MeshStartVert;      // VB 오프셋
+    //        runningTri += sec.NumTriangles;
+    //        LodModel.Sections.Add(sec);
+    //    }
+    //}
+
     if (materialLayer)
     {
-        // 1) materialIndex → Section 임시 맵
+        // 1) 메시별로 분리된 sectionMap
         TMap<int32, FSkelMeshSection> sectionMap;
         int32 polyCount = Mesh->GetPolygonCount();
+
+        // 4) eByPolygonVertex 대응용 "폴리곤頂点 순서" 카운터
+        int32 groupingIdxCtr = 0;
+
+        // (1) 각 폴리곤마다 올바른 rawIdx 계산
         for (int32 p = 0; p < polyCount; ++p)
         {
-            // rawIdx / matIdx 계산
-            int rawIdx = GetRawIndex(materialLayer, /*cp*/0, /*idxCtr*/0, /*poly*/p);
+            // 대표 컨트롤 포인트로 폴리곤의 첫 번째頂点 인덱스 사용
+            int32 cp = Mesh->GetPolygonVertex(p, 0);
+
+            // GetRawIndex에 cp, groupingIdxCtr, p 전달
+            int rawIdx = GetRawIndex(materialLayer, cp, groupingIdxCtr, p);
             int32 matIdx = GetFinalIndex(materialLayer, rawIdx);
 
-            // 해당 머티리얼 섹션이 없으면 새로 생성
+            // 새로운 섹션이면 생성
             FSkelMeshSection* sec = sectionMap.Find(matIdx);
             if (!sec)
             {
                 FSkelMeshSection newSec;
-                newSec.MaterialIndex = matIdx;  // 머티리얼 슬롯
-                newSec.BaseIndex = 0;       // 나중에 채움
-                newSec.NumTriangles = 0;       // 누적할 카운터
-                newSec.BaseVertexIndex = 0;       // VB 오프셋 (통합 VB 시 사용)
+                newSec.MaterialIndex = matIdx;
+                newSec.BaseIndex = 0;
+                newSec.NumTriangles = 0;
+                newSec.BaseVertexIndex = 0;
                 sectionMap.Add(matIdx, newSec);
                 sec = sectionMap.Find(matIdx);
             }
 
-            // 이 폴리곤이 삼각형으로 분해됐을 때의 트라이 갯수만큼 누적
+            // 삼각형 개수 누적
             sec->NumTriangles += (Mesh->GetPolygonSize(p) - 2);
+
+            // 다음 폴리곤정점을 위해 카운터 증가
+            groupingIdxCtr += Mesh->GetPolygonSize(p);
         }
 
-        // 2) BaseIndex(IB 오프셋) 계산하고 LodModel.Sections 에 추가
-        /*
-        uint32 runningTri = 0;
-        for (auto& Pair : sectionMap)
+        // 2) TMap 순회 순서가 예측 가능하도록 키 정렬
+        TArray<int32> sortedKeys;
+        for (auto& [key, value] : sectionMap)
         {
-            FSkelMeshSection& sec = Pair.Value;
-            sec.BaseIndex = runningTri * 3;      // 인덱스 버퍼에서 시작 위치 (triangle count × 3)
-            runningTri += sec.NumTriangles;   // 다음 섹션을 위해 누적
-            LodModel.Sections.Add(sec);
+            sortedKeys.Add(key);
         }
-        */
+        sortedKeys.Sort();
 
-        // 2) BaseIndex(IB 오프셋) 와 BaseVertexIndex(VB 오프셋) 계산 후 추가
+        // BaseIndex/BaseVertexIndex 계산 및 LodModel.Sections 추가
         uint32 runningTri = 0;
-        for (auto& Pair : sectionMap)
+        for (int32 matKey : sortedKeys)
         {
-            FSkelMeshSection& sec = Pair.Value;
-            sec.BaseIndex = runningTri * 3;     // IB 오프셋
-            sec.BaseVertexIndex = MeshStartVert;      // VB 오프셋
+            FSkelMeshSection& sec = sectionMap[matKey];
+            sec.BaseIndex = runningTri * 3;    // 인덱스버퍼 오프셋
+            sec.BaseVertexIndex = MeshStartVert;     // 정점버퍼 오프셋
             runningTri += sec.NumTriangles;
             LodModel.Sections.Add(sec);
         }
