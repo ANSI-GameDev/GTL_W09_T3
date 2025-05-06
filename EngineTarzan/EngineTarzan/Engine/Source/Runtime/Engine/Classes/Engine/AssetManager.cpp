@@ -3,6 +3,60 @@
 
 #include <filesystem>
 #include "Engine/FObjLoader.h"
+#include "UnrealEd/FbxImporter.h"
+
+namespace fs = std::filesystem;
+
+void FAssetRegistry::ScanDirectory(const FString& InRootDir)
+{
+    AssetMetaDatas.Empty();
+
+    std::string RootAnsi = GetData(InRootDir);
+    for (auto& Entry : fs::recursive_directory_iterator(RootAnsi))
+    {
+        if (!Entry.is_regular_file())
+            continue;
+
+        // 전체 경로, 상대 경로(Unix 스타일)
+        FString FullPathAnsi = Entry.path().string();
+        FString RelPathAnsi = fs::relative(Entry.path(), RootAnsi).generic_string();
+
+        // FString 변환
+        FString Id        = RelPathAnsi;             // ex: "Meshes/Hero.fbx"
+        FString FullPath  = FullPathAnsi;           // ex: "C:/Project/Content/Meshes/Hero.fbx"
+        
+        // AssetName: 확장자 제외한 파일명
+        FString AssetName    = FPath::GetBaseFilename(Id);                 // ex: "Hero"
+        // PackagePath: "/Game/" + 폴더 경로 (언리얼 패키지 룩)
+        // AssetType: 확장자로부터 결정 (enum 커스터마이징 필요)
+        FString ExtWithDot   = FPath::GetExtension(Id, true).ToLower();    // ex: ".fbx"
+        EAssetType AssetType = EAssetType::MAX;
+        if (ExtWithDot == TEXT(".fbx"))          AssetType = EAssetType::SkeletalMesh;
+        else if (ExtWithDot == TEXT(".png"))     AssetType = EAssetType::Texture2D;
+        // ...필요시 확장자 매핑 추가...
+
+        // 파일 크기 (바이트 단위)
+        uint32 Size = static_cast<uint32>(fs::file_size(Entry.path()));
+
+        // 메타데이터 구성
+        FAssetMetaData Meta;
+        Meta.AssetName   = AssetName;
+        Meta.FullPath = FPath(FullPath).Normalize();
+        Meta.AssetType   = AssetType;
+        Meta.Size        = Size;
+
+        AssetMetaDatas.Emplace(Id, Meta);
+    }
+}
+
+FPath FAssetRegistry::GetPath(const FString& id)
+{
+    return AssetMetaDatas.Find(id)->FullPath;
+}
+
+UAssetManager::UAssetManager()
+{
+}
 
 bool UAssetManager::IsInitialized()
 {
@@ -28,40 +82,31 @@ UAssetManager* UAssetManager::GetIfInitialized()
     return GEngine ? GEngine->AssetManager : nullptr;
 }
 
-void UAssetManager::InitAssetManager()
+void UAssetManager::Initialize()
 {
-    AssetRegistry = std::make_unique<FAssetRegistry>();
-
-    LoadObjFiles();
-}
-
-const TMap<FName, FAssetInfo>& UAssetManager::GetAssetRegistry()
-{
-    return AssetRegistry->PathNameToAssetInfo;
-}
-
-void UAssetManager::LoadObjFiles()
-{
-    const std::string BasePathName = "Contents/";
-
-    // Obj 파일 로드
+    AssetRegistry = FAssetRegistry();
+    AssetRegistry.ScanDirectory(ContentDirectory.ToString());
     
-    for (const auto& Entry : std::filesystem::recursive_directory_iterator(BasePathName))
-    {
-        if (Entry.is_regular_file() && Entry.path().extension() == ".obj")
-        {
-            FAssetInfo NewAssetInfo;
-            NewAssetInfo.AssetName = FName(Entry.path().filename().string());
-            NewAssetInfo.PackagePath = FName(Entry.path().parent_path().string());
-            NewAssetInfo.AssetType = EAssetType::StaticMesh; // obj 파일은 무조건 StaticMesh
-            NewAssetInfo.Size = static_cast<uint32>(std::filesystem::file_size(Entry.path()));
-            
-            AssetRegistry->PathNameToAssetInfo.Add(NewAssetInfo.AssetName, NewAssetInfo);
-            
-            FString MeshName = NewAssetInfo.PackagePath.ToString() + "/" + NewAssetInfo.AssetName.ToString();
-            FObjManager::CreateStaticMesh(MeshName);
-            // ObjFileNames.push_back(UGTLStringLibrary::StringToWString(Entry.path().string()));
-            // FObjManager::LoadObjStaticMeshAsset(UGTLStringLibrary::StringToWString(Entry.path().string()));
-        }
-    }
+    // 2) Importer 등록
+    //    .fbx → USkeletalMesh 처리기
+    static FFbxImporter* SkeletalFbxImp = new FFbxImporter();
+    FString Ext = TEXT(".fbx");
+    RegisterImporter<USkeletalMeshAsset>(Ext, SkeletalFbxImp);
+
+    // //    .fbx → UStaticMesh 처리기 (예제용)
+    // static FFbxStaticMeshImporter* StaticFbxImp = new FFbxStaticMeshImporter();
+    // RegisterImporter<UStaticMesh>(TEXT(".fbx"), StaticFbxImp);
+    //
+    // //    .obj → UStaticMesh 처리기
+    // static FObjImporter* ObjImp = new FObjImporter();
+    // RegisterImporter<UStaticMesh>(TEXT(".obj"), ObjImp);
+    //
+    // //    .png → UTexture2D 처리기
+    // static FPngImporter* PngImp = new FPngImporter();
+    // RegisterImporter<UTexture2D>(TEXT(".png"), PngImp);
+}
+
+const TMap<FString, FAssetMetaData>& UAssetManager::GetAssetMetaDatas()
+{
+    return AssetRegistry.AssetMetaDatas;
 }

@@ -38,7 +38,5 @@ public:
 
     uint32 NumVertices;
     uint32 NumTexCoords;
-
-
 };
 

@@ -1,12 +1,95 @@
 #include "FbxImporter.h"
 //#include <fbxsdk.h>
 
+#include <memory>
+
 #include "Define.h"
 #include "ReferenceSkeleton.h"
+#include "Engine/AssetManager.h"
+#include "Engine/SkeletalMesh.h"
 #include "Rendering/SkeletalMeshLODModel.h"
+#include "UObject/ObjectFactory.h"
 
 TMap<FbxNode*, int32> FFbxImporter::NodeToBoneIndex;
 FbxAMatrix            FFbxImporter::JointPostConvert;
+
+FFbxImporter::~FFbxImporter()
+{
+}
+
+USkeletalMeshAsset* FFbxImporter::Import(const FString& InPath)
+{
+    // 1) 중간 데이터 파싱
+    const std::shared_ptr<FAssetData> Data = ImportData(InPath);
+    if (!Data)
+    {
+        UE_LOG(LogLevel::Warning, TEXT("FBX ImportData failed for path: %s"), *InPath);
+        return nullptr;
+    }
+
+    // 2) 에셋 생성
+    USkeletalMeshAsset* Asset = CreateAsset(Data);
+    
+    return Asset;
+}
+
+USkeletalMeshAsset* FFbxImporter::CreateAsset(const std::shared_ptr<FAssetData> Data)
+{
+    // 타입 확인 및 다운캐스트
+    const std::shared_ptr<FSkeletalAssetData> SkeletalData = std::dynamic_pointer_cast<FSkeletalAssetData>(Data);
+    if (!SkeletalData)
+    {
+        UE_LOG(LogLevel::Warning, TEXT("CreateAsset: Data is not FSkeletalAssetData."));
+        return nullptr;
+    }
+
+    // UAsset 인스턴스 생성
+    USkeletalMeshAsset* Asset = FObjectFactory::ConstructObject<USkeletalMeshAsset>(nullptr);
+    if (!Asset)
+    {
+        UE_LOG(LogLevel::Warning, TEXT("CreateAsset: Failed to construct USkeletalMeshAsset."));
+        return nullptr;
+    }
+
+    // 런타임 리소스 초기화
+    if (!Asset->InitializeFromData(SkeletalData))
+    {
+        UE_LOG(LogLevel::Warning, TEXT("CreateAsset: InitializeFromData failed."));
+        return nullptr;
+    }
+
+    return Asset;
+}
+
+std::shared_ptr<FAssetData> FFbxImporter::ImportData(const FString& InPath)
+{
+    // 중간 데이터 객체 생성
+    std::shared_ptr<FSkeletalAssetData> Data = std::make_shared<FSkeletalAssetData>();
+
+    // 2) 확장자 확인
+    const FString Ext = FPath(InPath).GetExtension(true).ToLower();
+
+    bool bSuccess = false;
+    if (Ext == TEXT(".bin"))
+    {
+        // .bin 포맷 파싱 (별도 함수 구현 필요)
+        //bSuccess = ParseSkeletalMeshFromBinary(InPath, Data->LODModel, &Data->RefSkeleton);
+    }
+    else
+    {
+        // FBX 파싱
+        bSuccess = ParseSkeletalMeshLODModel(InPath, Data->LODModel, &Data->RefSkeleton);
+    }
+
+    if (!bSuccess)
+    {
+        UE_LOG(LogLevel::Warning, TEXT("ImportData parsing failed for path: %s"), *InPath);
+        return nullptr;
+    }
+
+    return Data;
+}
+
 // --- Reference Skeleton 파싱 (파일 기반) ---
 bool FFbxImporter::ParseReferenceSkeleton(const FString& InFilePath, FReferenceSkeleton& OutRefSkeleton)
 {
@@ -132,11 +215,7 @@ void FFbxImporter::ComputeJointPostConvert(FbxScene* Scene)
 }
 
 // --- LODModel 파일 파싱 및 본 계층 적용 ---
-bool FFbxImporter::ParseSkeletalMeshLODModel(
-    const FString& InFilePath,
-    FSkeletalMeshLODModel& LodModel,
-    FReferenceSkeleton* OutRefSkeleton
-)
+bool FFbxImporter::ParseSkeletalMeshLODModel(const FString& InFilePath, FSkeletalMeshLODModel& LodModel, FReferenceSkeleton* OutRefSkeleton)
 {
     // 1) SDK 초기화
     FbxManager* SdkMgr = FbxManager::Create();
@@ -268,7 +347,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
             }
         };
 
-    // TODO : 일단 오류 떠서 주석처리함 나중에 주석 해제 
+    // TODO : 임시 주석
     // // 섹션 파싱: 재질별 폴리곤 그룹화
     // LodModel.Sections.Empty();
     // if (materialLayer)

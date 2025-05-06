@@ -371,8 +371,8 @@ void PropertyEditorPanel::RenderForStaticMesh(UStaticMeshComponent* StaticMeshCo
                 PreviewName = RenderData->DisplayName;
             }
         }
-        
-        const TMap<FName, FAssetInfo> Assets = UAssetManager::Get().GetAssetRegistry();
+
+        TMap<FString, FAssetMetaData> Assets = UAssetManager::Get().GetAssetMetaDatas();
 
         if (ImGui::BeginCombo("##StaticMesh", GetData(PreviewName), ImGuiComboFlags_None))
         {
@@ -380,7 +380,7 @@ void PropertyEditorPanel::RenderForStaticMesh(UStaticMeshComponent* StaticMeshCo
             {
                 if (ImGui::Selectable(GetData(Asset.Value.AssetName.ToString()), false))
                 {
-                    FString MeshName = Asset.Value.PackagePath.ToString() + "/" + Asset.Value.AssetName.ToString();
+                    FString MeshName = Asset.Value.FullPath.ToString() + "/" + Asset.Value.AssetName.ToString();
                     UStaticMesh* StaticMesh = FObjManager::GetStaticMesh(MeshName.ToWideString());
                     if (StaticMesh)
                     {

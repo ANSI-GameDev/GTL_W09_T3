@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include "SkeletalRenderCPUSkin.h"
+#include "Engine/AssetManager.h"
 #include "Engine/SkeletalMesh.h"
 #include "Rendering/SkeletalMeshLODModel.h"
 #include "UnrealEd/FbxImporter.h"
@@ -11,16 +11,17 @@
 USkeletalMeshComponent::USkeletalMeshComponent()
 {
     UE_LOG(LogLevel::Error, TEXT("SkeletalMeshComponent::USkeletalMeshComponent()"));
-    SkeletalMesh= FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
-    SkeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+    SkeletalMesh = UAssetManager::Get().GetAsset<USkeletalMeshAsset>("FBX/Anime_character.fbx");
+    ///SkeletalMesh= FObjectFactory::ConstructObject<USkeletalMeshAsset>(nullptr);
+    //SkeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
 
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
 
-    FFbxImporter::ParseSkeletalMeshLODModel(
-        TEXT("Contents/FBX/Anime_character.fbx"),
-        *SkeletalMesh->ImportedModel,
-        &SkeletalMesh->RefSkeleton
-    );
+    // FFbxImporter::ParseSkeletalMeshLODModel(
+    //     TEXT("Contents/FBX/Anime_character.fbx"),
+    //     *SkeletalMesh->ImportedModel,
+    //     &SkeletalMesh->RefSkeleton
+    // );
 
     // --- 디버깅용 파일 출력 ---
     std::ofstream ofs("FBXDebug.txt", std::ios::out | std::ios::trunc);
@@ -32,8 +33,8 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 
     // 1) ReferenceSkeleton 덤프
     ofs << "=== ReferenceSkeleton ===\n";
-    const auto& BoneInfos = SkeletalMesh->RefSkeleton.GetBoneInfo();
-    const auto& BonePoses = SkeletalMesh->RefSkeleton.GetBonePose();
+    const auto& BoneInfos = SkeletalMesh->AssetData->RefSkeleton.GetBoneInfo();
+    const auto& BonePoses = SkeletalMesh->AssetData->RefSkeleton.GetBonePose();
     for (int32 i = 0; i < BoneInfos.Num(); ++i)
     {
         // BoneInfo
@@ -57,7 +58,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 
     // 2) LODModel 덤프
     ofs << "=== LODModel ===\n";
-    FSkeletalMeshLODModel& L = *SkeletalMesh->ImportedModel;
+    FSkeletalMeshLODModel& L = SkeletalMesh->AssetData->LODModel;
     ofs << "NumVertices=" << L.NumVertices
         << " NumTexCoords=" << L.NumTexCoords << "\n";
 

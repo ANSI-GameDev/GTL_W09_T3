@@ -40,7 +40,7 @@ void UEditorEngine::Init()
     {
         AssetManager = FObjectFactory::ConstructObject<UAssetManager>(this);
         assert(AssetManager);
-        AssetManager->InitAssetManager();
+        AssetManager->Initialize();
     }
     LoadLevel("Saved/AutoSaves.scene");
 }

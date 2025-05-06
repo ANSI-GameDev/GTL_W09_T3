@@ -1,9 +1,11 @@
 #pragma once
 #include <fbxsdk.h>
 
+#include "IAssetImporter.h"
 #include "Container/Map.h"
 #include "HAL/PlatformType.h"
 
+class USkeletalMeshAsset;
 struct FReferenceSkeleton;
 
 class FSkeletalMeshLODModel;
@@ -11,7 +13,7 @@ class FString;
 class USkeletalMesh;
 class FMatrix;
 
-class FFbxImporter
+class FFbxImporter : public IAssetImporter<USkeletalMeshAsset>
 {
 
 public:
@@ -47,5 +49,11 @@ private:
 
     /** FBX 행렬 → 엔진 FMatrix 변환 헬퍼 */
     static FMatrix ConvertFbxAMatrix(const FbxAMatrix& M);
+
+public:
+    USkeletalMeshAsset* Import(const FString& InPath) override;
+    USkeletalMeshAsset* CreateAsset(std::shared_ptr<FAssetData> Data) override;
+    std::shared_ptr<FAssetData> ImportData(const FString& InPath) override;
+    ~FFbxImporter() override;
 };
 
