@@ -41,8 +41,15 @@ public:
 
     FString GetFilename() const                   { return InternalPath.filename().string(); }
     FString GetDirectory() const                  { return InternalPath.parent_path().string(); }
+    //
     FPath        Combine(const FString& Other) const { return FPath(InternalPath / GetData(Other)); }
     FPath        Normalize() const                    { return FPath(InternalPath.lexically_normal()); }
+    FPath        Append(const FString& Other) const
+    {
+        FString s = InternalPath.string().c_str();  // FString으로 변환
+        s += Other;                                // FString 연산자+
+        return FPath(s);
+    }
 
     bool         Exists() const                       { return std::filesystem::exists(InternalPath); }
     bool         IsDirectory() const                  { return std::filesystem::is_directory(InternalPath); }

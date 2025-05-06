@@ -69,8 +69,7 @@ public:
         }
 
         FPath BinaryPath = Meta->FullPath;
-        // TODO : Combine이 "/"으로 붙는 거라 이거로 하면 안됨
-        BinaryPath = BinaryPath.Combine(TEXT(".bin"));
+        BinaryPath = BinaryPath.Append(TEXT(".bin"));
 
         const bool bHasBinary = FPath::Exists(BinaryPath.ToString());
         const FPath& LoadPath = bHasBinary ? BinaryPath : Meta->FullPath;
