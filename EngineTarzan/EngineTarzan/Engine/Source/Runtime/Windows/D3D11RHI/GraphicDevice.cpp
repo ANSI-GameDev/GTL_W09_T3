@@ -45,7 +45,7 @@ void FGraphicsDevice::CreateDeviceAndSwapChain(HWND hWindow)
 
     if (FAILED(hr))
     {
-        MessageBox(hWindow, L"CreateDeviceAndSwapChain failed!", L"Error", MB_ICONERROR | MB_OK);
+        MessageBox(hWindow, TEXT("CreateDeviceAndSwapChain failed!"), TEXT("Error"), MB_ICONERROR | MB_OK);
         return;
     }
 
@@ -246,7 +246,7 @@ void FGraphicsDevice::Resize(HWND hWindow)
 
     if (ScreenWidth == 0 || ScreenHeight == 0)
     {
-        MessageBox(hWindow, L"Invalid width or height for ResizeBuffers!", L"Error", MB_ICONERROR | MB_OK);
+        MessageBox(hWindow, TEXT("Invalid width or height for ResizeBuffers!"), TEXT("Error"), MB_ICONERROR | MB_OK);
         return;
     }
 
@@ -255,7 +255,7 @@ void FGraphicsDevice::Resize(HWND hWindow)
     hr = SwapChain->ResizeBuffers(0, 0, 0, BackBufferFormat, 0); // DXGI_FORMAT_B8G8R8A8_UNORM으로 시도
     if (FAILED(hr))
     {
-        MessageBox(hWindow, L"failed", L"ResizeBuffers failed ", MB_ICONERROR | MB_OK);
+        MessageBox(hWindow, TEXT("failed"), TEXT("ResizeBuffers failed "), MB_ICONERROR | MB_OK);
         return;
     }
 
@@ -292,7 +292,7 @@ void FGraphicsDevice::CreateAlphaBlendState()
     HRESULT hr = Device->CreateBlendState(&blendDesc, &AlphaBlendState);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"AlphaBlendState 생성에 실패했습니다!", L"Error", MB_ICONERROR | MB_OK);
+        MessageBox(NULL, TEXT("AlphaBlendState 생성에 실패했습니다!"), TEXT("Error"), MB_ICONERROR | MB_OK);
     }
 }
 

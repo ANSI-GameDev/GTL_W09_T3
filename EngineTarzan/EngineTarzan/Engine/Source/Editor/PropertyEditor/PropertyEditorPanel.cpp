@@ -288,7 +288,7 @@ void PropertyEditorPanel::RenderForActor(AActor* SelectedActor, USceneComponent*
             if (auto* ScriptComp = SelectedActor->GetComponentByClass<ULuaScriptComponent>())
             {
                 std::wstring ws = (BasePath + ScriptComp->GetDisplayName()).ToWideString();
-                LuaScriptFileUtils::OpenLuaScriptFile(ws.c_str());
+                LuaScriptFileUtils::OpenLuaScriptFile(reinterpret_cast<LPCTSTR>(ws.c_str()));
             }
         }
     }

@@ -35,6 +35,8 @@
 #include "Stats/Stats.h"
 #include "Stats/GPUTimingManager.h"
 
+#include "SkeletalMeshRenderPass.h"
+
 //------------------------------------------------------------------------------
 // 초기화 및 해제 관련 함수
 //------------------------------------------------------------------------------
@@ -69,6 +71,8 @@ void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBuf
     PostProcessCompositingPass = new FPostProcessCompositingPass();
     SlateRenderPass = new FSlateRenderPass();
 
+    SkeletalMeshRenderPass = new FSkeletalMeshRenderPass();
+
     if (false == ShadowManager->Initialize(Graphics, BufferManager))
     {
         static_assert(true, "ShadowManager Initialize Failed");
@@ -95,6 +99,9 @@ void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBuf
     PostProcessCompositingPass->Initialize(BufferManager, Graphics, ShaderManager);
     
     SlateRenderPass->Initialize(BufferManager, Graphics, ShaderManager);
+
+    SkeletalMeshRenderPass->Initialize(BufferManager, Graphics, ShaderManager);
+    SkeletalMeshRenderPass->InitializeShadowManager(ShadowManager);
 }
 
 void FRenderer::Release()
@@ -114,6 +121,7 @@ void FRenderer::Release()
     delete CompositingPass;
     delete PostProcessCompositingPass;
     delete SlateRenderPass;
+    delete SkeletalMeshRenderPass;
 }
 
 //------------------------------------------------------------------------------
@@ -238,6 +246,7 @@ void FRenderer::PrepareRenderPass() const
     EditorRenderPass->PrepareRenderArr();
     TileLightCullingPass->PrepareRenderArr();
     DepthPrePass->PrepareRenderArr();
+    SkeletalMeshRenderPass->PrepareRenderArr();
 }
 
 void FRenderer::ClearRenderArr() const
@@ -252,6 +261,7 @@ void FRenderer::ClearRenderArr() const
     EditorRenderPass->ClearRenderArr();
     DepthPrePass->ClearRenderArr();
     TileLightCullingPass->ClearRenderArr();
+    SkeletalMeshRenderPass->ClearRenderArr();
 }
 
 void FRenderer::UpdateCommonBuffer(const std::shared_ptr<FEditorViewportClient>& Viewport) const
@@ -379,6 +389,11 @@ void FRenderer::RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& V
             QUICK_SCOPE_CYCLE_COUNTER(StaticMeshPass_CPU)
             QUICK_GPU_SCOPE_CYCLE_COUNTER(StaticMeshPass_GPU, *GPUTimingManager)
             StaticMeshRenderPass->Render(Viewport);
+        }
+        {
+            QUICK_SCOPE_CYCLE_COUNTER(SkeletalMeshPass_CPU)
+            QUICK_GPU_SCOPE_CYCLE_COUNTER(SkeletalMeshPass_GPU, *GPUTimingManager)
+            SkeletalMeshRenderPass->Render(Viewport);
         }
     }
     

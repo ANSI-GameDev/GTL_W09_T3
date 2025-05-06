@@ -1,5 +1,6 @@
 #include "SkeletalMeshBuilder.h"
 
+#include "Components/Material/Material.h"
 #include "Engine/Asset/SkeletalMeshAsset.h"
 
 void FSkeletalMeshBuilder::BuildRenderData(
@@ -52,6 +53,8 @@ void FSkeletalMeshBuilder::ConvertLODModelToRenderData(
         Dst.U = Src.UVs[0].X;
         Dst.V = Src.UVs[0].Y;
 
+        Dst.MaterialIndex = Src.MaterialIndex; // 머티리얼 슬롯 인덱스
+
         OutRenderData.Vertices.Add(Dst);
     }
 
@@ -97,6 +100,31 @@ void FSkeletalMeshBuilder::ConvertLODModelToRenderData(
         OutRenderData.BoundingBoxMax = Max;
     }
 
+    // ***** 재질 정보 복사 *****
+    OutRenderData.Materials.Empty(); // 기존 데이터 비우고 메모리 예약
+    for (const FStaticMaterial& StaticMat : LODModel.Materials)
+    {
+        if (StaticMat.Material) // UMaterial 포인터가 유효한지 확인
+        {
+            // FObjMaterialInfo 객체를 복사하여 OutRenderData.Materials 배열에 추가
+            // (FObjMaterialInfo가 복사 가능한 구조체여야 함)
+            OutRenderData.Materials.Add(StaticMat.Material->GetMaterialInfo());
+
+            // 추가 디버깅 로그 (선택 사항)
+            UE_LOG(LogLevel::Error, TEXT("BuildRenderData: Copied Material '%s' with TextureFlag %u"),
+                *StaticMat.Material->GetMaterialInfo().MaterialName,
+                StaticMat.Material->GetMaterialInfo().TextureFlag);
+        }
+        else
+        {
+            // UMaterial이 null인 경우 처리 (경고 로그 또는 기본 재질 추가 등)
+            UE_LOG(LogLevel::Warning, TEXT("BuildRenderData: Encountered null UMaterial in LODModel.Materials."));
+            // 필요하다면 기본 FObjMaterialInfo를 추가할 수도 있습니다.
+            // OutRenderData.Materials.Add(FObjMaterialInfo::DefaultMaterial());
+        }
+    }
+
+
     // 바인드 포즈 매트릭스 복사
     OutRenderData.ReferenceToLocalMatrices.Empty();
     OutRenderData.ReferenceToLocalMatricesInverse.Empty();
@@ -106,4 +134,6 @@ void FSkeletalMeshBuilder::ConvertLODModelToRenderData(
     {
         OutRenderData.ReferenceToLocalMatrices.Add(FMatrix::Inverse(Inv));
     }
+
+
 }

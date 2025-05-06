@@ -338,7 +338,7 @@ void FStaticMeshRenderPass::RenderPrimitive(ID3D11Buffer* pVertexBuffer, UINT nu
 
 void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
-    /*for (UStaticMeshComponent* Comp : StaticMeshComponents)
+    for (UStaticMeshComponent* Comp : StaticMeshComponents)
     {
         if (!Comp || !Comp->GetStaticMesh())
         {
@@ -393,40 +393,9 @@ void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorV
         {
             FEngineLoop::PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetWorldLocation(), WorldMatrix);
         }
-    }*/
-
-    for (USkeletalMeshComponent* Comp : TObjectRange<USkeletalMeshComponent>())
-    {
-        
-		RenderSkeletalPrimitive(Comp->GetSkeletalMesh()->GetRenderData());
     }
 }
 
-
-void FStaticMeshRenderPass::RenderSkeletalPrimitive(const FSkeletalMeshRenderData* RenderData) const
-{
-    UINT Stride = sizeof(FStaticMeshVertex);
-    UINT Offset = 0;
-
-    FVertexInfo VertexInfo;
-    BufferManager->CreateVertexBuffer(RenderData->ObjectName, RenderData->Vertices, VertexInfo);
-
-    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &VertexInfo.VertexBuffer, &Stride, &Offset);
-
-    FIndexInfo IndexInfo;
-    BufferManager->CreateIndexBuffer(RenderData->ObjectName, RenderData->Indices, IndexInfo);
-    if (IndexInfo.IndexBuffer)
-    {
-        Graphics->DeviceContext->IASetIndexBuffer(IndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-    }
-
-    for (auto& subset : RenderData->MaterialSubsets)
-    {
-        Graphics->DeviceContext->DrawIndexed(subset.IndexCount, subset.IndexStart, 0);
-        
-    }
-    
-}
 
 void FStaticMeshRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {

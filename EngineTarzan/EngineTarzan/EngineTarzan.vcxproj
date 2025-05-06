@@ -130,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FBXSDK_SHARED</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\Engine\Source\Runtime\Physics;$(ProjectDir)\Engine\Source\ThirdParty\include\Lua;$(ProjectDir)\Engine\Source\ThirdParty\include;$(ProjectDir)\Engine\Source\ThirdParty\DirectXTK\Include;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\studio\inc;$(ProjectDir)\Shaders;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\core\inc;$(ProjectDir)\Engine\Source\Runtime\InteractiveToolsFramework;$(ProjectDir)\Engine\Source\ThirdParty;$(ProjectDir)\Engine\Source\Runtime;$(ProjectDir)\Engine\Source\Runtime\Windows;$(ProjectDir)\Engine\Source\Editor;$(ProjectDir)\Engine\Source\Runtime\CoreUObject;$(ProjectDir)\Engine\Source\Runtime\Core;$(ProjectDir)\Engine\Source\Runtime\Launch;$(ProjectDir)\Engine\Source\Runtime\Engine;$(ProjectDir)\Engine\Source\Runtime\Engine\Classes;$(ProjectDir)\Engine\Source;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -158,7 +158,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FBXSDK_SHARED</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\Engine\Source\Runtime\Physics;$(ProjectDir)\Engine\Source\ThirdParty\include\Lua;$(ProjectDir)\Engine\Source\ThirdParty\DirectXTK\Include;$(ProjectDir)\Engine\Source\ThirdParty\include;$(ProjectDir)\Shaders;$(ProjectDir)\Engine\Source\Runtime\InteractiveToolsFramework;$(ProjectDir)\Engine\Source\ThirdParty;$(ProjectDir)\Engine\Source\Runtime;$(ProjectDir)\Engine\Source\Runtime\Windows;$(ProjectDir)\Engine\Source\Editor;$(ProjectDir)\Engine\Source\Runtime\CoreUObject;$(ProjectDir)\Engine\Source\Runtime\Core;$(ProjectDir)\Engine\Source\Runtime\Launch;$(ProjectDir)\Engine\Source\Runtime\Engine;$(ProjectDir)\Engine\Source\Runtime\Engine\Classes;$(ProjectDir)\Engine\Source;$(ProjectDir);$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\studio\inc;$(ProjectDir)\Engine\Source\ThirdParty\FMOD_API\core\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -345,6 +345,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClCompile Include="Engine\Source\ThirdParty\tinyfiledialogs\tinyfiledialogs.cpp" />
     <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui_curve.cpp" />
     <ClCompile Include="Engine\Source\Editor\UnrealEd\FbxImporter.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\SkeletalMeshRenderPass.cpp" />
     <ClCompile Include="LuaScripts\LuaScriptComponent.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\PlayerCameraManager.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\PerlinNoiseCameraShakePattern.cpp" />
@@ -665,6 +666,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClInclude Include="Engine\Source\ThirdParty\tinyfiledialogs\tinyfiledialogs.h" />
     <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imgui_curve.h" />
     <ClInclude Include="Engine\Source\Editor\UnrealEd\FbxImporter.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\SkeletalMeshRenderPass.h" />
     <ClInclude Include="LuaScripts\LuaBindingHelpers.h" />
     <ClInclude Include="LuaScripts\LuaScriptComponent.h" />
     <ClInclude Include="LuaScripts\LuaScriptFileUtils.h" />

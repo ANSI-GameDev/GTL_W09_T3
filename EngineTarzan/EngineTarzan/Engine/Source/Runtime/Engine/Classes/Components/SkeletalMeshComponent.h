@@ -1,6 +1,8 @@
 #pragma once
 #include "SkinnedMeshComponent.h"
 
+class USkeletalMesh;
+
 struct FMeshBoneInfo;
 
 class USkeletalMeshComponent :public USkinnedMeshComponent
@@ -18,10 +20,13 @@ public:
 
     int BoneIndex = 0;
 
+    void SetSelectedSubMeshIndex(const int& value) { SelectedSubMeshIndex = value; }
+    int GetSelectedSubMeshIndex() const { return SelectedSubMeshIndex; }
     //virtual UObject* Duplicate(UObject* InOuter) override;
     //virtual void GetProperties(TMap<FString, FString>& OutProperties) const override;
     //virtual void SetProperties(const TMap<FString, FString>& InProperties) override;
-
-
+private:
+    USkeletalMesh* SkeletalMesh = nullptr;
+    int SelectedSubMeshIndex = -1;
 };
 

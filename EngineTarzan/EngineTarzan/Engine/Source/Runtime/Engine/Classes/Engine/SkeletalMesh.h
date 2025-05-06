@@ -22,6 +22,8 @@ public:
     FSkeletalMeshLODModel* GetImportedModel() const;
     const FReferenceSkeleton& GetRefSkeleton() const;
 
+    TArray<FStaticMaterial*>& GetMaterials() { return Materials; }
+
 
 public:
 
@@ -33,5 +35,9 @@ public:
 
     /** 계층구조, Bone Info 및 Transform 배열 저장 */
     FReferenceSkeleton RefSkeleton;
+
+private:
+    // TODO: Skeletal 전용 Material이 나온다면 변경 필요 
+    TArray<FStaticMaterial*> Materials;
 };
 
