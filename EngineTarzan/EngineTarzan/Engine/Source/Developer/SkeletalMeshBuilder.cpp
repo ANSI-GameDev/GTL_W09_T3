@@ -111,9 +111,9 @@ void FSkeletalMeshBuilder::ConvertLODModelToRenderData(
             OutRenderData.Materials.Add(StaticMat.Material->GetMaterialInfo());
 
             // 추가 디버깅 로그 (선택 사항)
-            UE_LOG(LogLevel::Error, TEXT("BuildRenderData: Copied Material '%s' with TextureFlag %u"),
-                *StaticMat.Material->GetMaterialInfo().MaterialName,
-                StaticMat.Material->GetMaterialInfo().TextureFlag);
+            //UE_LOG(LogLevel::Error, TEXT("BuildRenderData: Copied Material '%s' with TextureFlag %u"),
+            //    *StaticMat.Material->GetMaterialInfo().MaterialName,
+            //    StaticMat.Material->GetMaterialInfo().TextureFlag);
         }
         else
         {

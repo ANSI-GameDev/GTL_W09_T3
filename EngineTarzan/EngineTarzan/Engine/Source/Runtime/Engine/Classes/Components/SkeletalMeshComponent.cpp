@@ -216,7 +216,8 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
     TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    RotateBonePitch(Bones[BoneIndex], 90.0f);
+    RotateBonePitch(Bones[BoneIndex], DeltaTime);
+    //UE_LOG(LogLevel::Display, "%s", *Bones[BoneIndex].Name.ToString());
     Super::TickComponent(DeltaTime);
 }
 
@@ -241,10 +242,11 @@ void USkeletalMeshComponent::ResetBoneTransform()
 
 void USkeletalMeshComponent::RotateBonePitch(FMeshBoneInfo Bone, float angle)
 {
-    ComponentSpaceTransformsArray[Bone.MyIndex].RotatePitch(angle);
+    //ComponentSpaceTransformsArray[Bone.MyIndex].Translate(FVector(angle));
+    ComponentSpaceTransformsArray[Bone.MyIndex].Rotate(FQuat::FromAxisAngle(ComponentSpaceTransformsArray[Bone.MyIndex].GetRight(), angle).Rotator());
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
     const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
-    for (int32 i = 0; i < NumBones; ++i)
+    for (int32 i = Bone.MyIndex; i < NumBones; ++i)
     {
         const int32 ParentIndex = Bones[i].ParentIndex;
         const FTransform& Local = ComponentSpaceTransformsArray[i];
@@ -257,5 +259,5 @@ void USkeletalMeshComponent::RotateBonePitch(FMeshBoneInfo Bone, float angle)
             WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
         }
     }
-    UE_LOG(LogLevel::Display, "%s", *WorldSpaceTransformArray[BoneIndex].GetRotation().ToString());
+    UE_LOG(LogLevel::Display, "%s", *WorldSpaceTransformArray[BoneIndex].GetPosition().ToString());
 }

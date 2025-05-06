@@ -69,6 +69,7 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FTra
         InverseBindPose = FMatrix::Inverse(BindPoseTransforms[Vertex.InfluenceBones[i]].GetMatrix());
         SkinMatrix = SkeletonPose * InverseBindPose;
         ResultPosition += FMatrix::TransformVector(OriginalPos, SkinMatrix) * Vertex.InfluenceWeights[i];
+        //ResultPosition += SkinMatrix.TransformPosition(OriginalPos) * Vertex.InfluenceWeights[i];
         ResultNormal += SkinMatrix.TransformFVector4(OriginalNormal) * Vertex.InfluenceWeights[i];
         ResultTangent += FMatrix::TransformVector(OriginalTangent, SkinMatrix) * Vertex.InfluenceWeights[i];
     }

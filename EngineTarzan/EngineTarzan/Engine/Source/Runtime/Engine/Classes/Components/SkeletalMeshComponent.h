@@ -26,7 +26,6 @@ public:
     //virtual void GetProperties(TMap<FString, FString>& OutProperties) const override;
     //virtual void SetProperties(const TMap<FString, FString>& InProperties) override;
 private:
-    USkeletalMesh* SkeletalMesh = nullptr;
     int SelectedSubMeshIndex = -1;
 };
 

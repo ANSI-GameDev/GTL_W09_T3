@@ -23,7 +23,7 @@ public:
     const FReferenceSkeleton& GetRefSkeleton() const;
 
     TArray<FStaticMaterial*>& GetMaterials() { return Materials; }
-
+    FSkeletalMeshRenderData* GetSkeletalMeshRenderData() { return SkelMeshRenderData; }
 
 public:
 

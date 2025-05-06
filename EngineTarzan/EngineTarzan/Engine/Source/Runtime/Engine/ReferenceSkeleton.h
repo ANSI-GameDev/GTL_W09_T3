@@ -32,10 +32,10 @@ public:
     {
         int32 MyIndex = RefBoneInfo.Num();
         RefBoneInfo.Add({ InBoneName, MyIndex, InParentIndex, InBonePose });
-        RefBonePose.Add(InBonePose);
+        //RefBonePose.Add(InBonePose);
         BoneNameToIndexMap.Add(InBoneName, RefBoneInfo.Num() - 1);
 
-        return MyIndex - 1;
+        return MyIndex;
     }
 
     void ComputeGlobalTransform()
