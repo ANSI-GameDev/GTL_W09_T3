@@ -810,8 +810,7 @@ void FEditorViewportClient::HandleGizmoControl(const FPointerEvent& InMouseEvent
         }
 
         // 카메라 정보
-        const FViewportCamera& Cam = (GetViewportType() == LVT_Perspective)
-            ? PerspectiveCamera : OrthogonalCamera;
+        const FViewportCamera& Cam = (GetViewportType() == LVT_Perspective) ? PerspectiveCamera : OrthogonalCamera;
 
         // 스크린 → 월드 레이
         FVector RayOrigin, RayDir;
@@ -897,6 +896,12 @@ void FEditorViewportClient::HandleGizmoControl(const FPointerEvent& InMouseEvent
         TargetComp->SetWorldLocation(NewLoc);
         TargetComp->SetWorldRotation(NewQuat.Rotator());
         TargetComp->SetWorldScale3D(NewScale);
+
+        // → 여기에 추가: 기즈모 액터도 따라오게
+        if (AActor* GizmoActor = Gizmo->GetOwner())
+        {
+            GizmoActor->SetActorLocation(NewLoc);
+        }
     }
 }
 
