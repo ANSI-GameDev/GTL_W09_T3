@@ -19,7 +19,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
 
     FFbxImporter::ParseSkeletalMeshLODModel(
-        TEXT("Contents/FBX/nathan.fbx"),
+        TEXT("Contents/FBX/BlackDragon2.fbx"),
         *SkeletalMesh->ImportedModel,
         &SkeletalMesh->RefSkeleton
     );
