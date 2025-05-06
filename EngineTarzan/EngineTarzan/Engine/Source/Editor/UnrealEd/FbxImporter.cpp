@@ -48,14 +48,11 @@ bool FFbxImporter::ParseReferenceSkeleton(const FString& InFilePath, FReferenceS
     // 5) Reference Skeleton 빌드
     BuildReferenceSkeleton(Scene->GetRootNode(), OutRefSkeleton, INDEX_NONE, 0);
 
-    // 6) 축 & 단위 보정
-    //ComputeJointPostConvert(Scene);
-
-    // 7) SDK 정리
+    // 6) SDK 정리
     Scene->Destroy();
     SdkMgr->Destroy();
 
-    // 8) 결과 로깅
+    // 7) 결과 로깅
     bool bSuccess = (OutRefSkeleton.GetNumBones() > 0);
     UE_LOG(LogLevel::Error, TEXT("ReferenceSkeleton parsing %s"), bSuccess ? TEXT("succeeded") : TEXT("failed"));
     return bSuccess;
@@ -185,32 +182,13 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     // true: 기존 폴리곤은 모두 삭제하고, 결과 메시만 남김
     geomConverter.Triangulate(Scene, /*replace=*/true);
 
-
-
-    // 3) 축 + 단위 변환
-
-    // 4) Reference Skeleton 재사용 빌드
     if (OutRefSkeleton)
     {
         BuildReferenceSkeleton(Scene->GetRootNode(), *OutRefSkeleton, INDEX_NONE, 0);
         UE_LOG(LogLevel::Error, TEXT("ReferenceSkeleton built from existing Scene"));
     }
 
-    // [Deprecated] 축/단위 보정
-    //ComputeJointPostConvert(Scene);
-
-    // 5) 첫 번째 메시 찾기
-    /*
-    FbxMesh* Mesh = FindFirstMeshInScene(Scene);
-
-    bool bResult = false;
-    if (Mesh)
-    {
-        bResult = ParseSkeletalMeshLODModel(Mesh, LodModel);
-    }
-    */
-
-    // **CHANGED**: Clear existing LODModel data and initialize global index counter
+    // Clear existing LODModel data and initialize global index counter
     LodModel.Vertices.Empty();
     LodModel.Indices.Empty();
     LodModel.Faces.Empty();
@@ -357,59 +335,6 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
             }
         };
     // --- 섹션 파싱: 재질별 폴리곤 그룹화 ---
-    //LodModel.Sections.Empty();
-    //if (materialLayer)
-    //{
-    //    // 1) materialIndex → Section 임시 맵
-    //    TMap<int32, FSkelMeshSection> sectionMap;
-    //    int32 polyCount = Mesh->GetPolygonCount();
-    //    for (int32 p = 0; p < polyCount; ++p)
-    //    {
-    //        // rawIdx / matIdx 계산
-    //        int rawIdx = GetRawIndex(materialLayer, /*cp*/0, /*idxCtr*/0, /*poly*/p);
-    //        int32 matIdx = GetFinalIndex(materialLayer, rawIdx);
-
-    //        // 해당 머티리얼 섹션이 없으면 새로 생성
-    //        FSkelMeshSection* sec = sectionMap.Find(matIdx);
-    //        if (!sec)
-    //        {
-    //            FSkelMeshSection newSec;
-    //            newSec.MaterialIndex = matIdx;  // 머티리얼 슬롯
-    //            newSec.BaseIndex = 0;       // 나중에 채움
-    //            newSec.NumTriangles = 0;       // 누적할 카운터
-    //            newSec.BaseVertexIndex = 0;       // VB 오프셋 (통합 VB 시 사용)
-    //            sectionMap.Add(matIdx, newSec);
-    //            sec = sectionMap.Find(matIdx);
-    //        }
-
-    //        // 이 폴리곤이 삼각형으로 분해됐을 때의 트라이 갯수만큼 누적
-    //        sec->NumTriangles += (Mesh->GetPolygonSize(p) - 2);
-    //    }
-
-    //    // 2) BaseIndex(IB 오프셋) 계산하고 LodModel.Sections 에 추가
-    //    /*
-    //    uint32 runningTri = 0;
-    //    for (auto& Pair : sectionMap)
-    //    {
-    //        FSkelMeshSection& sec = Pair.Value;
-    //        sec.BaseIndex = runningTri * 3;      // 인덱스 버퍼에서 시작 위치 (triangle count × 3)
-    //        runningTri += sec.NumTriangles;   // 다음 섹션을 위해 누적
-    //        LodModel.Sections.Add(sec);
-    //    }
-    //    */
-
-    //    // 2) BaseIndex(IB 오프셋) 와 BaseVertexIndex(VB 오프셋) 계산 후 추가
-    //    uint32 runningTri = 0;
-    //    for (auto& Pair : sectionMap)
-    //    {
-    //        FSkelMeshSection& sec = Pair.Value;
-    //        sec.BaseIndex = runningTri * 3;     // IB 오프셋
-    //        sec.BaseVertexIndex = MeshStartVert;      // VB 오프셋
-    //        runningTri += sec.NumTriangles;
-    //        LodModel.Sections.Add(sec);
-    //    }
-    //}
-
     if (materialLayer)
     {
         // 1) 메시별로 분리된 sectionMap
@@ -513,158 +438,45 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
     {
         LodModel.RefBasesInvMatrix.Add(ConvertFbxAMatrix(BindPoseMap[Bi]));
     }
-
-    // 4) 폴리곤→트라이앵글 분해 & 정점 채우기
-    //LodModel.Vertices.Empty();
-    //LodModel.Indices.Empty();
-    //LodModel.Faces.Empty();
-
-    //constexpr float UnitScale = 1.0f / 100.0f;
-    //uint32 idxCtr = 0;
-    //int32 polyCount = Mesh->GetPolygonCount();
-    //for (int32 p = 0; p < polyCount; ++p)
-    //{
-    //    int32 triCnt = Mesh->GetPolygonSize(p) - 2;
-    //    LodModel.Faces.AddUninitialized(triCnt);
-    //    for (int t = 0; t < triCnt; ++t)
-    //        LodModel.Faces.Add(p);
-
-    //    for (int t = 0; t < triCnt; ++t)
-    //    {
-    //        int vtxIdx[3] = { 0, t + 2, t + 1 };
-    //        for (int f = 0; f < 3; ++f)
-    //        {
-    //            int32 cp = Mesh->GetPolygonVertex(p, vtxIdx[f]);
-    //            FSoftSkinVertex V{};
-
-    //            // Position (기존)
-    //            auto P = Geo.MultT(Mesh->GetControlPoints()[cp]);
-    //            V.Position = FVector((float)P[0] * UnitScale, (float)P[2] * UnitScale, (float)P[1] * UnitScale);
-
-    //            // UVs ← 헬퍼 사용
-    //            for (int32 u = 0; u < uvLayers.Num(); ++u)
-    //            {
-    //                auto* uvElem = uvLayers[u];
-    //                int rawIdx = GetRawIndex(uvElem, cp, idxCtr, p);
-    //                int finalIdx = GetFinalIndex(uvElem, rawIdx);
-    //                auto uv = uvElem->GetDirectArray().GetAt(finalIdx);
-    //                V.UVs[u] = FVector2D((float)uv[0], 1.f - (float)uv[1]);
-    //            }
-
-    //            // Color ← 헬퍼 사용
-    //            if (colorLayer)
-    //            {
-    //                int rawIdx = GetRawIndex(colorLayer, cp, idxCtr, p);
-    //                int finalIdx = GetFinalIndex(colorLayer, rawIdx);
-    //                auto c = colorLayer->GetDirectArray().GetAt(finalIdx);
-    //                V.Color = FColor((uint8)(c.mRed * 255),
-    //                    (uint8)(c.mGreen * 255),
-    //                    (uint8)(c.mBlue * 255),
-    //                    (uint8)(c.mAlpha * 255));
-    //            }
-
-    //            // Normal ← 헬퍼 사용
-    //            if (normalLayer)
-    //            {
-    //                int rawIdx = GetRawIndex(normalLayer, cp, idxCtr, p);
-    //                int finalIdx = GetFinalIndex(normalLayer, rawIdx);
-    //                FbxVector4 n = normalLayer->GetDirectArray().GetAt(finalIdx);
-    //                n = NormalMat.MultT(n);
-    //                V.TangentZ = FVector4((float)n[0], (float)n[2], (float)n[1], 0);
-    //            }
-
-    //            // Tangent ← 헬퍼 사용
-    //            if (tangentLayer)
-    //            {
-    //                int rawIdx = GetRawIndex(tangentLayer, cp, idxCtr, p);
-    //                int finalIdx = GetFinalIndex(tangentLayer, rawIdx);
-    //                FbxVector4 t = tangentLayer->GetDirectArray().GetAt(finalIdx);
-    //                t = NormalMat.MultT(t);
-    //                V.TangentX = FVector((float)t[0], (float)t[2], (float)t[1]);
-    //            }
-
-    //            // Binormal ← 헬퍼 사용
-    //            if (binormalLayer)
-    //            {
-    //                int rawIdx = GetRawIndex(binormalLayer, cp, idxCtr, p);
-    //                int finalIdx = GetFinalIndex(binormalLayer, rawIdx);
-    //                FbxVector4 b = binormalLayer->GetDirectArray().GetAt(finalIdx);
-    //                b = NormalMat.MultT(b);
-    //                V.TangentY = FVector((float)b[0], (float)b[2], (float)b[1]);
-    //            }
-
-    //            // Skin influences
-    //            auto& inf = Influences[cp];
-    //            std::sort(inf.begin(), inf.end(), [](auto& A, auto& B) { return A.second > B.second; });  // 1) 가중치 내림차순 정렬
-    //            inf.resize(FMath::Min((int)inf.size(), (int32)MAX_TOTAL_INFLUENCES));                       // 2) 최대 인플루언스 개수로 클램핑
-    //            float totalW = 0.f;                                                                                     // 3) 총 가중치 계산
-    //            for (auto& pr : inf) { totalW += (float)pr.second; }
-    //            
-    //            for (int32 i = 0; i < MAX_TOTAL_INFLUENCES; ++i)                                                        // 4) V에 본 인덱스와 정규화된 가중치 할당
-    //            {
-    //                if (i < inf.size())
-    //                {
-    //                    V.InfluenceBones[i] = (uint8)inf[i].first;
-    //                    V.InfluenceWeights[i] = inf[i].second / totalW;
-    //                }
-    //                else
-    //                {
-    //                    V.InfluenceBones[i] = 0;
-    //                    V.InfluenceWeights[i] = 0.f;
-    //                }
-    //            }
-
-
-    //            LodModel.Vertices.Add(V);
-    //            //LodModel.Indices.Add(idxCtr++);
-
-    //            // **CHANGED**: use global index counter
-    //            LodModel.Indices.Add(GlobalIdxCtr++);
-    //        }
-    //    }
-    //}
-
-constexpr float UnitScale = 1.0f / 100.0f;
-uint32 idxCtr = 0; // 폴리곤 내 정점 카운터 (GetRawIndex에서 eByPolygonVertex 모드 시 사용될 수 있음)
-int32 polyCount = Mesh->GetPolygonCount();
-for (int32 p = 0; p < polyCount; ++p) // 각 폴리곤(삼각형) 순회
-{
-    // ---★★★ 현재 폴리곤(삼각형)의 Material Index 계산 ★★★---
-    int32 matIdx = 0; // 기본값 또는 재질 정보 없을 때 사용
-    if (materialLayer)
+    constexpr float UnitScale = 1.0f / 100.0f;
+    uint32 idxCtr = 0; // 폴리곤 내 정점 카운터 (GetRawIndex에서 eByPolygonVertex 모드 시 사용될 수 있음)
+    int32 polyCount = Mesh->GetPolygonCount();
+    for (int32 p = 0; p < polyCount; ++p) // 각 폴리곤(삼각형) 순회
     {
-        // materialLayer의 MappingMode 확인 (중요!)
-        FbxLayerElement::EMappingMode mappingMode = materialLayer->GetMappingMode();
-        int rawIdx = 0;
-
-        if (mappingMode == FbxLayerElement::eByPolygon) {
-            // 가장 일반적인 경우: 폴리곤 인덱스 p 사용
-            rawIdx = GetRawIndex(materialLayer, 0, 0, p); // 세 번째 인자 0은 idxCtr과 무관, 네 번째가 p
+        // 현재 폴리곤(삼각형)의 Material Index 계산 
+        int32 matIdx = 0; // 기본값 또는 재질 정보 없을 때 사용
+        if (materialLayer)
+        {
+            // materialLayer의 MappingMode 확인
+            FbxLayerElement::EMappingMode mappingMode = materialLayer->GetMappingMode();
+            int rawIdx = 0;
+    
+            if (mappingMode == FbxLayerElement::eByPolygon) { // 가장 일반적 : 폴리곤 인덱스 사용
+                rawIdx = GetRawIndex(materialLayer, 0, 0, p); // 세 번째 인자 0은 idxCtr과 무관, 네 번째가 p
+            }
+            else if (mappingMode == FbxLayerElement::eAllSame) {
+                // 모든 폴리곤이 같은 재질 사용
+                rawIdx = GetRawIndex(materialLayer, 0, 0, 0); // 0 사용
+            }
+            else {
+                // eByControlPoint 또는 eByPolygonVertex는 여기서 직접 매핑하기 복잡할 수 있음.
+                // FBX 임포터는 보통 이런 경우 데이터를 재구성하거나 eByPolygon으로 변환하는 것을 권장.
+                // 여기서는 일단 eByPolygon 기준으로 처리 시도하고 경고 로그.
+                UE_LOG(LogLevel::Warning, TEXT("Material mapping mode %d might not assign correct   per-vertex material index directly here. Assuming eByPolygon for polygon %d."), (int) mappingMode, p);
+                rawIdx = GetRawIndex(materialLayer, 0, 0, p); // Fallback 시도
+            }
+            matIdx = GetFinalIndex(materialLayer, rawIdx);
         }
-        else if (mappingMode == FbxLayerElement::eAllSame) {
-            // 모든 폴리곤이 같은 재질 사용
-            rawIdx = GetRawIndex(materialLayer, 0, 0, 0); // 0 사용
+    
+        // Triangulate 후에는 폴리곤 크기는 항상 3이어야 함
+        int32 polySize = Mesh->GetPolygonSize(p);
+        if (polySize != 3) {
+            UE_LOG(LogLevel::Error, TEXT("Polygon %d is not a triangle (size=%d) after expected     triangulation. Skipping."), p, polySize);
+            // idxCtr을 정확히 증가시켜야 할 수 있음 (eByPolygonVertex 경우 대비)
+            // 하지만 에러 상황이므로 건너뛰는 것이 안전할 수 있음.
+            // idxCtr += polySize;
+            continue;
         }
-        else {
-            // eByControlPoint 또는 eByPolygonVertex는 여기서 직접 매핑하기 복잡할 수 있음.
-            // FBX 임포터는 보통 이런 경우 데이터를 재구성하거나 eByPolygon으로 변환하는 것을 권장.
-            // 여기서는 일단 eByPolygon 기준으로 처리 시도하고 경고 로그.
-            UE_LOG(LogLevel::Warning, TEXT("Material mapping mode %d might not assign correct per-vertex material index directly here. Assuming eByPolygon for polygon %d."), (int)mappingMode, p);
-            rawIdx = GetRawIndex(materialLayer, 0, 0, p); // Fallback 시도
-        }
-        matIdx = GetFinalIndex(materialLayer, rawIdx);
-    }
-    // ---★★★ Material Index 계산 끝 ★★★---
-
-    // Triangulate 후에는 폴리곤 크기는 항상 3이어야 함
-    int32 polySize = Mesh->GetPolygonSize(p);
-    if (polySize != 3) {
-        UE_LOG(LogLevel::Error, TEXT("Polygon %d is not a triangle (size=%d) after expected triangulation. Skipping."), p, polySize);
-        // idxCtr을 정확히 증가시켜야 할 수 있음 (eByPolygonVertex 경우 대비)
-        // 하지만 에러 상황이므로 건너뛰는 것이 안전할 수 있음.
-        // idxCtr += polySize;
-        continue;
-    }
 
     // 원본 폴리곤 인덱스를 Faces 배열에 추가 (삼각형 당 하나)
     LodModel.Faces.Add(p);
@@ -680,9 +492,8 @@ for (int32 p = 0; p < polyCount; ++p) // 각 폴리곤(삼각형) 순회
         auto P = Geo.MultT(Mesh->GetControlPoints()[cp]);
         V.Position = FVector((float)P[0] * UnitScale, (float)P[1] * UnitScale, (float)P[2] * UnitScale);
 
-        // ---★★★ MaterialIndex 할당 ★★★---
+        // MaterialIndex 할당 
         V.MaterialIndex = static_cast<uint32>(matIdx);
-        // ---★★★ 할당 끝 ★★★---
 
         // --- UVs ← 헬퍼 사용 ---
         for (int32 u = 0; u < uvLayers.Num(); ++u)
