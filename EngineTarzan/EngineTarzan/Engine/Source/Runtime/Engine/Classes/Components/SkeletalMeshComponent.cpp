@@ -25,6 +25,10 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
     FFbxImporter::ParseSkeletalMeshLODModel(
         TEXT("Contents/FBX/nathan3.fbx"),
+        //TEXT("Contents/FBX/tifa2.fbx"),
+        //TEXT("Contents/FBX/tifa_noglove/tifanoglove.fbx"),
+        //TEXT("Contents/FBX/aerith.fbx"),
+        //TEXT("Contents/FBX/tifamaterial/PC0002_00_BodyB.fbx"),
         *SkeletalMesh->ImportedModel,
         &SkeletalMesh->RefSkeleton
     );
@@ -132,45 +136,45 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     }
 
     // 4) Vertices 덤프 (UV, Color, Influence까지) ← 확장
-    ofs << "=== Vertices ===\n";
-    for (uint32 i = 0; i < L.Vertices.Num(); ++i)
-    {
-        const auto& V = L.Vertices[i];
-        ofs << "[" << i << "] Pos=("
-            << V.Position.X << "," << V.Position.Y << "," << V.Position.Z << ")";
+    //ofs << "=== Vertices ===\n";
+    //for (uint32 i = 0; i < L.Vertices.Num(); ++i)
+    //{
+    //    const auto& V = L.Vertices[i];
+    //    ofs << "[" << i << "] Pos=("
+    //        << V.Position.X << "," << V.Position.Y << "," << V.Position.Z << ")";
 
-        // UVs
-        for (uint32 u = 0; u < L.NumTexCoords; ++u)
-        {
-            ofs << " UV" << u << "=("
-                << V.UVs[u].X << "," << V.UVs[u].Y << ")";
-        }
+    //    // UVs
+    //    for (uint32 u = 0; u < L.NumTexCoords; ++u)
+    //    {
+    //        ofs << " UV" << u << "=("
+    //            << V.UVs[u].X << "," << V.UVs[u].Y << ")";
+    //    }
 
-        // Vertex Color
-        ofs << " Color=("
-            << (int)V.Color.R << "," << (int)V.Color.G << ","
-            << (int)V.Color.B << "," << (int)V.Color.A << ")";
+    //    // Vertex Color
+    //    ofs << " Color=("
+    //        << (int)V.Color.R << "," << (int)V.Color.G << ","
+    //        << (int)V.Color.B << "," << (int)V.Color.A << ")";
 
-        // Tangents & Normal
-        ofs << " TanX=("
-            << V.TangentX.X << "," << V.TangentX.Y << "," << V.TangentX.Z << ")"
-            << " TanY=("
-            << V.TangentY.X << "," << V.TangentY.Y << "," << V.TangentY.Z << ")"
-            << " Nor=("
-            << V.TangentZ.X << "," << V.TangentZ.Y << "," << V.TangentZ.Z << ")";
+    //    // Tangents & Normal
+    //    ofs << " TanX=("
+    //        << V.TangentX.X << "," << V.TangentX.Y << "," << V.TangentX.Z << ")"
+    //        << " TanY=("
+    //        << V.TangentY.X << "," << V.TangentY.Y << "," << V.TangentY.Z << ")"
+    //        << " Nor=("
+    //        << V.TangentZ.X << "," << V.TangentZ.Y << "," << V.TangentZ.Z << ")";
 
-        // Skin Influences
-        ofs << " Influences=[";
-        for (int inf = 0; inf < MAX_TOTAL_INFLUENCES; ++inf)
-        {
-            ofs << "("
-                << (int)V.InfluenceBones[inf] << ","
-                << V.InfluenceWeights[inf] << ")";
-            if (inf + 1 < MAX_TOTAL_INFLUENCES) ofs << ",";
-        }
-        ofs << "]\n";
-    }
-    ofs << "\n";
+    //    // Skin Influences
+    //    ofs << " Influences=[";
+    //    for (int inf = 0; inf < MAX_TOTAL_INFLUENCES; ++inf)
+    //    {
+    //        ofs << "("
+    //            << (int)V.InfluenceBones[inf] << ","
+    //            << V.InfluenceWeights[inf] << ")";
+    //        if (inf + 1 < MAX_TOTAL_INFLUENCES) ofs << ",";
+    //    }
+    //    ofs << "]\n";
+    //}
+    //ofs << "\n";
 
     // 5) Indices 덤프
     ofs << "=== Indices ===\n";
