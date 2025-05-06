@@ -1,9 +1,9 @@
 #pragma once
 #include "Components/MeshComponent.h"
+#include "Rendering/SkeletalMeshLODModel.h"
 
 class USkeletalMesh;
 class FSkeletalMeshObjectCPUSkin;
-struct FSoftSkinVertex;
 
 class USkinnedMeshComponent : public UMeshComponent
 {
@@ -17,6 +17,8 @@ public:
     const TArray<FTransform>& GetWorldSpaceTransforms() const;
 
     USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
+
+    const TArray<FSoftSkinVertex> GetBindPoseVertices() const { return BindPoseVertices; }
 
 protected:
     FSkeletalMeshObjectCPUSkin* MeshObject;

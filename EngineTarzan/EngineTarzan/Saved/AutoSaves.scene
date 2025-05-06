@@ -1,31 +1,69 @@
 {
     "Actors": [
         {
-            "ActorClass": "ASpotLight",
-            "ActorID": "ASpotLight_133",
-            "ActorLabel": "OBJ_SPOTLIGHT_133",
-            "ActorTickInEditor": "false",
+            "ActorClass": "ASkeletalActor",
+            "ActorID": "ASkeletalActor_127",
+            "ActorLabel": "OBJ_SKELETALMESH_127",
+            "ActorTickInEditor": "true",
             "Components": [
                 {
-                    "ComponentClass": "UBillboardComponent",
-                    "ComponentID": "UBillboardComponent_0",
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_195",
                     "Properties": {
-                        "AABB_max": "X=0.000 Y=0.000 Z=0.000",
-                        "AABB_min": "X=0.000 Y=0.000 Z=0.000",
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
                         "AttachParentID": "nullptr",
-                        "BufferKey": "Assets/Editor/Icon/S_LightSpot.PNG",
-                        "ComponentClass": "UBillboardComponent",
-                        "ComponentName": "UBillboardComponent_0",
-                        "ComponentOwner": "ASpotLight_133",
-                        "ComponentOwnerClass": "ASpotLight",
-                        "FinalIndexU": "0.000000",
-                        "FinalIndexV": "0.000000",
-                        "RelativeLocation": "X=0.000 Y=0.000 Z=3.794",
-                        "RelativeRotation": "Pitch=-90.000 Yaw=-180.000 Roll=180.000",
-                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_195",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.010 Y=0.024 Z=-0.013",
+                        "RelativeRotation": "Pitch=-39.678 Yaw=-66.079 Roll=92.000",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
                         "bAutoActive": "true",
                         "bIsActive": "true",
-                        "m_Type": "UBillboardComponent"
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_139",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_139",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.010 Y=-0.016 Z=0.032",
+                        "RelativeRotation": "Pitch=30.119 Yaw=130.816 Roll=-60.363",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_135",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_135",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.000 Y=-0.001 Z=-0.000",
+                        "RelativeRotation": "Pitch=-43.278 Yaw=153.787 Roll=-47.327",
+                        "RelativeScale3D": "X=0.020 Y=0.020 Z=0.020",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
                     }
                 },
                 {
@@ -35,75 +73,7 @@
                         "AttachParentID": "nullptr",
                         "ComponentClass": "USceneComponent",
                         "ComponentName": "USceneComponent_128",
-                        "ComponentOwner": "ASpotLight_133",
-                        "ComponentOwnerClass": "ASpotLight",
-                        "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
-                        "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
-                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
-                        "bAutoActive": "true",
-                        "bIsActive": "true"
-                    }
-                },
-                {
-                    "ComponentClass": "USpotLightComponent",
-                    "ComponentID": "USpotLightComponent_0",
-                    "Properties": {
-                        "AABB_Max": "X=1.000 Y=1.000 Z=0.100",
-                        "AABB_Min": "X=-1.000 Y=-1.000 Z=-0.100",
-                        "AttachParentID": "UBillboardComponent_0",
-                        "Attenuation": "20.000000",
-                        "ComponentClass": "USpotLightComponent",
-                        "ComponentName": "USpotLightComponent_0",
-                        "ComponentOwner": "ASpotLight_133",
-                        "ComponentOwnerClass": "ASpotLight",
-                        "Direction": "X=0.000 Y=0.000 Z=-1.000",
-                        "InnerRad": "0.261800",
-                        "Intensity": "1000.000000",
-                        "LightColor": "R=1.000 G=1.000 B=1.000 A=1.000",
-                        "OuterRad": "0.523600",
-                        "Position": "X=0.000 Y=0.000 Z=3.794",
-                        "Radius": "30.000000",
-                        "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
-                        "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
-                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
-                        "Type": "2",
-                        "bAutoActive": "true",
-                        "bIsActive": "true"
-                    }
-                },
-                {
-                    "ComponentClass": "USceneComponent",
-                    "ComponentID": "USceneComponent_134",
-                    "Properties": {
-                        "AttachParentID": "nullptr",
-                        "ComponentClass": "USceneComponent",
-                        "ComponentName": "USceneComponent_134",
-                        "ComponentOwner": "ASpotLight_133",
-                        "ComponentOwnerClass": "ASpotLight",
-                        "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
-                        "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
-                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
-                        "bAutoActive": "true",
-                        "bIsActive": "true"
-                    }
-                }
-            ],
-            "RootComponentID": "UBillboardComponent_0"
-        },
-        {
-            "ActorClass": "ASkeletalActor",
-            "ActorID": "ASkeletalActor_141",
-            "ActorLabel": "OBJ_SKELETALMESH_141",
-            "ActorTickInEditor": "true",
-            "Components": [
-                {
-                    "ComponentClass": "USceneComponent",
-                    "ComponentID": "USceneComponent_142",
-                    "Properties": {
-                        "AttachParentID": "nullptr",
-                        "ComponentClass": "USceneComponent",
-                        "ComponentName": "USceneComponent_142",
-                        "ComponentOwner": "ASkeletalActor_141",
+                        "ComponentOwner": "ASkeletalActor_127",
                         "ComponentOwnerClass": "ASkeletalActor",
                         "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
                         "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
@@ -113,26 +83,1686 @@
                     }
                 },
                 {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_175",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_175",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.013 Y=0.027 Z=0.000",
+                        "RelativeRotation": "Pitch=-29.471 Yaw=-42.681 Roll=171.622",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
                     "ComponentClass": "USkeletalMeshComponent",
-                    "ComponentID": "USkeletalMeshComponent_143",
+                    "ComponentID": "USkeletalMeshComponent_129",
                     "Properties": {
                         "AABB_max": "X=0.000 Y=0.000 Z=0.000",
                         "AABB_min": "X=0.000 Y=0.000 Z=0.000",
                         "AttachParentID": "nullptr",
                         "ComponentClass": "USkeletalMeshComponent",
-                        "ComponentName": "USkeletalMeshComponent_143",
-                        "ComponentOwner": "ASkeletalActor_141",
+                        "ComponentName": "USkeletalMeshComponent_129",
+                        "ComponentOwner": "ASkeletalActor_127",
                         "ComponentOwnerClass": "ASkeletalActor",
                         "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
                         "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
-                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
+                        "RelativeScale3D": "X=100.000 Y=100.000 Z=100.000",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_136",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_136",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.008 Y=0.006 Z=-0.002",
+                        "RelativeRotation": "Pitch=-35.087 Yaw=-134.549 Roll=113.251",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_137",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_137",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.005 Y=0.016 Z=-0.004",
+                        "RelativeRotation": "Pitch=30.119 Yaw=130.815 Roll=-60.363",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_138",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_138",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.008 Y=0.004 Z=0.009",
+                        "RelativeRotation": "Pitch=30.119 Yaw=130.815 Roll=-60.363",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_140",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_140",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.013 Y=-0.036 Z=0.054",
+                        "RelativeRotation": "Pitch=30.119 Yaw=130.816 Roll=-60.363",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_141",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_141",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.005 Y=0.008 Z=-0.004",
+                        "RelativeRotation": "Pitch=5.303 Yaw=-54.394 Roll=53.009",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_194",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_194",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.008 Y=0.020 Z=-0.007",
+                        "RelativeRotation": "Pitch=-39.678 Yaw=-66.079 Roll=92.000",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_142",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_142",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.004 Y=0.012 Z=-0.017",
+                        "RelativeRotation": "Pitch=-16.666 Yaw=-51.914 Roll=87.471",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_143",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_143",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.001 Y=0.017 Z=-0.035",
+                        "RelativeRotation": "Pitch=-40.443 Yaw=-48.914 Roll=112.784",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_144",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_144",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.016 Y=0.022 Z=-0.052",
+                        "RelativeRotation": "Pitch=-40.443 Yaw=-48.914 Roll=112.784",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_145",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_145",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.033 Y=0.027 Z=-0.070",
+                        "RelativeRotation": "Pitch=-40.443 Yaw=-48.914 Roll=112.784",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_146",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_146",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.006 Y=0.005 Z=-0.002",
+                        "RelativeRotation": "Pitch=34.651 Yaw=-27.074 Roll=66.733",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_147",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_147",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.004 Y=0.007 Z=-0.013",
+                        "RelativeRotation": "Pitch=-28.440 Yaw=-63.113 Roll=175.120",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_148",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_148",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.015 Y=-0.002 Z=-0.015",
+                        "RelativeRotation": "Pitch=-15.052 Yaw=-92.917 Roll=-142.949",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_149",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_149",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.029 Y=-0.004 Z=-0.004",
+                        "RelativeRotation": "Pitch=-15.052 Yaw=-92.917 Roll=-142.949",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_150",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_150",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.044 Y=-0.006 Z=0.007",
+                        "RelativeRotation": "Pitch=-15.052 Yaw=-92.917 Roll=-142.949",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_151",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_151",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.006 Y=0.003 Z=0.000",
+                        "RelativeRotation": "Pitch=11.647 Yaw=-150.170 Roll=-9.690",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_152",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_152",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.001 Y=-0.008 Z=0.003",
+                        "RelativeRotation": "Pitch=48.695 Yaw=96.739 Roll=108.688",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_153",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_153",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.005 Y=0.005 Z=-0.009",
+                        "RelativeRotation": "Pitch=68.325 Yaw=141.060 Roll=159.139",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_154",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_154",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.012 Y=0.024 Z=-0.011",
+                        "RelativeRotation": "Pitch=68.325 Yaw=141.060 Roll=159.139",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_155",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_155",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.019 Y=0.042 Z=-0.014",
+                        "RelativeRotation": "Pitch=68.325 Yaw=141.060 Roll=159.139",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_156",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_156",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.006 Y=0.001 Z=0.003",
+                        "RelativeRotation": "Pitch=51.917 Yaw=179.221 Roll=-28.748",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_157",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_157",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.000 Y=-0.013 Z=0.008",
+                        "RelativeRotation": "Pitch=40.870 Yaw=137.553 Roll=-21.718",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_158",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_158",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.010 Y=-0.032 Z=0.014",
+                        "RelativeRotation": "Pitch=37.347 Yaw=123.104 Roll=-11.140",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_159",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_159",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.022 Y=-0.042 Z=0.016",
+                        "RelativeRotation": "Pitch=37.347 Yaw=123.104 Roll=-11.140",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_203",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_203",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.020 Y=0.005 Z=0.049",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_160",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_160",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.035 Y=-0.052 Z=0.019",
+                        "RelativeRotation": "Pitch=37.347 Yaw=123.104 Roll=-11.140",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_161",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_161",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.003 Y=0.013 Z=-0.009",
+                        "RelativeRotation": "Pitch=55.748 Yaw=27.471 Roll=-78.066",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_186",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_186",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.032 Y=-0.006 Z=0.034",
+                        "RelativeRotation": "Pitch=22.504 Yaw=137.446 Roll=-3.896",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_162",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_162",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.008 Y=0.012 Z=-0.005",
+                        "RelativeRotation": "Pitch=4.244 Yaw=-21.065 Roll=-38.107",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_189",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_189",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.009 Y=0.020 Z=-0.003",
+                        "RelativeRotation": "Pitch=68.788 Yaw=8.913 Roll=-66.650",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_163",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_163",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.007 Y=0.016 Z=-0.001",
+                        "RelativeRotation": "Pitch=36.469 Yaw=-73.454 Roll=-52.200",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_164",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_164",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.004 Y=0.020 Z=0.003",
+                        "RelativeRotation": "Pitch=36.469 Yaw=-73.454 Roll=-52.200",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_165",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_165",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.002 Y=0.024 Z=0.006",
+                        "RelativeRotation": "Pitch=36.469 Yaw=-73.454 Roll=-52.200",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_166",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_166",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.005 Y=0.017 Z=-0.010",
+                        "RelativeRotation": "Pitch=-44.370 Yaw=-60.417 Roll=89.575",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_167",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_167",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.008 Y=0.021 Z=-0.015",
+                        "RelativeRotation": "Pitch=-44.370 Yaw=-60.417 Roll=89.575",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_168",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_168",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.010 Y=0.026 Z=-0.020",
+                        "RelativeRotation": "Pitch=-44.370 Yaw=-60.417 Roll=89.575",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_169",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_169",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.011 Y=0.015 Z=0.002",
+                        "RelativeRotation": "Pitch=-64.700 Yaw=-34.962 Roll=40.642",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_170",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_170",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.012 Y=0.030 Z=-0.003",
+                        "RelativeRotation": "Pitch=-41.019 Yaw=-44.086 Roll=83.290",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_171",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_171",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.019 Y=0.040 Z=-0.017",
+                        "RelativeRotation": "Pitch=-17.525 Yaw=-51.050 Roll=111.787",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_210",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_210",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.032 Y=0.003 Z=-0.048",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_172",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_172",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.031 Y=0.040 Z=-0.039",
+                        "RelativeRotation": "Pitch=-17.525 Yaw=-51.050 Roll=111.787",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_184",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_184",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.013 Y=0.008 Z=0.009",
+                        "RelativeRotation": "Pitch=-2.021 Yaw=103.327 Roll=-69.262",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_173",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_173",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.043 Y=0.040 Z=-0.061",
+                        "RelativeRotation": "Pitch=-17.525 Yaw=-51.050 Roll=111.787",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_174",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_174",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.012 Y=0.013 Z=0.004",
+                        "RelativeRotation": "Pitch=-62.193 Yaw=-150.951 Roll=149.286",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_176",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_176",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.027 Y=0.013 Z=-0.002",
+                        "RelativeRotation": "Pitch=-38.835 Yaw=-2.149 Roll=-175.440",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_177",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_177",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.027 Y=-0.005 Z=-0.001",
+                        "RelativeRotation": "Pitch=-38.835 Yaw=-2.149 Roll=-175.440",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_180",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_180",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.016 Y=0.011 Z=0.019",
+                        "RelativeRotation": "Pitch=10.062 Yaw=149.296 Roll=148.210",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_178",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_178",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.027 Y=-0.023 Z=0.000",
+                        "RelativeRotation": "Pitch=-38.835 Yaw=-2.149 Roll=-175.440",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_179",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_179",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.013 Y=0.011 Z=0.006",
+                        "RelativeRotation": "Pitch=9.753 Yaw=52.109 Roll=-76.133",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_181",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_181",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.010 Y=0.025 Z=0.010",
+                        "RelativeRotation": "Pitch=5.466 Yaw=117.378 Roll=161.194",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_183",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_183",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.023 Y=0.043 Z=-0.003",
+                        "RelativeRotation": "Pitch=5.466 Yaw=117.378 Roll=161.194",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_200",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_200",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.038 Y=0.028 Z=0.021",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_182",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_182",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.006 Y=0.034 Z=0.003",
+                        "RelativeRotation": "Pitch=5.466 Yaw=117.378 Roll=161.194",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_185",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_185",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.018 Y=0.008 Z=0.024",
+                        "RelativeRotation": "Pitch=19.094 Yaw=125.429 Roll=-27.905",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_187",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_187",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.043 Y=-0.018 Z=0.035",
+                        "RelativeRotation": "Pitch=22.504 Yaw=137.446 Roll=-3.896",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_188",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_188",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.053 Y=-0.031 Z=0.036",
+                        "RelativeRotation": "Pitch=22.504 Yaw=137.446 Roll=-3.896",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_190",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_190",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.015 Y=0.021 Z=-0.001",
+                        "RelativeRotation": "Pitch=48.873 Yaw=-140.114 Roll=74.629",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_191",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_191",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.018 Y=0.017 Z=-0.005",
+                        "RelativeRotation": "Pitch=22.699 Yaw=-80.634 Roll=85.730",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_193",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_193",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.016 Y=0.013 Z=-0.016",
+                        "RelativeRotation": "Pitch=22.699 Yaw=-80.634 Roll=85.730",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_192",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_192",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.017 Y=0.015 Z=-0.011",
+                        "RelativeRotation": "Pitch=22.699 Yaw=-80.634 Roll=85.730",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_196",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_196",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.012 Y=0.028 Z=-0.019",
+                        "RelativeRotation": "Pitch=-39.678 Yaw=-66.079 Roll=92.000",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_197",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_197",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.045 Y=0.032 Z=-0.016",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_198",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_198",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.049 Y=0.040 Z=-0.011",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_199",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_199",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.054 Y=0.048 Z=-0.007",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_201",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_201",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.042 Y=0.036 Z=0.026",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_202",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_202",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.046 Y=0.044 Z=0.030",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_204",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_204",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.024 Y=0.013 Z=0.053",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_205",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_205",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.028 Y=0.021 Z=0.058",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_206",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_206",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.000 Y=-0.027 Z=0.050",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_207",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_207",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.004 Y=-0.019 Z=0.054",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_208",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_208",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.009 Y=-0.011 Z=0.059",
+                        "RelativeRotation": "Pitch=59.405 Yaw=-147.692 Roll=-116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_209",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_209",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.036 Y=0.011 Z=-0.044",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_211",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_211",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.028 Y=-0.005 Z=-0.053",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_212",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_212",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.017 Y=-0.022 Z=-0.045",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_213",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_213",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.013 Y=-0.030 Z=-0.049",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_214",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_214",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=0.008 Y=-0.037 Z=-0.054",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_215",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_215",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.003 Y=-0.049 Z=-0.022",
+                        "RelativeRotation": "Pitch=-63.285 Yaw=33.760 Roll=116.592",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_216",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_216",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.007 Y=-0.057 Z=-0.026",
+                        "RelativeRotation": "Pitch=-63.285 Yaw=33.760 Roll=116.592",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_217",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_217",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.011 Y=-0.065 Z=-0.030",
+                        "RelativeRotation": "Pitch=-63.285 Yaw=33.760 Roll=116.592",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_218",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_218",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.011 Y=-0.054 Z=0.014",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_219",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_219",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.015 Y=-0.062 Z=0.010",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
+                        "bAutoActive": "true",
+                        "bIsActive": "true",
+                        "m_Type": ""
+                    }
+                },
+                {
+                    "ComponentClass": "UStaticMeshComponent",
+                    "ComponentID": "UStaticMeshComponent_220",
+                    "Properties": {
+                        "AABB_max": "X=1.000 Y=1.000 Z=1.000",
+                        "AABB_min": "X=-1.000 Y=-1.000 Z=-1.000",
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "UStaticMeshComponent",
+                        "ComponentName": "UStaticMeshComponent_220",
+                        "ComponentOwner": "ASkeletalActor_127",
+                        "ComponentOwnerClass": "ASkeletalActor",
+                        "RelativeLocation": "X=-0.020 Y=-0.069 Z=0.005",
+                        "RelativeRotation": "Pitch=-59.405 Yaw=32.308 Roll=116.094",
+                        "RelativeScale3D": "X=0.010 Y=0.010 Z=0.010",
+                        "StaticMeshPath": "Contents/helloBlender.obj",
                         "bAutoActive": "true",
                         "bIsActive": "true",
                         "m_Type": ""
                     }
                 }
             ],
-            "RootComponentID": "USkeletalMeshComponent_143"
+            "RootComponentID": "USkeletalMeshComponent_129"
         }
     ],
     "NextUUID": 0,

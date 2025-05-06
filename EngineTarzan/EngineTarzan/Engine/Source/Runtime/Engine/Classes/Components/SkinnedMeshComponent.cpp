@@ -2,7 +2,6 @@
 
 #include "SkeletalRenderCPUSkin.h"
 #include "Engine/SkeletalMesh.h"
-#include "Rendering/SkeletalMeshLODModel.h"
 
 
 USkinnedMeshComponent::USkinnedMeshComponent()

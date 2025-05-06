@@ -709,7 +709,7 @@ auto FEditorViewportClient::WriteIniFile(const FString& FilePath, const TMap<FSt
 
 void FEditorViewportClient::SetCameraSpeed(const float InValue)
 {
-    CameraSpeed = FMath::Clamp(InValue, 0.1f, 200.0f);
+    CameraSpeed = FMath::Clamp(InValue, 0.01f, 200.0f);
 }
 
 FVector FViewportCamera::GetForwardVector() const

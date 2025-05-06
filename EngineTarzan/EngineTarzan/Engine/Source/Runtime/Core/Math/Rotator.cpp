@@ -136,6 +136,8 @@ FQuat FRotator::ToQuaternion() const
     RotationQuat.Z = CR * CP * SY - SR * SP * CY;
     RotationQuat.W = CR * CP * CY + SR * SP * SY;
 
+    RotationQuat.Normalize();
+
     return RotationQuat;
 }
 

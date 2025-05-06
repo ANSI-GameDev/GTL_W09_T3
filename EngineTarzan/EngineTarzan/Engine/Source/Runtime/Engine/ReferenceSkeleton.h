@@ -3,7 +3,9 @@
 #include "Container/Map.h"
 #include "Math/FTransform.h"
 #include "UObject/NameTypes.h"
-
+#include <Engine/Engine.h>
+#include <Actors/Cube.h>
+#include "World/World.h"
 
 struct FMeshBoneInfo
 {
@@ -52,6 +54,10 @@ public:
             {
                 RefBonePose[i] = RefBonePose[ParentIndex] * Local;
             }
+			//ACube* BoneActor = GEngine->ActiveWorld->SpawnActor<ACube>();
+			//BoneActor->SetActorLocation(RefBonePose[i].GetPosition() / 100.0f);
+			//BoneActor->SetActorRotation(RefBonePose[i].GetRotation());
+			//BoneActor->SetActorScale(FVector(0.01f));
         }
     }
 
@@ -69,7 +75,7 @@ public:
     const TArray<FMeshBoneInfo>& GetBoneInfo() const { return RefBoneInfo; }
     const TArray<FTransform>& GetBonePose() const { return RefBonePose; }
 
-private:
+public:
     TArray<FMeshBoneInfo> RefBoneInfo; 
     TArray<FTransform>    RefBonePose; //각 본의 글로벌 트랜스폼
 

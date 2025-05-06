@@ -24,7 +24,9 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
     FFbxImporter::ParseSkeletalMeshLODModel(
-        TEXT("Contents/FBX/nathan3.fbx"),
+        TEXT("Contents/FBX/Spider.fbx"),
+        //TEXT("Contents/FBX/nathan3.fbx"),
+        //TEXT("Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.fbx"),
         //TEXT("Contents/FBX/tifa2.fbx"),
         //TEXT("Contents/FBX/tifa_noglove/tifanoglove.fbx"),
         //TEXT("Contents/FBX/aerith.fbx"),
@@ -220,7 +222,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
     TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    RotateBone(Bones[BoneIndex], DeltaTime);
+    RotateBone(Bones[BoneIndex], DeltaTime * 10.f);
     //UE_LOG(LogLevel::Display, "%s", *Bones[BoneIndex].Name.ToString());
     Super::TickComponent(DeltaTime);
 }
@@ -247,7 +249,8 @@ void USkeletalMeshComponent::ResetBoneTransform()
 void USkeletalMeshComponent::RotateBone(FMeshBoneInfo Bone, float angle)
 {
     //ComponentSpaceTransformsArray[Bone.MyIndex].Translate(FVector(angle));
-    ComponentSpaceTransformsArray[Bone.MyIndex].Rotate(FRotator(FVector(angle)));
+    //ComponentSpaceTransformsArray[Bone.MyIndex].Rotate(FRotator(FVector(angle)));
+    ComponentSpaceTransformsArray[Bone.MyIndex].RotatePitch((angle));
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
     const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
     for (int32 i = Bone.MyIndex; i < NumBones; ++i)

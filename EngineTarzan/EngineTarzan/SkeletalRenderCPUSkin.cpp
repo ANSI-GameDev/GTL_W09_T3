@@ -35,7 +35,7 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
     TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
 
     FSkeletalMeshLODModel* SkeletalMeshData = SkeletalMesh->GetImportedModel();
-    TArray<FSoftSkinVertex> Vertices = SkeletalMeshData->Vertices;
+    TArray<FSoftSkinVertex> Vertices = InMeshComponent->GetBindPoseVertices();
     for (auto& Vertex : SkeletalMeshData->Vertices)
     {
         SkinVertex(Vertex, BindPoseTransforms, GlobalTransforms);
@@ -67,9 +67,9 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FTra
         bHasBone = true;
         SkeletonPose = GlobalTransforms[Vertex.InfluenceBones[i]].GetMatrix();
         InverseBindPose = FMatrix::Inverse(BindPoseTransforms[Vertex.InfluenceBones[i]].GetMatrix());
-        SkinMatrix = SkeletonPose * InverseBindPose;
-        ResultPosition += FMatrix::TransformVector(OriginalPos, SkinMatrix) * Vertex.InfluenceWeights[i];
-        //ResultPosition += SkinMatrix.TransformPosition(OriginalPos) * Vertex.InfluenceWeights[i];
+        SkinMatrix = InverseBindPose * SkeletonPose;
+        //ResultPosition += FMatrix::TransformVector(OriginalPos, SkinMatrix) * Vertex.InfluenceWeights[i];
+        ResultPosition += SkinMatrix.TransformPosition(OriginalPos) * Vertex.InfluenceWeights[i];
         ResultNormal += SkinMatrix.TransformFVector4(OriginalNormal) * Vertex.InfluenceWeights[i];
         ResultTangent += FMatrix::TransformVector(OriginalTangent, SkinMatrix) * Vertex.InfluenceWeights[i];
     }

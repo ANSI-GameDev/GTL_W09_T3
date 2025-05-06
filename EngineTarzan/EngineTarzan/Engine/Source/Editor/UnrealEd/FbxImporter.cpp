@@ -101,14 +101,25 @@ void FFbxImporter::BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& Out
     {
         FName BoneName(Node->GetName());
         FbxAMatrix Local = Node->EvaluateLocalTransform();
-        FTransform BonePose(
-            FVector(Local.GetT()[0], Local.GetT()[1], Local.GetT()[2]),
-            FQuat(FRotator(Local.GetR()[0], Local.GetR()[1], Local.GetR()[2])),
+        FTransform LocalBonePose(
+            FVector(Local.GetT()[0]/100.f, Local.GetT()[1]/100.f, Local.GetT()[2]/100.f),
+            FQuat(FRotator(Local.GetR()[1], Local.GetR()[2], -Local.GetR()[0])),
             FVector(Local.GetS()[0], Local.GetS()[1], Local.GetS()[2])
         );
+        FbxAMatrix Global = Node->EvaluateGlobalTransform();
+        FTransform GlobalBonePose(
+            FVector(Global.GetT()[0]/100.f, Global.GetT()[1]/100.f, Global.GetT()[2]/100.f),
+            FQuat(FRotator(Global.GetR()[1], Global.GetR()[2], -Global.GetR()[0])),
+            FVector(Global.GetS()[0], Global.GetS()[1], Global.GetS()[2])
+        );
+        //ACube* BoneActor = GEngine->ActiveWorld->SpawnActor<ACube>();
+        //BoneActor->SetActorLocation(GlobalBonePose.GetPosition());
+        //BoneActor->SetActorRotation(GlobalBonePose.GetRotation());
+        //BoneActor->SetActorScale(FVector(0.01f));
 
         // OutRefSkeleton 에 본 추가
-        ThisParent = OutRefSkeleton.AddBone(BoneName, ParentIndex, BonePose);
+        ThisParent = OutRefSkeleton.AddBone(BoneName, ParentIndex, LocalBonePose);
+        OutRefSkeleton.RefBonePose.Add(GlobalBonePose);
         NodeToBoneIndex.Add(Node, ThisParent);
 
         // 트리 로그
@@ -186,7 +197,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     {
         BuildReferenceSkeleton(Scene->GetRootNode(), *OutRefSkeleton, INDEX_NONE, 0);
         UE_LOG(LogLevel::Error, TEXT("ReferenceSkeleton built from existing Scene"));
-        OutRefSkeleton->ComputeGlobalTransform();
+        //OutRefSkeleton->ComputeGlobalTransform();
     }
 
     // Clear existing LODModel data and initialize global index counter
