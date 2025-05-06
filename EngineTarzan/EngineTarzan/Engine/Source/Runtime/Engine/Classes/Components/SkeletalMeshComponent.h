@@ -16,7 +16,7 @@ public:
 
     void ResetBoneTransform();
 
-    void RotateBonePitch(FMeshBoneInfo Bone, float angle);
+    void RotateBone(FMeshBoneInfo Bone, float angle);
 
     int BoneIndex = 0;
 

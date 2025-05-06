@@ -127,7 +127,6 @@ void FFbxImporter::BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& Out
     {
         BuildReferenceSkeleton(Node->GetChild(i), OutRefSkeleton, ThisParent, Depth + 1);
     }
-    OutRefSkeleton.ComputeGlobalTransform();
 }
 
 // --- 행렬 변환 유틸 ---
@@ -187,6 +186,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     {
         BuildReferenceSkeleton(Scene->GetRootNode(), *OutRefSkeleton, INDEX_NONE, 0);
         UE_LOG(LogLevel::Error, TEXT("ReferenceSkeleton built from existing Scene"));
+        OutRefSkeleton->ComputeGlobalTransform();
     }
 
     // Clear existing LODModel data and initialize global index counter

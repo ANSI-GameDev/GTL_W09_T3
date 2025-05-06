@@ -220,7 +220,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
     TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    RotateBonePitch(Bones[BoneIndex], DeltaTime);
+    RotateBone(Bones[BoneIndex], DeltaTime);
     //UE_LOG(LogLevel::Display, "%s", *Bones[BoneIndex].Name.ToString());
     Super::TickComponent(DeltaTime);
 }
@@ -244,10 +244,10 @@ void USkeletalMeshComponent::ResetBoneTransform()
     }
 }
 
-void USkeletalMeshComponent::RotateBonePitch(FMeshBoneInfo Bone, float angle)
+void USkeletalMeshComponent::RotateBone(FMeshBoneInfo Bone, float angle)
 {
     //ComponentSpaceTransformsArray[Bone.MyIndex].Translate(FVector(angle));
-    ComponentSpaceTransformsArray[Bone.MyIndex].Rotate(FQuat::FromAxisAngle(ComponentSpaceTransformsArray[Bone.MyIndex].GetRight(), angle).Rotator());
+    ComponentSpaceTransformsArray[Bone.MyIndex].Rotate(FRotator(FVector(angle)));
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
     const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
     for (int32 i = Bone.MyIndex; i < NumBones; ++i)
