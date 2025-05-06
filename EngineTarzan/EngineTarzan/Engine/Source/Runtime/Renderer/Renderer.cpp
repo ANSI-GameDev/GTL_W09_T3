@@ -73,6 +73,8 @@ void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBuf
 
     SkeletalMeshRenderPass = new FSkeletalMeshRenderPass();
 
+    DepthPrePass->InitializeSkeletalRenderPass(SkeletalMeshRenderPass);
+
     if (false == ShadowManager->Initialize(Graphics, BufferManager))
     {
         static_assert(true, "ShadowManager Initialize Failed");
@@ -386,14 +388,14 @@ void FRenderer::RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& V
             UpdateLightBufferPass->Render(Viewport);
         }
         {
-            QUICK_SCOPE_CYCLE_COUNTER(StaticMeshPass_CPU)
-            QUICK_GPU_SCOPE_CYCLE_COUNTER(StaticMeshPass_GPU, *GPUTimingManager)
-            StaticMeshRenderPass->Render(Viewport);
-        }
-        {
             QUICK_SCOPE_CYCLE_COUNTER(SkeletalMeshPass_CPU)
             QUICK_GPU_SCOPE_CYCLE_COUNTER(SkeletalMeshPass_GPU, *GPUTimingManager)
             SkeletalMeshRenderPass->Render(Viewport);
+        }
+        {
+            QUICK_SCOPE_CYCLE_COUNTER(StaticMeshPass_CPU)
+            QUICK_GPU_SCOPE_CYCLE_COUNTER(StaticMeshPass_GPU, *GPUTimingManager)
+            StaticMeshRenderPass->Render(Viewport);
         }
     }
     
