@@ -222,7 +222,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
     TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    //RotateBone(Bones[BoneIndex], DeltaTime);
+    RotateBone(Bones[BoneIndex], DeltaTime);
     Super::TickComponent(DeltaTime);
 }
 
