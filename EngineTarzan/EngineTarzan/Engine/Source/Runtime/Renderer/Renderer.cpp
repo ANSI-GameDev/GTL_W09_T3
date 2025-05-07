@@ -299,6 +299,7 @@ void FRenderer::PrepareSkeletalViewerRenderPass() const
     UpdateLightBufferPass->PrepareRenderArr();
     TileLightCullingPass->PrepareRenderArr();
     DepthPrePass->PrepareRenderArr();
+    SkeletalMeshRenderPass->PrepareRenderArr();
 }
 
 void FRenderer::BeginRender(const std::shared_ptr<FEditorViewportClient>& Viewport)

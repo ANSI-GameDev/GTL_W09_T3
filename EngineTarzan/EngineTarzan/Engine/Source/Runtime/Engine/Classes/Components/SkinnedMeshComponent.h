@@ -17,8 +17,10 @@ public:
     const TArray<FTransform>& GetWorldSpaceTransforms() const;
 
     USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
+    void SetSkeletalMesh(USkeletalMesh* InSkeletalMesh);
 
     const TArray<FSoftSkinVertex> GetBindPoseVertices() const { return BindPoseVertices; }
+
 
 protected:
     FSkeletalMeshObjectCPUSkin* MeshObject;

@@ -9,7 +9,6 @@
 #include "Rendering/SkeletalMeshLODModel.h"
 #include "UnrealEd/FbxImporter.h"
 #include "UObject/ObjectFactory.h"
-#include "Rendering/SkeletalMeshLODModel.h"
 #include "ReferenceSkeleton.h"
 
 USkeletalMeshComponent::USkeletalMeshComponent()
@@ -124,60 +123,60 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 
     // TODO : 일단 주석 처리 나중에 해제
     // 3) Sections 덤프  ← 추가
-    // ofs << "=== Sections ===\n";
-    // for (int32 i = 0; i < L.Sections.Num(); ++i)
-    // {
-    //     const auto& S = L.Sections[i];
-    //     ofs << "[" << i << "] MaterialIndex=" << S.MaterialIndex
-    //         << " BaseIndex=" << S.BaseIndex
-    //         << " NumTriangles=" << S.NumTriangles
-    //         << " BaseVertexIndex=" << S.BaseVertexIndex << "\n";
-    //     ofs << "    BoneMap: ";
-    //     for (int32 bi : S.BoneMap)
-    //         ofs << bi << " ";
-    //     ofs << "\n\n";
-    // }
+     ofs << "=== Sections ===\n";
+     for (int32 i = 0; i < L.Sections.Num(); ++i)
+     {
+         const auto& S = L.Sections[i];
+         ofs << "[" << i << "] MaterialIndex=" << S.MaterialIndex
+             << " BaseIndex=" << S.BaseIndex
+             << " NumTriangles=" << S.NumTriangles
+             << " BaseVertexIndex=" << S.BaseVertexIndex << "\n";
+         ofs << "    BoneMap: ";
+         for (int32 bi : S.BoneMap)
+             ofs << bi << " ";
+         ofs << "\n\n";
+     }
 
-    // 4) Vertices 덤프 (UV, Color, Influence까지) ← 확장
-    //ofs << "=== Vertices ===\n";
-    //for (uint32 i = 0; i < L.Vertices.Num(); ++i)
-    //{
-    //    const auto& V = L.Vertices[i];
-    //    ofs << "[" << i << "] Pos=("
-    //        << V.Position.X << "," << V.Position.Y << "," << V.Position.Z << ")";
+    //4) Vertices 덤프 (UV, Color, Influence까지) ← 확장
+    ofs << "=== Vertices ===\n";
+    for (uint32 i = 0; i < L.Vertices.Num(); ++i)
+    {
+        const auto& V = L.Vertices[i];
+        ofs << "[" << i << "] Pos=("
+            << V.Position.X << "," << V.Position.Y << "," << V.Position.Z << ")";
 
-    //    // UVs
-    //    for (uint32 u = 0; u < L.NumTexCoords; ++u)
-    //    {
-    //        ofs << " UV" << u << "=("
-    //            << V.UVs[u].X << "," << V.UVs[u].Y << ")";
-    //    }
+        // UVs
+        for (uint32 u = 0; u < L.NumTexCoords; ++u)
+        {
+            ofs << " UV" << u << "=("
+                << V.UVs[u].X << "," << V.UVs[u].Y << ")";
+        }
 
-    //    // Vertex Color
-    //    ofs << " Color=("
-    //        << (int)V.Color.R << "," << (int)V.Color.G << ","
-    //        << (int)V.Color.B << "," << (int)V.Color.A << ")";
+        // Vertex Color
+        ofs << " Color=("
+            << (int)V.Color.R << "," << (int)V.Color.G << ","
+            << (int)V.Color.B << "," << (int)V.Color.A << ")";
 
-    //    // Tangents & Normal
-    //    ofs << " TanX=("
-    //        << V.TangentX.X << "," << V.TangentX.Y << "," << V.TangentX.Z << ")"
-    //        << " TanY=("
-    //        << V.TangentY.X << "," << V.TangentY.Y << "," << V.TangentY.Z << ")"
-    //        << " Nor=("
-    //        << V.TangentZ.X << "," << V.TangentZ.Y << "," << V.TangentZ.Z << ")";
+        // Tangents & Normal
+        ofs << " TanX=("
+            << V.TangentX.X << "," << V.TangentX.Y << "," << V.TangentX.Z << ")"
+            << " TanY=("
+            << V.TangentY.X << "," << V.TangentY.Y << "," << V.TangentY.Z << ")"
+            << " Nor=("
+            << V.TangentZ.X << "," << V.TangentZ.Y << "," << V.TangentZ.Z << ")";
 
-    //    // Skin Influences
-    //    ofs << " Influences=[";
-    //    for (int inf = 0; inf < MAX_TOTAL_INFLUENCES; ++inf)
-    //    {
-    //        ofs << "("
-    //            << (int)V.InfluenceBones[inf] << ","
-    //            << V.InfluenceWeights[inf] << ")";
-    //        if (inf + 1 < MAX_TOTAL_INFLUENCES) ofs << ",";
-    //    }
-    //    ofs << "]\n";
-    //}
-    //ofs << "\n";
+        // Skin Influences
+        ofs << " Influences=[";
+        for (int inf = 0; inf < MAX_TOTAL_INFLUENCES; ++inf)
+        {
+            ofs << "("
+                << (int)V.InfluenceBones[inf] << ","
+                << V.InfluenceWeights[inf] << ")";
+            if (inf + 1 < MAX_TOTAL_INFLUENCES) ofs << ",";
+        }
+        ofs << "]\n";
+    }
+    ofs << "\n";
 
     // 5) Indices 덤프
     ofs << "=== Indices ===\n";

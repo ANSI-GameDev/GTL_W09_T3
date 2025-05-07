@@ -1,12 +1,15 @@
 #include "SkeletalMeshViewerControlPanel.h"
 
 #include "SkeletalMeshViewerPanel.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Container/String.h"
+#include "Engine/AssetManager.h"
 #include "Engine/SkeletalMesh.h"
 #include "ImGUI/imgui.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "Rendering/SkeletalMeshLODModel.h"
 #include "tinyfiledialogs/tinyfiledialogs.h"
+#include "UnrealEd/EditorViewportClient.h"
 #include "UnrealEd/FbxImporter.h"
 #include "UObject/Casts.h"
 
@@ -73,12 +76,43 @@ void USkeletalMeshViewerControlPanel::Render()
             return;
         }
 
+        AActor* skeletalActor = GEngine->ActiveWorld->SpawnActor<AActor>();
+        USkeletalMeshComponent* skeletalMeshComp = skeletalActor->AddComponent<USkeletalMeshComponent>();
+
+        USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
+        skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+        
+        skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
+
         FSkeletalMeshLODModel TestSkMeshModel;
         FReferenceSkeleton* TestSkeleton = new FReferenceSkeleton();
         // TODO : 파일 로드 로직
         FFbxImporter::ParseSkeletalMeshLODModel(FilePath, TestSkMeshModel, TestSkeleton);
 
+
+        
         SkeletalMeshViewerPanel->SetSkeleton(TestSkeleton);
+    }
+    
+    ImGui::SameLine();
+
+    ImGui::PushFont(IconFont);
+    if (ImGui::Button("\ue9c4", IconSize)) // Slider
+    {
+        ImGui::OpenPopup("SliderControl");
+    }
+    ImGui::PopFont();
+
+    if (ImGui::BeginPopup("SliderControl"))
+    {
+        ImGui::Text("Camera Speed");
+        CameraSpeed = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetCameraSpeedScalar();
+        ImGui::SetNextItemWidth(120.0f);
+        if (ImGui::DragFloat("##CamSpeed", &CameraSpeed, 0.01f, 0.198f, 192.0f, "%.2f"))
+        {
+            GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->SetCameraSpeed(CameraSpeed);
+        }
+        ImGui::EndPopup();
     }
 
     // Close 버튼 추가: 클릭 시 패널 숨김 처리

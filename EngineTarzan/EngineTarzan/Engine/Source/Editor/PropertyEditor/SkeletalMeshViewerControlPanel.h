@@ -16,6 +16,7 @@ public:
     void OnResize(HWND hWnd) override;
 private:
     float Width = 300, Height = 100;
+    float CameraSpeed = 0.0f;
     
     std::shared_ptr<USkeletalMeshViewerPanel> SkeletalMeshViewerPanel;
 };
