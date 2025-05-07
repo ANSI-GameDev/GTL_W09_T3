@@ -34,14 +34,31 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
     TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
     TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
 
-    FSkeletalMeshRenderData* SkeletalMeshRenderData = SkeletalMesh->GetRenderData();
-    TArray<FSoftSkinVertex> Vertices = InMeshComponent->GetBindPoseVertices();
-    TArray<FSkeletalMeshVertex>& RenderDataVertices = SkeletalMeshRenderData->Vertices;
-    int VertexIndex = 0;
-    for (const auto& Vertex : Vertices)
+    // 1) 역바인드포즈 × 본글로벌행렬 합성 → SkinnedMatrices 에 저장
+    const int32 NumBones = InverseBindPose.Num();
+    TArray<FMatrix> SkinnedMatrices;
+    SkinnedMatrices.SetNum(NumBones);
+    for (int32 b = 0; b < NumBones; ++b)
     {
-        SkinVertex(Vertex, InverseBindPose, GlobalTransforms, RenderDataVertices[VertexIndex]);
-        VertexIndex += 1;
+        FMatrix BoneM = GlobalTransforms[b].GetMatrix();
+        SkinnedMatrices[b] = InverseBindPose[b] * BoneM;
+    }
+
+    const TArray<FSoftSkinVertex>& Vertices = InMeshComponent->GetBindPoseVertices();
+    TArray<FSkeletalMeshVertex>& RenderDataVertices = SkeletalMesh->GetRenderData()->Vertices;
+    //int VertexIndex = 0;
+    //for (const auto& Vertex : Vertices)
+    //{
+    //    SkinVertex(Vertex, InverseBindPose, GlobalTransforms, RenderDataVertices[VertexIndex]);
+    //    VertexIndex += 1;
+    //}
+
+    const int32 NumVerts = Vertices.Num();
+    for (int32 i = 0; i < NumVerts; ++i)
+    {
+        SkinVertexOptimized(Vertices[i],
+            SkinnedMatrices,
+            RenderDataVertices[i]);
     }
 }
 
@@ -90,4 +107,39 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(const FSoftSkinVertex& Vertex, TArra
         OutVertex.TangentY = Tangent.Y;
         OutVertex.TangentZ = Tangent.Z;
     }
+}
+
+
+void FSkeletalMeshObjectCPUSkin::SkinVertexOptimized(
+    const FSoftSkinVertex& Src,
+    const TArray<FMatrix>& SkinnedMatrices,
+    FSkeletalMeshVertex& Out)
+{
+    // 누적 변수
+    FVector   Psum(0, 0, 0);
+    FVector4  Nsum(0, 0, 0, 0);
+    FVector   Tsum(0, 0, 0);
+
+    // 각 인플루언스마다 미리 계산된 합성행렬만 사용
+    for (int i = 0; i < MAX_TOTAL_INFLUENCES; ++i)
+    {
+        const float W = Src.InfluenceWeights[i];
+        if (W <= KINDA_SMALL_NUMBER) continue;
+
+        const int   Bi = Src.InfluenceBones[i];
+        const FMatrix& M = SkinnedMatrices[Bi];
+
+        Psum += M.TransformPosition(Src.Position) * W;
+        Nsum += M.TransformFVector4(Src.TangentZ) * W;
+        Tsum += FMatrix::TransformVector(Src.TangentX, M) * W;
+    }
+
+    // 결과 정규화 후 아웃풋에 복사
+    Out.X = Psum.X;  Out.Y = Psum.Y;  Out.Z = Psum.Z;
+
+    FVector N = FVector(Nsum.X, Nsum.Y, Nsum.Z).GetSafeNormal();
+    Out.NormalX = N.X;  Out.NormalY = N.Y;  Out.NormalZ = N.Z;
+
+    FVector T = Tsum.GetSafeNormal();
+    Out.TangentX = T.X;  Out.TangentY = T.Y;  Out.TangentZ = T.Z;
 }
