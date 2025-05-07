@@ -17,7 +17,7 @@ class FSkeletalMeshObjectCPUSkin
 {
 public:
     void InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData);
-    void Update(USkinnedMeshComponent* InMeshComponent, float DeltaTime);
+    void Update(USkinnedMeshComponent* InMeshComponent);
     void SkinVertex(const FSoftSkinVertex& InVertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> BoneGlobalTransforms, FSkeletalMeshVertex& OutVertex);
 
     void SkinVertexOptimized(const FSoftSkinVertex& Src, const TArray<FMatrix>& SkinnedMatrices, FSkeletalMeshVertex& Out);

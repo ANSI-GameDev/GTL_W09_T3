@@ -116,6 +116,7 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
 
     Handler->OnSkeletalMeshViewerEndDelegate.AddLambda([this]()
     {
+        SkeletalMeshViewportClient->SetPickedGizmoComponent(nullptr);
         this->RegisterEditorInputDelegates();
         ActiveViewportClient = ViewportClients[0];
     });
@@ -218,6 +219,11 @@ void SLevelEditor::SetSkeletalMeshViewportClient(const bool bInSkeletalMeshViewM
     }
     
     ResizeViewports();
+}
+
+std::shared_ptr<FSkeletalMeshViewportClient> SLevelEditor::GetSkeletalMeshViewportClient() const
+{
+    return SkeletalMeshViewportClient;
 }
 
 bool SLevelEditor::IsSkeletalMeshViewMode() const
@@ -575,43 +581,6 @@ void SLevelEditor::RegisterStaticMeshViewerInputDelegates()
 
             switch (InMouseEvent.GetEffectingButton())  // NOLINT(clang-diagnostic-switch-enum)
             {
-            case EKeys::LeftMouseButton:
-            {
-                if (const UEditorEngine* EdEngine = Cast<UEditorEngine>(GEngine))
-                {
-                    // 기존 과는 다른 로직 넣어야됨
-                //     if (const AActor* SelectedActor = EdEngine->GetSelectedActor())
-                //     {
-                //         USceneComponent* TargetComponent = nullptr;
-                //         if (USceneComponent* SelectedComponent = EdEngine->GetSelectedComponent())
-                //         {
-                //             TargetComponent = SelectedComponent;
-                //         }
-                //         else if (AActor* SelectedActor = EdEngine->GetSelectedActor())
-                //         {
-                //             TargetComponent = SelectedActor->GetRootComponent();
-                //         }
-                //         else
-                //         {
-                //             return;
-                //         }
-                //
-                //         // 초기 Actor와 Cursor의 거리차를 저장
-                //         const FViewportCamera* ViewTransform = SkeletalMeshViewportClient->GetViewportType() == LVT_Perspective
-                //                                             ? &SkeletalMeshViewportClient->PerspectiveCamera
-                //                                             : &SkeletalMeshViewportClient->OrthogonalCamera;
-                //
-                //         FVector RayOrigin, RayDir;
-                //         SkeletalMeshViewportClient->DeprojectFVector2D(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
-                //
-                //         const FVector TargetLocation = TargetComponent->GetWorldLocation();
-                //         const float TargetDist = FVector::Distance(ViewTransform->GetLocation(), TargetLocation);
-                //         const FVector TargetRayEnd = RayOrigin + RayDir * TargetDist;
-                //         TargetDiff = TargetLocation - TargetRayEnd;
-                //     }
-                }
-                // break;
-            }
             case EKeys::RightMouseButton:
             {
                 if (!InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
@@ -634,10 +603,7 @@ void SLevelEditor::RegisterStaticMeshViewerInputDelegates()
             case EKeys::RightMouseButton:
             {
                 FWindowsCursor::SetShowMouseCursor(true);
-                FWindowsCursor::SetPosition(
-                    static_cast<int32>(MousePinPosition.X),
-                    static_cast<int32>(MousePinPosition.Y)
-                );
+                FWindowsCursor::SetPosition(static_cast<int32>(MousePinPosition.X), static_cast<int32>(MousePinPosition.Y));
                 return;
             }
 

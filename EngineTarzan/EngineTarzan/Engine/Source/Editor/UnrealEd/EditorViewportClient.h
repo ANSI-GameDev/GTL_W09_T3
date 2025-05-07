@@ -255,7 +255,7 @@ private:
     void HandleMouseMovement(const FPointerEvent& InMouseEvent);
 
     /** 기즈모 제어 로직 추출 */
-    void HandleGizmoControl(const FPointerEvent& InMouseEvent);
+    virtual void HandleGizmoControl(const FPointerEvent& InMouseEvent);
 
     /** 마우스 휠 처리 로직 */
     void HandleMouseWheel(const FPointerEvent& InMouseEvent);

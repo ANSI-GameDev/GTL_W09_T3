@@ -4,7 +4,7 @@
 #include "Developer/SkeletalMeshBuilder.h"
 #include "Engine/SkeletalMesh.h"
 #include "UnrealEd/FbxImporter.h"
-
+#include "Engine/Asset/SkeletalMeshAsset.h"
 
 USkinnedMeshComponent::USkinnedMeshComponent()
     : MeshObject(nullptr)
@@ -19,7 +19,7 @@ void USkinnedMeshComponent::TickComponent(float DeltaTime)
 
     if (MeshObject)
     {
-        MeshObject->Update(this, DeltaTime);
+        MeshObject->Update(this);
     }
 
     // Update ComponentSpaceTransforms();
@@ -29,6 +29,32 @@ void USkinnedMeshComponent::TickComponent(float DeltaTime)
 const TArray<FTransform>& USkinnedMeshComponent::GetComponentSpaceTransforms() const
 {
     return ComponentSpaceTransformsArray;
+}
+
+FTransform USkinnedMeshComponent::GetBoneLocalTransform(const int InBoneIndex) const
+{
+    return ComponentSpaceTransformsArray[InBoneIndex];
+}
+
+void USkinnedMeshComponent::SetBoneLocalTransform(const int InBoneIndex, const FTransform& InTransform)
+{
+    ComponentSpaceTransformsArray[InBoneIndex] = InTransform;
+    UpdateChildBoneGlobalTransform(InBoneIndex);
+
+    MeshObject->Update(this);
+}
+
+FTransform USkinnedMeshComponent::GetBoneWorldTransform(const int InBoneIndex) const
+{
+    return WorldSpaceTransformArray[InBoneIndex];
+}
+
+void USkinnedMeshComponent::SetBoneWorldTransform(const int InBoneIndex, const FTransform& InTransform)
+{
+    WorldSpaceTransformArray[InBoneIndex] = InTransform;
+    UpdateChildBoneGlobalTransform(InBoneIndex);
+
+    MeshObject->Update(this);
 }
 
 const TArray<FTransform>& USkinnedMeshComponent::GetWorldSpaceTransforms() const
@@ -46,6 +72,7 @@ void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMesh* InSkeletalMesh)
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
 
+    BindPoseVertices.Empty();
     for (const auto& Vertex : SkeletalMesh->ImportedModel->Vertices)
     {
         BindPoseVertices.Add(Vertex);
@@ -67,4 +94,24 @@ void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMesh* InSkeletalMesh)
         *SkeletalMesh->ImportedModel,
         *SkeletalMesh->SkelMeshRenderData
     );
+
+    AABB.MinLocation = SkeletalMesh->SkelMeshRenderData->BoundingBoxMin;
+    AABB.MaxLocation = SkeletalMesh->SkelMeshRenderData->BoundingBoxMax;
+}
+
+void USkinnedMeshComponent::UpdateChildBoneGlobalTransform(int32 ParentIndex)
+{
+    const TArray<FMeshBoneInfo>& Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
+    const int32 NumBones = Bones.Num();
+    for (int32 i = 0; i < NumBones; ++i)
+    {
+        if (Bones[i].ParentIndex == ParentIndex)
+        {
+            // 자식 본의 로컬 트랜스폼 → 월드 트랜스폼 갱신
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
+
+            // 재귀적으로 자식의 자식도 갱신
+            UpdateChildBoneGlobalTransform(i);
+        }
+    }
 }

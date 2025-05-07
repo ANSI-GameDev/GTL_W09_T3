@@ -11,6 +11,7 @@
 #include "Components/Light/DirectionalLightComponent.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "UnrealEd/EditorViewportClient.h"
+#include "UnrealEd/SkeletalMeshViewportClient.h"
 #include "UObject/UObjectIterator.h"
 
 class ASkeletalActor;
@@ -59,26 +60,7 @@ void UEditorEngine::Tick(float DeltaTime)
 {
     for (FWorldContext* WorldContext : WorldList)
     {
-        if (WorldContext->WorldType == EWorldType::Editor)
-        {
-            if (UWorld* World = WorldContext->World())
-            {
-                World->Tick(DeltaTime);
-                ULevel* Level = World->GetActiveLevel();
-                TArray CachedActors = Level->Actors;
-                if (Level)
-                {
-                    for (AActor* Actor : CachedActors)
-                    {
-                        if (Actor && Actor->IsActorTickInEditor())
-                        {
-                            Actor->Tick(DeltaTime);
-                        }
-                    }
-                }
-            }
-        }
-        if (WorldContext->WorldType == EWorldType::PIE)
+        if (WorldContext->WorldType != EWorldType::Editor)
         {
             if (UWorld* World = WorldContext->World())
             {
@@ -195,8 +177,6 @@ void UEditorEngine::OpenSkeletalMeshViewer()
     
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
-    Handler->OnSkeletalMeshViewerStartDelegate.Broadcast();
-
     StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::SkeletalMeshViewer, FString("StaticMeshViwerWorld"));
     StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
     
@@ -212,6 +192,10 @@ void UEditorEngine::OpenSkeletalMeshViewer()
     FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::SkeletalMeshViewer);
     
     ViwerWorldContext.SetCurrentWorld(ActiveWorld);
+    Handler->OnSkeletalMeshViewerStartDelegate.Broadcast();
+
+    const SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+    LevelEd->GetSkeletalMeshViewportClient()->SetSkeletalActor(actor);
 }
 
 void UEditorEngine::CloseSkeletalMeshViewer()
@@ -230,10 +214,10 @@ void UEditorEngine::CloseSkeletalMeshViewer()
     }
 
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
-
-    Handler->OnSkeletalMeshViewerEndDelegate.Broadcast();
+    
     // 다시 EditorWorld로 돌아옴.
     ActiveWorld = EditorWorld;
+    Handler->OnSkeletalMeshViewerEndDelegate.Broadcast();
 }
 
 FWorldContext& UEditorEngine::GetEditorWorldContext(/*bool bEnsureIsGWorld*/)

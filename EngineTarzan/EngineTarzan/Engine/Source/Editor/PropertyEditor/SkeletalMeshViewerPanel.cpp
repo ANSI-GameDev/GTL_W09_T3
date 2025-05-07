@@ -3,14 +3,14 @@
 #include "ReferenceSkeleton.h"
 #include "Actors/SkeletalActor.h"
 #include "BaseGizmos/TransformGizmo.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Engine/EditorEngine.h"
 #include "Engine/Engine.h"
+#include "Engine/SkeletalMesh.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "UnrealEd/ImGuiWidget.h"
-
-// 선택된 본 인덱스 저장
-int USkeletalMeshViewerPanel::SelectedBoneIndex = INDEX_NONE;
+#include "UnrealEd/SkeletalMeshViewportClient.h"
 
 USkeletalMeshViewerPanel::USkeletalMeshViewerPanel()
 {
@@ -22,23 +22,19 @@ USkeletalMeshViewerPanel::~USkeletalMeshViewerPanel()
 
 void USkeletalMeshViewerPanel::Render()
 {
-    UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
-    if (!Engine)
-    {
-        return;
-    }
-    
+    SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+    std::shared_ptr<FSkeletalMeshViewportClient> SkeletalMeshViewportClient = LevelEd->GetSkeletalMeshViewportClient();
     /* Pre Setup */
-    float PanelWidth  = Width * 0.2f - 6.0f;
-    float PanelHeight = Height * 0.65f;
+    const float PanelWidth  = Width * 0.2f - 6.0f;
+    const float PanelHeight = Height * 0.65f;
 
     /* 우측 상단 위치 계산 */
-    const float padding = 5.0f;
-    float PanelPosX = Width - PanelWidth - padding;  // 화면 폭에서 패널 폭과 여백을 뺀 값
-    float PanelPosY = padding;                      // 상단 여백만큼 고정
+    constexpr float padding = 5.0f;
+    const float PanelPosX = Width - PanelWidth - padding;  // 화면 폭에서 패널 폭과 여백을 뺀 값
+    const float PanelPosY = padding;                      // 상단 여백만큼 고정
 
-    ImVec2 MinSize(140, 370);
-    ImVec2 MaxSize(FLT_MAX, 900);
+    const ImVec2 MinSize(140, 370);
+    const ImVec2 MaxSize(FLT_MAX, 900);
 
     /* Min, Max Size */
     ImGui::SetNextWindowSizeConstraints(MinSize, MaxSize);
@@ -51,21 +47,40 @@ void USkeletalMeshViewerPanel::Render()
 
     /* Panel Flags */
     ImGuiWindowFlags PanelFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
-
-    /* Render Start */
-    ImGui::Begin("BoneTree", nullptr, PanelFlags);
-
+    
     // gizmo 위치·회전 갱신 람다
+    ASkeletalActor* skeletalActor = nullptr;
+    USkeletalMesh* skeletalMesh = nullptr;
+
+    skeletalActor = SkeletalMeshViewportClient->GetSkeletalActor();
+    if (skeletalActor && !skeletalActor->IsActorBeingDestroyed())
+    {
+        skeletalMesh = skeletalActor->GetSkeletalMeshComponent()->GetSkeletalMesh();
+    }
+    
     auto UpdateActor = [&](AActor* Gizmo)
     {
         if (!Gizmo) return;
-        Gizmo->SetActorLocation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetPosition());
-        Gizmo->SetActorRotation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetRotation());
+        
+        if (skeletalMesh)
+        {
+            FTransform WorldTransform = skeletalActor->GetSkeletalMeshComponent()->GetBoneWorldTransform(SkeletalMeshViewportClient->GetSelectedBoneIndex());
+            Gizmo->SetActorLocation(WorldTransform.GetPosition());
+            Gizmo->SetActorRotation(WorldTransform.GetRotation());
+        }
     };
     
-    if (CurrentRefSkeleton)
+    if (skeletalMesh == nullptr)
     {
-        const FReferenceSkeleton& RefSkel = *CurrentRefSkeleton;
+        return;
+    }
+    
+    if (skeletalMesh)
+    {
+        /* Render Start */
+        ImGui::Begin("BoneTree", nullptr, PanelFlags);
+
+        FReferenceSkeleton RefSkel = skeletalMesh->RefSkeleton;
         // 트리 구조 렌더링
         for (int32 i = 0; i < RefSkel.GetNumBones(); ++i)
         {
@@ -73,12 +88,16 @@ void USkeletalMeshViewerPanel::Render()
                 DrawBoneNode(RefSkel, i);
         }
         
-        ImGui::Separator();
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(PanelPosX, PanelPosY + PanelHeight + padding), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(PanelWidth, 200.0f), ImGuiCond_Always);
+        ImGui::Begin("BoneTransform", nullptr, PanelFlags);
 
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         
         // 선택된 본 정보 출력
-        if (SelectedBoneIndex != INDEX_NONE)
+        if (SkeletalMeshViewportClient->GetSelectedBoneIndex() != INDEX_NONE)
         {
             SLevelEditor* LevelEditor = GEngineLoop.GetLevelEditor();
             if (const std::shared_ptr<FEditorViewportClient> EditorViewportClient = LevelEditor->GetActiveViewportClient())
@@ -87,13 +106,12 @@ void USkeletalMeshViewerPanel::Render()
             }
 
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
-            if (SkeletalActor != nullptr || SkeletalActor->IsActorBeingDestroyed())
+            if (skeletalActor != nullptr || skeletalActor->IsActorBeingDestroyed())
             {
-                Engine->SelectActor(Cast<AActor>(SkeletalActor));
+                Engine->SelectActor(Cast<AActor>(skeletalActor));
             }
             
-            const FMeshBoneInfo& Info = RefSkel.GetBoneInfo()[SelectedBoneIndex];
-            FTransform Pose = RefSkel.GetBonePose()[SelectedBoneIndex];
+            FTransform Pose = skeletalActor->GetSkeletalMeshComponent()->GetBoneWorldTransform(SkeletalMeshViewportClient->GetSelectedBoneIndex());
 
             FVector Pos   = Pose.GetPosition();
             FRotator Rot  = Pose.GetRotation();
@@ -107,10 +125,13 @@ void USkeletalMeshViewerPanel::Render()
             
             FImGuiWidget::DrawVec3Control("Scale",  Scale, 0, 85);
             ImGui::Spacing();            
+
+            FTransform Updated = FTransform(Pos, Rot, Scale);
+            skeletalActor->GetSkeletalMeshComponent()->SetBoneWorldTransform(SkeletalMeshViewportClient->GetSelectedBoneIndex(), Updated);
         }
         ImGui::PopStyleColor();
+        ImGui::End();
     }
-    ImGui::End();
 }
 
 void USkeletalMeshViewerPanel::OnResize(const HWND hWnd)
@@ -123,6 +144,10 @@ void USkeletalMeshViewerPanel::OnResize(const HWND hWnd)
 
 void USkeletalMeshViewerPanel::DrawBoneNode(const FReferenceSkeleton& RefSkeletal, const int32 BoneIndex)
 {
+    SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+    std::shared_ptr<FSkeletalMeshViewportClient> SkeletalMeshViewportClient = LevelEd->GetSkeletalMeshViewportClient();
+
+    
     // 본 이름 UTF-8 변환
     const FMeshBoneInfo& BoneInfo = RefSkeletal.GetBoneInfo()[BoneIndex];
     const FString BoneName = BoneInfo.Name.ToString();
@@ -138,17 +163,17 @@ void USkeletalMeshViewerPanel::DrawBoneNode(const FReferenceSkeleton& RefSkeleta
     }
 
     bool bHasChildren = Children.Num() > 0;
-    
+
     // 트리 노드 플래그 설정: 항상 펼치고 전체 너비 사용
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
     flags |= (bHasChildren ? ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_Leaf);
-    if (BoneIndex == SelectedBoneIndex)
+    if (BoneIndex == SkeletalMeshViewportClient->GetSelectedBoneIndex())
         flags |= ImGuiTreeNodeFlags_Selected;
     
     // BoneIndex를 ID로 사용하고 이름 표시
     const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(BoneIndex)), flags, "%s", GetData(BoneName));
     if (ImGui::IsItemClicked())
-        SelectedBoneIndex = BoneIndex;
+        SkeletalMeshViewportClient->SetSelectedBoneIndex(BoneIndex);
 
     if (opened)
     {
@@ -158,24 +183,4 @@ void USkeletalMeshViewerPanel::DrawBoneNode(const FReferenceSkeleton& RefSkeleta
         }
         ImGui::TreePop();
     }
-}
-
-void USkeletalMeshViewerPanel::SetSkeleton(FReferenceSkeleton* RefSkeletal)
-{
-    CurrentRefSkeleton = RefSkeletal;
-}
-
-FReferenceSkeleton* USkeletalMeshViewerPanel::GetSkeleton() const
-{
-    return CurrentRefSkeleton;
-}
-
-void USkeletalMeshViewerPanel::SetSkeletalActor(ASkeletalActor* Actor)
-{
-    SkeletalActor = Actor;
-}
-
-ASkeletalActor* USkeletalMeshViewerPanel::GetSkeletalActor() const
-{
-    return SkeletalActor;
 }

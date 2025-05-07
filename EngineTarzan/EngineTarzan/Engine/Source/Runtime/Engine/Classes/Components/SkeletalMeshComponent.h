@@ -15,8 +15,16 @@ public:
     void ResetBoneTransform();
 
     void RotateBone(FMeshBoneInfo Bone, float angle);
+    
+    void TranslateBone(int InBoneIndex, const FVector& InTranslation);
+    
+    void RotateBone(int InBoneIndex, const FRotator& InRotation);
 
-    void UpdateChildBoneGlobalTransform(int32 ParentIndex);
+    void ScaleBone(int InBoneIndex, const FVector& InScale);
+
+    
+
+    virtual int CheckRayIntersection(const FVector& InRayOrigin, const FVector& InRayDirection, float& OutHitDistance) const override;
 
     int BoneIndex = 0;
 
