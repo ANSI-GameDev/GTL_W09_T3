@@ -1,9 +1,11 @@
 #include "SkeletalMeshViewerControlPanel.h"
 
 #include "SkeletalMeshViewerPanel.h"
+#include "Actors/SkeletalActor.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Container/String.h"
 #include "Engine/AssetManager.h"
+#include "Engine/EditorEngine.h"
 #include "Engine/SkeletalMesh.h"
 #include "ImGUI/imgui.h"
 #include "LevelEditor/SLevelEditor.h"
@@ -79,37 +81,31 @@ void USkeletalMeshViewerControlPanel::Render()
         if (GEngine->ActiveWorld->WorldType != EWorldType::SkeletalMeshViewer)
         {
             SkeletalMeshViewerPanel->SetSkeleton(nullptr);
+            SkeletalMeshViewerPanel->SetSkeletalActor(nullptr);
             return;
         }
 
-        if (skeletalActor != nullptr)
+        if (SkeletalMeshViewerPanel->GetSkeletalActor() == nullptr)
         {
-            skeletalActor->Destroy();
+            for (AActor* Actor : GEngine->ActiveWorld->GetActiveLevel()->Actors)
+            {
+                if (ASkeletalActor* skeletalActor = Cast<ASkeletalActor>(Actor))
+                {
+                    SkeletalMeshViewerPanel->SetSkeletalActor(skeletalActor);
+                    continue;
+                }
+            }
         }
-
-        skeletalActor = GEngine->ActiveWorld->SpawnActor<AActor>();
-        skeletalActor->SetActorLocation(FVector(0,0,0));
-        skeletalActor->SetActorRotation(FRotator(0,0,0));
         
-        USkeletalMeshComponent* skeletalMeshComp = skeletalActor->AddComponent<USkeletalMeshComponent>();
+        USkeletalMeshComponent* skeletalMeshComp = SkeletalMeshViewerPanel->GetSkeletalActor()->GetSkeletalMeshComponent();
 
         USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
         skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
 
-        FFbxImporter::ParseSkeletalMeshLODModel(
-        //TEXT("Contents/FBX/Spider.fbx"),
-        FilePath,
-        //TEXT("Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.fbx"),
-        //TEXT("Contents/FBX/tifa2.fbx"),
-        //TEXT("Contents/FBX/tifa_noglove/tifanoglove.fbx"),
-        //TEXT("Contents/FBX/aerith.fbx"),
-        //TEXT("Contents/FBX/tifamaterial/PC0002_00_BodyB.fbx"),
-        *skeletalMesh->ImportedModel,
-        &skeletalMesh->RefSkeleton
-        );
+        FFbxImporter::ParseSkeletalMeshLODModel(FilePath, *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
         
         skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
-
+        
         SkeletalMeshViewerPanel->SetSkeleton(&skeletalMesh->RefSkeleton);
     }
     

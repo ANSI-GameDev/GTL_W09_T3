@@ -38,6 +38,7 @@ void UnrealEd::Render() const
         const std::shared_ptr<USkeletalMeshViewerPanel> skeletalmeshViewer = std::dynamic_pointer_cast<USkeletalMeshViewerPanel>(Panels["SkeletalMeshViewerPanel"]);
         if (skeletalmeshViewer != nullptr)
         {
+            skeletalmeshViewer->SetSkeletalActor(nullptr);
             skeletalmeshViewer->SetSkeleton(nullptr);
         }
     }

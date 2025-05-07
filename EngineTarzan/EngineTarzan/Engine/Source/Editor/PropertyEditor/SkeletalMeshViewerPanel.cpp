@@ -1,6 +1,7 @@
 #include "SkeletalMeshViewerPanel.h"
 
 #include "ReferenceSkeleton.h"
+#include "Actors/SkeletalActor.h"
 #include "BaseGizmos/TransformGizmo.h"
 #include "Engine/EditorEngine.h"
 #include "Engine/Engine.h"
@@ -54,7 +55,13 @@ void USkeletalMeshViewerPanel::Render()
     /* Render Start */
     ImGui::Begin("BoneTree", nullptr, PanelFlags);
 
-    
+    // gizmo 위치·회전 갱신 람다
+    auto UpdateActor = [&](AActor* Gizmo)
+    {
+        if (!Gizmo) return;
+        Gizmo->SetActorLocation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetPosition());
+        Gizmo->SetActorRotation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetRotation());
+    };
     
     if (CurrentRefSkeleton)
     {
@@ -69,21 +76,20 @@ void USkeletalMeshViewerPanel::Render()
         ImGui::Separator();
 
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+        
         // 선택된 본 정보 출력
         if (SelectedBoneIndex != INDEX_NONE)
         {
-            // gizmo 위치·회전 갱신 람다
-            auto UpdateActor = [&](AActor* Gizmo)
-            {
-                if (!Gizmo) return;
-                Gizmo->SetActorLocation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetPosition());
-                Gizmo->SetActorRotation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetRotation());
-            };
-
             SLevelEditor* LevelEditor = GEngineLoop.GetLevelEditor();
             if (const std::shared_ptr<FEditorViewportClient> EditorViewportClient = LevelEditor->GetActiveViewportClient())
             {
                 UpdateActor(EditorViewportClient->GetGizmoActor());
+            }
+
+            UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
+            if (SkeletalActor != nullptr || SkeletalActor->IsActorBeingDestroyed())
+            {
+                Engine->SelectActor(Cast<AActor>(SkeletalActor));
             }
             
             const FMeshBoneInfo& Info = RefSkel.GetBoneInfo()[SelectedBoneIndex];
@@ -162,4 +168,14 @@ void USkeletalMeshViewerPanel::SetSkeleton(FReferenceSkeleton* RefSkeletal)
 FReferenceSkeleton* USkeletalMeshViewerPanel::GetSkeleton() const
 {
     return CurrentRefSkeleton;
+}
+
+void USkeletalMeshViewerPanel::SetSkeletalActor(ASkeletalActor* Actor)
+{
+    SkeletalActor = Actor;
+}
+
+ASkeletalActor* USkeletalMeshViewerPanel::GetSkeletalActor() const
+{
+    return SkeletalActor;
 }

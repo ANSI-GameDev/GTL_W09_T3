@@ -4,6 +4,7 @@
 #include "Level.h"
 #include "Actors/Cube.h"
 #include "Actors/DirectionalLightActor.h"
+#include "Actors/SkeletalActor.h"
 #include "BaseGizmos/TransformGizmo.h"
 #include "GameFramework/Actor.h"
 #include "Classes/Engine/AssetManager.h"
@@ -11,6 +12,8 @@
 #include "LevelEditor/SLevelEditor.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "UObject/UObjectIterator.h"
+
+class ASkeletalActor;
 
 namespace PrivateEditorSelection
 {
@@ -198,6 +201,10 @@ void UEditorEngine::OpenSkeletalMeshViewer()
     StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
     
     ActiveWorld = StaticMeshViewerWorld;
+
+    ASkeletalActor* actor = ActiveWorld->SpawnActor<ASkeletalActor>();
+    actor->SetActorLocation(FVector(0, 0, 0));
+    actor->SetActorRotation(FRotator(0, 0, 0));
     
     ADirectionalLight* dirLight = ActiveWorld->SpawnActor<ADirectionalLight>();
     dirLight->SetActorRotation(FRotator(30, 0, 0));

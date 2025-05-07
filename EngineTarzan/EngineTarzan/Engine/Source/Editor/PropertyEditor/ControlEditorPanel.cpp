@@ -35,13 +35,16 @@
 #include "Actors/SphereActor.h"
 #include "Actors/CapsuleActor.h"
 #include "Actors/SkeletalActor.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Contents/Actors/Fish.h"
 #include "Contents/Actors/ItemActor.h"
 #include "Contents/Actors/PlatformActor.h"
 #include "Contents/Actors/GoalPlatformActor.h"
 #include "Contents/Actors/TriggerBox.h"
+#include "Engine/SkeletalMesh.h"
 #include "Renderer/CompositingPass.h"
+#include "UnrealEd/FbxImporter.h"
 
 void ControlEditorPanel::Render()
 {
@@ -464,8 +467,18 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     SpawnedActor->SetActorLabel(TEXT("OBJ_TRIGGERBOX"));
                     break;
                 case OBJ_SKELETALMESH:
-                    SpawnedActor = World->SpawnActor<ASkeletalActor>();
-                    SpawnedActor->SetActorLabel(TEXT("OBJ_SKELETALMESH"));
+                    {
+                        ASkeletalActor* skeletalActor = World->SpawnActor<ASkeletalActor>();
+                        SpawnedActor = skeletalActor;
+                    
+                        USkeletalMeshComponent* skeletalMeshComp = skeletalActor->GetSkeletalMeshComponent();
+
+                        USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
+                        skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+                        FFbxImporter::ParseSkeletalMeshLODModel(TEXT("Contents/FBX/nathan3.fbx"), *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
+                        skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
+                        SpawnedActor->SetActorLabel(TEXT("OBJ_SKELETALMESH"));
+                    }
                     break;
                 case OBJ_CAMERA:
                 case OBJ_PLAYER:
