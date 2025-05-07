@@ -15,6 +15,12 @@ public:
     void ResetBoneTransform();
 
     void RotateBone(FMeshBoneInfo Bone, float angle);
+    
+    void TranslateBone(int InBoneIndex, const FVector& InTranslation);
+    
+    void RotateBone(int InBoneIndex, const FRotator& InRotation);
+
+    void ScaleBone(int InBoneIndex, const FVector& InScale);
 
     void UpdateChildBoneGlobalTransform(int32 ParentIndex);
 

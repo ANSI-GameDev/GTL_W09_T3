@@ -28,6 +28,8 @@ public:
     bool IsMultiViewport() const;
 
     void SetSkeletalMeshViewportClient(bool bInSkeletalMeshViewMode);
+    std::shared_ptr<FSkeletalMeshViewportClient> GetSkeletalMeshViewportClient() const;
+    
     bool IsSkeletalMeshViewMode() const;
 
     void RegisterEditorInputDelegates();

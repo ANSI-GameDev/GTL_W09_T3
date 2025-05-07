@@ -13,6 +13,7 @@
 #include "tinyfiledialogs/tinyfiledialogs.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "UnrealEd/FbxImporter.h"
+#include "UnrealEd/SkeletalMeshViewportClient.h"
 #include "UObject/Casts.h"
 
 USkeletalMeshViewerControlPanel::USkeletalMeshViewerControlPanel()
@@ -23,13 +24,11 @@ USkeletalMeshViewerControlPanel::~USkeletalMeshViewerControlPanel()
 {
 }
 
-void USkeletalMeshViewerControlPanel::Initialize(const std::shared_ptr<USkeletalMeshViewerPanel>& InSkeletalMeshViewerPanel)
-{
-    SkeletalMeshViewerPanel = InSkeletalMeshViewerPanel;
-}
-
 void USkeletalMeshViewerControlPanel::Render()
 {
+    SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+    std::shared_ptr<FSkeletalMeshViewportClient> SkeletalMeshViewportClient = LevelEd->GetSkeletalMeshViewportClient();
+    
     /* Pre Setup */
     const ImGuiIO& IO = ImGui::GetIO();
     ImFont* IconFont = IO.Fonts->Fonts[FEATHER_FONT];
@@ -80,24 +79,12 @@ void USkeletalMeshViewerControlPanel::Render()
 
         if (GEngine->ActiveWorld->WorldType != EWorldType::SkeletalMeshViewer)
         {
-            SkeletalMeshViewerPanel->SetSkeleton(nullptr);
-            SkeletalMeshViewerPanel->SetSkeletalActor(nullptr);
+            SkeletalMeshViewportClient->SetSkeletalActor(nullptr);
+            SkeletalMeshViewportClient->SetSelectedBoneIndex(INDEX_NONE);
             return;
         }
-
-        if (SkeletalMeshViewerPanel->GetSkeletalActor() == nullptr)
-        {
-            for (AActor* Actor : GEngine->ActiveWorld->GetActiveLevel()->Actors)
-            {
-                if (ASkeletalActor* skeletalActor = Cast<ASkeletalActor>(Actor))
-                {
-                    SkeletalMeshViewerPanel->SetSkeletalActor(skeletalActor);
-                    continue;
-                }
-            }
-        }
         
-        USkeletalMeshComponent* skeletalMeshComp = SkeletalMeshViewerPanel->GetSkeletalActor()->GetSkeletalMeshComponent();
+        USkeletalMeshComponent* skeletalMeshComp = SkeletalMeshViewportClient->GetSkeletalActor()->GetSkeletalMeshComponent();
 
         USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
         skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
@@ -105,8 +92,6 @@ void USkeletalMeshViewerControlPanel::Render()
         FFbxImporter::ParseSkeletalMeshLODModel(FilePath, *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
         
         skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
-        
-        SkeletalMeshViewerPanel->SetSkeleton(&skeletalMesh->RefSkeleton);
     }
     
     ImGui::SameLine();

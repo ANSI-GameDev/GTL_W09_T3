@@ -31,6 +31,26 @@ const TArray<FTransform>& USkinnedMeshComponent::GetComponentSpaceTransforms() c
     return ComponentSpaceTransformsArray;
 }
 
+FTransform USkinnedMeshComponent::GetBoneLocalTransform(const int InBoneIndex) const
+{
+    return ComponentSpaceTransformsArray[InBoneIndex];
+}
+
+void USkinnedMeshComponent::SetBoneLocalTransform(const int InBoneIndex, const FTransform& InTransform)
+{
+    ComponentSpaceTransformsArray[InBoneIndex] = InTransform;
+}
+
+FTransform USkinnedMeshComponent::GetBoneWorldTransform(const int InBoneIndex) const
+{
+    return WorldSpaceTransformArray[InBoneIndex];
+}
+
+void USkinnedMeshComponent::SetBoneWorldTransform(const int InBoneIndex, const FTransform& InTransform)
+{
+    WorldSpaceTransformArray[InBoneIndex] = InTransform;
+}
+
 const TArray<FTransform>& USkinnedMeshComponent::GetWorldSpaceTransforms() const
 {
     return WorldSpaceTransformArray;
