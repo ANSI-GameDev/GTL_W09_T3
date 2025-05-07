@@ -47,41 +47,44 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
     FSkeletalMeshBuilder::ConvertLODModelToRenderData(*SkeletalMeshData, *SkeletalMesh->GetRenderData());
 }
 
-void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> GlobalTransforms)
+void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> BoneGlobalTransforms)
 {
-    FVector ResultPosition = { 0,0,0 };
-    FVector4 ResultNormal = { 0,0,0,0 };
-    FVector ResultTangent = { 0,0,0 };
-    FVector ResultBiTangent = { 0,0,0 };
+    FVector SkinnedPos = FVector::ZeroVector;
+    FVector4 SkinnedNormal = FVector4(0,0,0,0);
+    FVector SkinnedTangent = FVector::ZeroVector;
+    FVector SkinnedBiTangent = FVector::ZeroVector;
 
-    FVector OriginalPos = Vertex.Position;
-    FVector4 OriginalNormal = Vertex.TangentZ;
-    FVector OriginalTangent = Vertex.TangentX;
+    FVector& OriginalPos = Vertex.Position;
+    FVector4& OriginalNormal = Vertex.TangentZ;
+    FVector& OriginalTangent = Vertex.TangentX;
 
-    FMatrix SkeletonPose;
-    FMatrix SkinMatrix;
-
-    bool bHasBone = false;
+    bool bHasInfluence = false;
 
     for (int i = 0; i < MAX_TOTAL_INFLUENCES; ++i)
     {
-        if (Vertex.InfluenceWeights[i] <= 0.0f)
+        uint8& BoneIndex = Vertex.InfluenceBones[i];
+        float& Weight = Vertex.InfluenceWeights[i];
+        if (Weight <= KINDA_SMALL_NUMBER)
+        {
             continue;
-        bHasBone = true;
-        SkeletonPose = GlobalTransforms[Vertex.InfluenceBones[i]].GetMatrix();
-        SkinMatrix = InverseBindPose[Vertex.InfluenceBones[i]] * SkeletonPose;
-        //ResultPosition += FMatrix::TransformVector(OriginalPos, SkinMatrix) * Vertex.InfluenceWeights[i];
-        ResultPosition += SkinMatrix.TransformPosition(OriginalPos) * Vertex.InfluenceWeights[i];
-        ResultNormal += SkinMatrix.TransformFVector4(OriginalNormal) * Vertex.InfluenceWeights[i];
-        ResultTangent += FMatrix::TransformVector(OriginalTangent, SkinMatrix) * Vertex.InfluenceWeights[i];
+        }
+
+        bHasInfluence = true;
+
+        const FMatrix BoneMatrix = BoneGlobalTransforms[BoneIndex].GetMatrix();
+        FMatrix SkinningMatrix = InverseBindPose[BoneIndex] * BoneMatrix;
+
+        SkinnedPos += SkinningMatrix.TransformPosition(OriginalPos) * Weight;
+        SkinnedNormal += SkinningMatrix.TransformFVector4(OriginalNormal) * Weight;
+        SkinnedTangent += FMatrix::TransformVector(OriginalTangent, SkinningMatrix) * Weight;
     }
     
-    if (bHasBone)
+    if (bHasInfluence)
     {
-        Vertex.Position = ResultPosition;  
-        FVector Normal = FVector(ResultNormal.X, ResultNormal.Y, ResultNormal.Z).GetSafeNormal();
+        Vertex.Position = SkinnedPos;
+        FVector Normal = FVector(SkinnedNormal.X, SkinnedNormal.Y, SkinnedNormal.Z).GetSafeNormal();
         Vertex.TangentZ = FVector4(Normal, Vertex.TangentZ.W);
-        Vertex.TangentX = ResultTangent.GetSafeNormal();
+        Vertex.TangentX = SkinnedTangent.GetSafeNormal();
         Vertex.TangentY = (FVector::CrossProduct(Normal, Vertex.TangentX)) * Vertex.TangentZ.W;
     }
 }
