@@ -1,7 +1,6 @@
 #include <windows.h>
-#include "FbxImporter.h"
-//#include <fbxsdk.h>
 
+#include "FbxImporter.h"
 #include "Define.h"
 #include "ReferenceSkeleton.h"
 #include "Components/Material/Material.h"
@@ -12,11 +11,17 @@
 TMap<FbxNode*, int32> FFbxImporter::NodeToBoneIndex;
 FbxAMatrix            FFbxImporter::JointPostConvert;
 
+/* Find All Mesh per Node via DFS */
 void CollectAllMeshes(FbxNode* Node, TArray<FbxMesh*>& Out)
 {
-    if (auto* M = Node->GetMesh()) Out.Add(M);
+    if (auto* M = Node->GetMesh())
+    {
+        Out.Add(M);
+    }
     for (int i = 0; i < Node->GetChildCount(); ++i)
+    {
         CollectAllMeshes(Node->GetChild(i), Out);
+    }
 }
 
 // --- Reference Skeleton 파싱 (파일 기반) ---
@@ -426,7 +431,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
             int32 BoneIdx = *FoundIdx;
             if (!BindPoseMap.Contains(BoneIdx))
             {
-                BindPoseMap.Add(BoneIdx, Bind.Inverse());
+                BindPoseMap.Add(BoneIdx, Bind.Inverse()); // RefInverseBindPose에 추가할 행렬
                 LodModel.RequiredBones.Add(BoneIdx);
             }
             UE_LOG(LogLevel::Error, TEXT("Cluster %d -> Bone '%s' idx=%d"), ci, *FString(LinkNode->GetName()), BoneIdx);

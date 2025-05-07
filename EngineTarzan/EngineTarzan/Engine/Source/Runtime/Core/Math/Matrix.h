@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "FTransform.h"
 #include "Serialization/Archive.h"
 
@@ -60,6 +60,10 @@ public:
     void RemoveScaling(float Tolerance = SMALL_NUMBER);
 
     bool Equals(const FMatrix& Other, float Tolerance = KINDA_SMALL_NUMBER) const;
+
+    FVector GetOrigin() const {
+        return { M[3][0], M[3][1], M[3][2] };
+    }
 };
 
 inline FArchive& operator<<(FArchive& Ar, FMatrix& M)

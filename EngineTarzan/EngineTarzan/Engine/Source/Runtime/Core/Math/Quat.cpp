@@ -397,3 +397,8 @@ FQuat FQuat::Normalized() const
     // 크기가 0에 가까우면 항등 쿼터니언 반환 (회전 없음)
     return FQuat(0.0f, 0.0f, 0.0f, 1.0f);
 }
+
+float FQuat::DotProduct(const FQuat& A, const FQuat& B)
+{
+    return A.X * B.X + A.Y * B.Y + A.Z * B.Z + A.W * B.W;
+}
