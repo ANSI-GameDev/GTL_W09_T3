@@ -102,7 +102,7 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
     // Register Editor input when first initialization. 
     RegisterEditorInputDelegates();
 
-    Handler->OnStaticMeshViewerStartDelegate.AddLambda([this]()
+    Handler->OnSkeletalMeshViewerStartDelegate.AddLambda([this]()
     {
         this->RegisterStaticMeshViewerInputDelegates();
         ActiveViewportClient = SkeletalMeshViewportClient;
@@ -113,7 +113,7 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
         ActiveViewportClient->UpdateProjectionMatrix();
     });
 
-    Handler->OnStaticMeshViewerEndDelegate.AddLambda([this]()
+    Handler->OnSkeletalMeshViewerEndDelegate.AddLambda([this]()
     {
         this->RegisterEditorInputDelegates();
         ActiveViewportClient = ViewportClients[0];

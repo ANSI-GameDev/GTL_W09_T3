@@ -76,6 +76,12 @@ void USkeletalMeshViewerControlPanel::Render()
             return;
         }
 
+        if (GEngine->ActiveWorld->WorldType != EWorldType::SkeletalMeshViewer)
+        {
+            SkeletalMeshViewerPanel->SetSkeleton(nullptr);
+            return;
+        }
+
         AActor* skeletalActor = GEngine->ActiveWorld->SpawnActor<AActor>();
         skeletalActor->SetActorLocation(FVector(0,0,0));
         skeletalActor->SetActorRotation(FRotator(0,0,0));
@@ -91,7 +97,6 @@ void USkeletalMeshViewerControlPanel::Render()
         FReferenceSkeleton* TestSkeleton = new FReferenceSkeleton();
         // TODO : 파일 로드 로직
         FFbxImporter::ParseSkeletalMeshLODModel(FilePath, TestSkMeshModel, TestSkeleton);
-        
         SkeletalMeshViewerPanel->SetSkeleton(TestSkeleton);
     }
     

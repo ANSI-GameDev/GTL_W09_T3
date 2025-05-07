@@ -192,20 +192,19 @@ void UEditorEngine::OpenSkeletalMeshViewer()
     
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
-    Handler->OnStaticMeshViewerStartDelegate.Broadcast();
+    Handler->OnSkeletalMeshViewerStartDelegate.Broadcast();
 
     StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::SkeletalMeshViewer, FString("StaticMeshViwerWorld"));
+    StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
     
-    ADirectionalLight* dirLight = StaticMeshViewerWorld->SpawnActor<ADirectionalLight>();
+    ActiveWorld = StaticMeshViewerWorld;
+    
+    ADirectionalLight* dirLight = ActiveWorld->SpawnActor<ADirectionalLight>();
     dirLight->SetActorRotation(FRotator(30, 0, 0));
     
-
     FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::SkeletalMeshViewer);
-
-    StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
-
-    ViwerWorldContext.SetCurrentWorld(StaticMeshViewerWorld);
-    ActiveWorld = StaticMeshViewerWorld;
+    
+    ViwerWorldContext.SetCurrentWorld(ActiveWorld);
 }
 
 void UEditorEngine::CloseSkeletalMeshViewer()
@@ -225,7 +224,7 @@ void UEditorEngine::CloseSkeletalMeshViewer()
 
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
-    Handler->OnStaticMeshViewerEndDelegate.Broadcast();
+    Handler->OnSkeletalMeshViewerEndDelegate.Broadcast();
     // 다시 EditorWorld로 돌아옴.
     ActiveWorld = EditorWorld;
 }

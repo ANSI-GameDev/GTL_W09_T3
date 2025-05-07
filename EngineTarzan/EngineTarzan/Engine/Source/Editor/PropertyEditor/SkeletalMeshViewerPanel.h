@@ -1,4 +1,5 @@
 #pragma once
+#include "Delegates/Delegate.h"
 #include "UnrealEd/EditorPanel.h"
 #include "HAL/PlatformType.h"
 

@@ -54,6 +54,8 @@ void USkeletalMeshViewerPanel::Render()
     /* Render Start */
     ImGui::Begin("BoneTree", nullptr, PanelFlags);
 
+    
+    
     if (CurrentRefSkeleton)
     {
         const FReferenceSkeleton& RefSkel = *CurrentRefSkeleton;
