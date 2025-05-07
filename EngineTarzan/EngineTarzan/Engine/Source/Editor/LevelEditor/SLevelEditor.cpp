@@ -579,37 +579,38 @@ void SLevelEditor::RegisterStaticMeshViewerInputDelegates()
             {
                 if (const UEditorEngine* EdEngine = Cast<UEditorEngine>(GEngine))
                 {
-                    if (const AActor* SelectedActor = EdEngine->GetSelectedActor())
-                    {
-                        USceneComponent* TargetComponent = nullptr;
-                        if (USceneComponent* SelectedComponent = EdEngine->GetSelectedComponent())
-                        {
-                            TargetComponent = SelectedComponent;
-                        }
-                        else if (AActor* SelectedActor = EdEngine->GetSelectedActor())
-                        {
-                            TargetComponent = SelectedActor->GetRootComponent();
-                        }
-                        else
-                        {
-                            return;
-                        }
-
-                        // 초기 Actor와 Cursor의 거리차를 저장
-                        const FViewportCamera* ViewTransform = SkeletalMeshViewportClient->GetViewportType() == LVT_Perspective
-                                                            ? &SkeletalMeshViewportClient->PerspectiveCamera
-                                                            : &SkeletalMeshViewportClient->OrthogonalCamera;
-
-                        FVector RayOrigin, RayDir;
-                        SkeletalMeshViewportClient->DeprojectFVector2D(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
-
-                        const FVector TargetLocation = TargetComponent->GetWorldLocation();
-                        const float TargetDist = FVector::Distance(ViewTransform->GetLocation(), TargetLocation);
-                        const FVector TargetRayEnd = RayOrigin + RayDir * TargetDist;
-                        TargetDiff = TargetLocation - TargetRayEnd;
-                    }
+                    // 기존 과는 다른 로직 넣어야됨
+                //     if (const AActor* SelectedActor = EdEngine->GetSelectedActor())
+                //     {
+                //         USceneComponent* TargetComponent = nullptr;
+                //         if (USceneComponent* SelectedComponent = EdEngine->GetSelectedComponent())
+                //         {
+                //             TargetComponent = SelectedComponent;
+                //         }
+                //         else if (AActor* SelectedActor = EdEngine->GetSelectedActor())
+                //         {
+                //             TargetComponent = SelectedActor->GetRootComponent();
+                //         }
+                //         else
+                //         {
+                //             return;
+                //         }
+                //
+                //         // 초기 Actor와 Cursor의 거리차를 저장
+                //         const FViewportCamera* ViewTransform = SkeletalMeshViewportClient->GetViewportType() == LVT_Perspective
+                //                                             ? &SkeletalMeshViewportClient->PerspectiveCamera
+                //                                             : &SkeletalMeshViewportClient->OrthogonalCamera;
+                //
+                //         FVector RayOrigin, RayDir;
+                //         SkeletalMeshViewportClient->DeprojectFVector2D(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
+                //
+                //         const FVector TargetLocation = TargetComponent->GetWorldLocation();
+                //         const float TargetDist = FVector::Distance(ViewTransform->GetLocation(), TargetLocation);
+                //         const FVector TargetRayEnd = RayOrigin + RayDir * TargetDist;
+                //         TargetDiff = TargetLocation - TargetRayEnd;
+                //     }
                 }
-                break;
+                // break;
             }
             case EKeys::RightMouseButton:
             {
@@ -625,12 +626,7 @@ void SLevelEditor::RegisterStaticMeshViewerInputDelegates()
             }
         
         }));
-
-    InputDelegatesHandles.Add(Handler->OnMouseMoveDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
-        {
-            if (ImGui::GetIO().WantCaptureMouse) return;
-        }));
-
+    
     InputDelegatesHandles.Add(Handler->OnMouseUpDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
         {
             switch (InMouseEvent.GetEffectingButton())  // NOLINT(clang-diagnostic-switch-enum)
