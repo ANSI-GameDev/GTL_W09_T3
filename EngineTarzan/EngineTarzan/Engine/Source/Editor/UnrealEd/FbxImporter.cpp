@@ -209,6 +209,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     LodModel.RequiredBones.Empty();
     LodModel.RefBasesInvMatrix.Empty();
     uint32 GlobalIdxCtr = 0;
+    uint32 OverallIndexOffset = 0; // 전체 인덱스 오프셋 추가
 
     LodModel.FilePath = InFilePath.ToWideString().substr(0,
         InFilePath.ToWideString().find_last_of(L"\\/") + 1);
@@ -234,7 +235,8 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     bool bResult = false;
     for (FbxMesh* ChildMesh : MeshList)
     {
-        bResult |= ParseSkeletalMeshLODModel(ChildMesh, LodModel, GlobalIdxCtr, InFilePath);
+        bResult |= ParseSkeletalMeshLODModel(ChildMesh, LodModel, GlobalIdxCtr, InFilePath, OverallIndexOffset);
+        OverallIndexOffset = LodModel.Indices.Num();
     }
 
     // 6) 정리
@@ -243,7 +245,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     return bResult;
 }
 
-bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32& GlobalIdxCtr,  const FString& InFilePath)
+bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32& GlobalIdxCtr,  const FString& InFilePath, uint32& OverallIndexOffset)
 {
     if (!Mesh) return false;
 
@@ -400,7 +402,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
         for (int32 matKey : sortedKeys)
         {
             FSkelMeshSection& sec = sectionMap[matKey];
-            sec.BaseIndex = runningTri * 3;    // 인덱스버퍼 오프셋
+            sec.BaseIndex = OverallIndexOffset + (runningTri * 3);    // 인덱스버퍼 오프셋
             sec.BaseVertexIndex = MeshStartVert;     // 정점버퍼 오프셋
             runningTri += sec.NumTriangles;
             LodModel.Sections.Add(sec);

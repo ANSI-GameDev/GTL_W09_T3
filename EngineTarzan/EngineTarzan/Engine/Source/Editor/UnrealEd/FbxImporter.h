@@ -28,7 +28,8 @@ public:
         FReferenceSkeleton* OutRefSkeleton = nullptr
     );
 
-    static bool ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32& GlobalIdxCtr, const FString& InFilePath);
+    static bool ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32& GlobalIdxCtr, const FString& InFilePath, uint32&
+                                          OverallIndexOffset);
 
     static bool ParseFbxMaterialTextures(FbxSurfaceMaterial* InMaterial, FStaticMaterial& OutMat, const FString& BasePath);
 
