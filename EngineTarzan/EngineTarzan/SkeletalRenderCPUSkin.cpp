@@ -13,7 +13,7 @@
 #include "Developer/SkeletalMeshBuilder.h"
 #include "Math/DualQuat.h"
 
-//#define DUAL_QUATERNION 
+#define DUAL_QUATERNION 
 
 void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData)
 {
@@ -51,6 +51,14 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent)
     for (int32 i = 0; i < NumVerts; ++i)
     {
         SkinVertexDualQuat(SrcVerts[i], SkinDQs, DstVerts[i]);
+        FVector ScaleSum = FVector(0);
+        for (int j = 0; j < MAX_TOTAL_INFLUENCES; ++j)
+        {
+            ScaleSum += GlobalTransforms[SrcVerts[i].InfluenceBones[j]].GetScale() * SrcVerts[i].InfluenceWeights[j];
+        }
+        DstVerts[i].X = DstVerts[i].X * ScaleSum.X;
+        DstVerts[i].Y = DstVerts[i].Y * ScaleSum.Y;
+        DstVerts[i].Z = DstVerts[i].Z * ScaleSum.Z;
     }
 }
 void FSkeletalMeshObjectCPUSkin::SkinVertexDualQuat(
@@ -76,7 +84,6 @@ void FSkeletalMeshObjectCPUSkin::SkinVertexDualQuat(
 
         int32 bi = Src.InfluenceBones[i];
         FDualQuat CurrentBoneDQ = SkinDQs[bi]; // 원본 DQ 복사
-
         if (bFirstInfluence)
         {
             FirstRealQuat = CurrentBoneDQ.Real;
