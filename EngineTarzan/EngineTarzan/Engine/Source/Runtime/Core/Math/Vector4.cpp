@@ -35,6 +35,17 @@ FVector4 FVector4::MultiplyVector4(const FVector4& a, const FVector4& b)
     return FVector4(a.X * b.X, a.Y * b.Y, a.Z * b.Z, a.W * b.W);
 }
 
+FVector4 FVector4::GetSafeNormal() const
+{
+    float SquareSum = X * X + Y * Y + Z * Z + W * W;
+    if (SquareSum > 0.0f)
+    {
+        float Scale = 1.0f / FMath::Sqrt(SquareSum);
+        return FVector4(X * Scale, Y * Scale, Z * Scale, W * Scale);
+    }
+    return FVector4(0,0,0,0);
+}
+
 FVector4 FVector4::operator*(const float Scalar) const
 {
     FVector4 result;

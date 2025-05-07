@@ -44,6 +44,7 @@ class FEditorRenderPass;
 class FDepthPrePass;
 class FTileLightCullingPass;
 class FGPUTimingManager;
+class FSkeletalMeshRenderPass;
 
 class FRenderer
 {
@@ -116,6 +117,8 @@ public:
     FPostProcessCompositingPass* PostProcessCompositingPass = nullptr;
     
     FSlateRenderPass* SlateRenderPass = nullptr;
+
+    FSkeletalMeshRenderPass* SkeletalMeshRenderPass = nullptr; 
 };
 
 template<typename T>

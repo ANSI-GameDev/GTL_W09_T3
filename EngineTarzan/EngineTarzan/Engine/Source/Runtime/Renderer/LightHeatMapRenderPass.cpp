@@ -150,7 +150,7 @@ void FLightHeatMapRenderPass::CreateBlendState()
     HRESULT hr = Graphics->Device->CreateBlendState(&blendDesc, &FogBlendState);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"AlphaBlendState 생성에 실패했습니다!", L"Error", MB_ICONERROR | MB_OK);
+        MessageBox(NULL, TEXT("AlphaBlendState 생성에 실패했습니다!"), TEXT("Error"), MB_ICONERROR | MB_OK);
     }
 }
 

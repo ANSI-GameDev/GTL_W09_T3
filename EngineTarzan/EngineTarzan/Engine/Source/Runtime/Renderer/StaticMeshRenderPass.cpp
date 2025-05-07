@@ -21,6 +21,7 @@
 #include "Components/StaticMeshComponent.h"
 
 #include "BaseGizmos/GizmoBaseComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Engine/EditorEngine.h"
 
 #include "PropertyEditor/ShowFlags.h"
@@ -28,6 +29,8 @@
 #include "UnrealEd/EditorViewportClient.h"
 #include "Components/Light/PointLightComponent.h"
 #include "Contents/Actors/Fish.h"
+#include "Engine/SkeletalMesh.h"
+#include "Engine/Asset/SkeletalMeshAsset.h"
 
 
 FStaticMeshRenderPass::FStaticMeshRenderPass()
@@ -392,6 +395,7 @@ void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorV
         }
     }
 }
+
 
 void FStaticMeshRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {

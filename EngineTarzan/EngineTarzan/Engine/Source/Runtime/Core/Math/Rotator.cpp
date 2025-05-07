@@ -44,6 +44,14 @@ FRotator FRotator::operator*(float Scalar) const
     return FRotator(Pitch * Scalar, Yaw * Scalar, Roll * Scalar);
 }
 
+FRotator FRotator::operator*(const FRotator& Other) const
+{
+    FQuat A = ToQuaternion();
+    FQuat B = Other.ToQuaternion();
+    FQuat Combined = A * B;
+    return FromQuaternion(Combined);
+}
+
 FRotator& FRotator::operator*=(float Scalar)
 {
     Pitch *= Scalar; Yaw *= Scalar; Roll *= Scalar;
@@ -127,6 +135,8 @@ FQuat FRotator::ToQuaternion() const
     RotationQuat.Y = -CR * SP * CY - SR * CP * SY;
     RotationQuat.Z = CR * CP * SY - SR * SP * CY;
     RotationQuat.W = CR * CP * CY + SR * SP * SY;
+
+    RotationQuat.Normalize();
 
     return RotationQuat;
 }

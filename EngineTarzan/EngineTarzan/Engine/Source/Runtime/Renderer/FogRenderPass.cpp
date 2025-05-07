@@ -168,7 +168,7 @@ void FFogRenderPass::CreateBlendState()
     HRESULT hr = Graphics->Device->CreateBlendState(&blendDesc, &BlendState);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"AlphaBlendState 생성에 실패했습니다!", L"Error", MB_ICONERROR | MB_OK);
+        MessageBox(NULL, reinterpret_cast<LPCTSTR>(L"AlphaBlendState 생성에 실패했습니다!"), reinterpret_cast<LPCTSTR>(L"Error"), MB_ICONERROR | MB_OK);
     }
 }
 
