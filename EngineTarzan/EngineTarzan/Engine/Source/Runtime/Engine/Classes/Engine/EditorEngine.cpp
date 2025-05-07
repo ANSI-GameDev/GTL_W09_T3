@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Classes/Engine/AssetManager.h"
 #include "Components/Light/DirectionalLightComponent.h"
+#include "LevelEditor/SLevelEditor.h"
 #include "UObject/UObjectIterator.h"
 
 namespace PrivateEditorSelection
@@ -32,7 +33,8 @@ void UEditorEngine::Init()
     EditorWorldContext.SetCurrentWorld(EditorWorld);
     ActiveWorld = EditorWorld;
 
-    EditorPlayer = FObjectFactory::ConstructObject<AEditorPlayer>(this);
+    EditorPlayer = FObjectFactory::ConstructObject<UEditorPlayer>(this);
+    EditorPlayer->Initialize();
 
     if (AssetManager == nullptr)
     {
@@ -56,9 +58,7 @@ void UEditorEngine::Tick(float DeltaTime)
         {
             if (UWorld* World = WorldContext->World())
             {
-                // TODO: World에서 EditorPlayer 제거 후 Tick 호출 제거 필요.
                 World->Tick(DeltaTime);
-                EditorPlayer->Tick(DeltaTime);
                 ULevel* Level = World->GetActiveLevel();
                 TArray CachedActors = Level->Actors;
                 if (Level)
@@ -73,7 +73,7 @@ void UEditorEngine::Tick(float DeltaTime)
                 }
             }
         }
-        else if (WorldContext->WorldType == EWorldType::PIE)
+        if (WorldContext->WorldType == EWorldType::PIE)
         {
             if (UWorld* World = WorldContext->World())
             {
@@ -174,6 +174,58 @@ void UEditorEngine::EndPIE()
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
     Handler->OnPIEModeEnd();
+    // 다시 EditorWorld로 돌아옴.
+    ActiveWorld = EditorWorld;
+}
+
+void UEditorEngine::OpenSkeletalMeshViewer()
+{
+    if (StaticMeshViewerWorld != nullptr)
+    {
+        UE_LOG(LogLevel::Warning, TEXT("StaticMeshViewerWorld already exists!"));
+        return;
+    }
+
+    this->ClearActorSelection(); // Editor World 기준 Select Actor 해제 
+    
+    FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+
+    Handler->OnStaticMeshViewerStartDelegate.Broadcast();
+
+    StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::SkeletalMeshViewer, FString("StaticMeshViwerWorld"));
+    // TODO : 일단 Test용 액터 스폰
+    StaticMeshViewerWorld->SpawnActor<ACube>();
+    
+    ADirectionalLight* dirLight = StaticMeshViewerWorld->SpawnActor<ADirectionalLight>();
+    dirLight->SetActorRotation(FRotator(30, 0, 0));
+    
+
+    FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::SkeletalMeshViewer);
+
+    StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
+
+    ViwerWorldContext.SetCurrentWorld(StaticMeshViewerWorld);
+    ActiveWorld = StaticMeshViewerWorld;
+}
+
+void UEditorEngine::CloseSkeletalMeshViewer()
+{
+    if (StaticMeshViewerWorld)
+    {
+        this->ClearActorSelection(); // StaticMeshViewerWorld 기준 Select Actor 해제 
+        WorldList.Remove(GetWorldContextFromWorld(StaticMeshViewerWorld));
+        StaticMeshViewerWorld->Release();
+        GUObjectArray.MarkRemoveObject(StaticMeshViewerWorld);
+        StaticMeshViewerWorld = nullptr;
+
+        // TODO: PIE에서 EditorWorld로 돌아올 때, 기존 선택된 Picking이 유지되어야 함. 현재는 에러를 막기위해 임시조치.
+        DeselectActor(GetSelectedActor());
+        DeselectComponent(GetSelectedComponent());
+    }
+
+    FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+
+    Handler->OnStaticMeshViewerEndDelegate.Broadcast();
     // 다시 EditorWorld로 돌아옴.
     ActiveWorld = EditorWorld;
 }
@@ -293,7 +345,7 @@ void UEditorEngine::HoverComponent(USceneComponent* InComponent)
     }
 }
 
-AEditorPlayer* UEditorEngine::GetEditorPlayer() const
+UEditorPlayer* UEditorEngine::GetEditorPlayer() const
 {
     return EditorPlayer;
 }

@@ -174,9 +174,11 @@ void FEngineLoop::Tick()
         UIMgr->BeginFrame();
         UnrealEditor->Render();
 
-        Console::GetInstance().Draw();
-        EngineProfiler.Render(GraphicDevice.DeviceContext, GraphicDevice.ScreenWidth, GraphicDevice.ScreenHeight);
-
+        if (GEngine->ActiveWorld->WorldType == EWorldType::Editor || GEngine->ActiveWorld->WorldType == EWorldType::PIE)
+        {
+            Console::GetInstance().Draw();
+            EngineProfiler.Render(GraphicDevice.DeviceContext, GraphicDevice.ScreenWidth, GraphicDevice.ScreenHeight);
+        }        
         UIMgr->EndFrame();
 
         // Pending 처리된 오브젝트 제거

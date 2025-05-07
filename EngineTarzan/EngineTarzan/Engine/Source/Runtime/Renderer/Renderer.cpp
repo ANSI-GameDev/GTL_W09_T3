@@ -34,6 +34,7 @@
 #include "PropertyEditor/ShowFlags.h"
 #include "Stats/Stats.h"
 #include "Stats/GPUTimingManager.h"
+#include "UnrealEd/SkeletalMeshViewportClient.h"
 
 #include "SkeletalMeshRenderPass.h"
 
@@ -225,7 +226,7 @@ void FRenderer::CreateCommonShader() const
 #pragma endregion UberShader
 }
 
-void FRenderer::PrepareRender(FViewportResource* ViewportResource) const
+void FRenderer::PrepareEditorRender(FViewportResource* ViewportResource) const
 {
     // Setup Viewport
     Graphics->DeviceContext->RSSetViewports(1, &ViewportResource->GetD3DViewport());
@@ -233,10 +234,10 @@ void FRenderer::PrepareRender(FViewportResource* ViewportResource) const
     ViewportResource->ClearDepthStencils(Graphics->DeviceContext);
     ViewportResource->ClearRenderTargets(Graphics->DeviceContext);
 
-    PrepareRenderPass();
+    PrepareAllRenderPass();
 }
 
-void FRenderer::PrepareRenderPass() const
+void FRenderer::PrepareAllRenderPass() const
 {
     StaticMeshRenderPass->PrepareRenderArr();
     ShadowRenderPass->PrepareRenderArr();
@@ -279,6 +280,27 @@ void FRenderer::UpdateCommonBuffer(const std::shared_ptr<FEditorViewportClient>&
     BufferManager->UpdateConstantBuffer("FCameraConstantBuffer", CameraConstantBuffer);
 }
 
+void FRenderer::PrepareSkeletalViewerRender(FViewportResource* ViewportResource)
+{
+    // Setup Viewport
+    Graphics->DeviceContext->RSSetViewports(1, &ViewportResource->GetD3DViewport());
+
+    ViewportResource->ClearDepthStencils(Graphics->DeviceContext);
+    ViewportResource->ClearRenderTargets(Graphics->DeviceContext);
+
+    PrepareSkeletalViewerRenderPass();
+}
+
+void FRenderer::PrepareSkeletalViewerRenderPass() const
+{
+    StaticMeshRenderPass->PrepareRenderArr();
+    ShadowRenderPass->PrepareRenderArr();
+    GizmoRenderPass->PrepareRenderArr();
+    UpdateLightBufferPass->PrepareRenderArr();
+    TileLightCullingPass->PrepareRenderArr();
+    DepthPrePass->PrepareRenderArr();
+}
+
 void FRenderer::BeginRender(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
@@ -288,8 +310,15 @@ void FRenderer::BeginRender(const std::shared_ptr<FEditorViewportClient>& Viewpo
     }
 
     UpdateCommonBuffer(Viewport);
-    
-    PrepareRender(ViewportResource);
+
+    if (std::dynamic_pointer_cast<FSkeletalMeshViewportClient>(Viewport))
+    {
+        PrepareSkeletalViewerRender(ViewportResource);
+    }
+    else
+    {
+        PrepareEditorRender(ViewportResource);
+    }
 }
 
 
@@ -302,7 +331,7 @@ void FRenderer::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 
     QUICK_SCOPE_CYCLE_COUNTER(Renderer_Render_CPU)
     QUICK_GPU_SCOPE_CYCLE_COUNTER(Renderer_Render_GPU, *GPUTimingManager)
-
+        
     BeginRender(Viewport);
 
     /**
