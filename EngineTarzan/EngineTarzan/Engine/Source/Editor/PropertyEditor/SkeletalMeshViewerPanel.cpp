@@ -64,8 +64,9 @@ void USkeletalMeshViewerPanel::Render()
         
         if (skeletalMesh)
         {
-            Gizmo->SetActorLocation(skeletalMesh->RefSkeleton.GetBonePose()[SkeletalMeshViewportClient->GetSelectedBoneIndex()].GetPosition());
-            Gizmo->SetActorRotation(skeletalMesh->RefSkeleton.GetBonePose()[SkeletalMeshViewportClient->GetSelectedBoneIndex()].GetRotation());
+            FTransform WorldTransform = skeletalActor->GetSkeletalMeshComponent()->GetBoneWorldTransform(SkeletalMeshViewportClient->GetSelectedBoneIndex());
+            Gizmo->SetActorLocation(WorldTransform.GetPosition());
+            Gizmo->SetActorRotation(WorldTransform.GetRotation());
         }
     };
     
@@ -106,8 +107,7 @@ void USkeletalMeshViewerPanel::Render()
                 Engine->SelectActor(Cast<AActor>(skeletalActor));
             }
             
-            const FMeshBoneInfo& Info = RefSkel.GetBoneInfo()[SkeletalMeshViewportClient->GetSelectedBoneIndex()];
-            FTransform Pose = RefSkel.GetBonePose()[SkeletalMeshViewportClient->GetSelectedBoneIndex()];
+            FTransform Pose = skeletalActor->GetSkeletalMeshComponent()->GetBoneWorldTransform(SkeletalMeshViewportClient->GetSelectedBoneIndex());
 
             FVector Pos   = Pose.GetPosition();
             FRotator Rot  = Pose.GetRotation();
@@ -121,6 +121,9 @@ void USkeletalMeshViewerPanel::Render()
             
             FImGuiWidget::DrawVec3Control("Scale",  Scale, 0, 85);
             ImGui::Spacing();            
+
+            FTransform Updated = FTransform(Pos, Rot, Scale);
+            skeletalActor->GetSkeletalMeshComponent()->SetBoneWorldTransform(SkeletalMeshViewportClient->GetSelectedBoneIndex(), Updated);
         }
         ImGui::PopStyleColor();
         ImGui::End();

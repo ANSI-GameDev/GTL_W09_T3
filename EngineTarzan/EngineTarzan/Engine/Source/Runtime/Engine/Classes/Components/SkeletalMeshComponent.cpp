@@ -56,7 +56,7 @@ void USkeletalMeshComponent::RotateBone(FMeshBoneInfo Bone, float angle)
         }
         else
         {
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
         }
     }
 }
@@ -76,7 +76,7 @@ void USkeletalMeshComponent::TranslateBone(const int InBoneIndex, const FVector&
         }
         else
         {
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
         }
     }
 }
@@ -96,7 +96,7 @@ void USkeletalMeshComponent::RotateBone(const int InBoneIndex, const FRotator& I
         }
         else
         {
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
         }
     }
 }
