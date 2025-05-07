@@ -56,6 +56,25 @@ void UEditorEngine::Tick(float DeltaTime)
 {
     for (FWorldContext* WorldContext : WorldList)
     {
+        if (WorldContext->WorldType == EWorldType::Editor)
+        {
+            if (UWorld* World = WorldContext->World())
+            {
+                World->Tick(DeltaTime);
+                ULevel* Level = World->GetActiveLevel();
+                TArray CachedActors = Level->Actors;
+                if (Level)
+                {
+                    for (AActor* Actor : CachedActors)
+                    {
+                        if (Actor && Actor->IsActorTickInEditor())
+                        {
+                            Actor->Tick(DeltaTime);
+                        }
+                    }
+                }
+            }
+        }
         if (WorldContext->WorldType == EWorldType::PIE)
         {
             if (UWorld* World = WorldContext->World())

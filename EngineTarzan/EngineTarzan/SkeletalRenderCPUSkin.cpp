@@ -36,9 +36,13 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
 
     FSkeletalMeshLODModel* SkeletalMeshData = SkeletalMesh->GetImportedModel();
     TArray<FSoftSkinVertex> Vertices = InMeshComponent->GetBindPoseVertices();
-    for (auto& Vertex : SkeletalMeshData->Vertices)
+    TArray<FSoftSkinVertex>& LODVertices = SkeletalMeshData->Vertices;
+    int vertex = 0;
+    for (auto& Vertex : Vertices)
     {
         SkinVertex(Vertex, InverseBindPose, GlobalTransforms);
+        LODVertices[vertex] = Vertex;
+        vertex += 1;
     }
     FSkeletalMeshBuilder::ConvertLODModelToRenderData(*SkeletalMeshData, *SkeletalMesh->GetRenderData());
 }

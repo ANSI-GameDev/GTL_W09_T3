@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <string>
+//#include <windows.h>
+//#include <tchar.h>
 
 #include "World/World.h"
 #include "Actors/Player.h"
@@ -43,7 +45,7 @@ void PropertyEditorPanel::Render()
     {
         return;
     }
-    
+
     /* Pre Setup */
     float PanelWidth = (Width) * 0.2f - 6.0f;
     float PanelHeight = (Height) * 0.65f;
@@ -78,7 +80,7 @@ void PropertyEditorPanel::Render()
         TargetComponent = SelectedComponent;
     }
     else if (SelectedActor != nullptr)
-    {        
+    {
         TargetComponent = SelectedActor->GetRootComponent();
     }
 
@@ -92,7 +94,7 @@ void PropertyEditorPanel::Render()
     {
         RenderForActor(SelectedActor, TargetComponent);
     }
-    
+
     if (UAmbientLightComponent* LightComponent = GetTargetComponent<UAmbientLightComponent>(SelectedActor, SelectedComponent))
     {
         RenderForAmbientLightComponent(LightComponent);
@@ -131,7 +133,7 @@ void PropertyEditorPanel::Render()
     {
         RenderForCameraComponent(CameraComponent);
     }
-  
+
     if (UShapeComponent* ShapeComponent = GetTargetComponent<UShapeComponent>(SelectedActor, SelectedComponent))
     {
         RenderForShapeComponent(ShapeComponent);
@@ -244,7 +246,7 @@ void PropertyEditorPanel::RenderForSceneComponent(USceneComponent* SceneComponen
         {
             Player->AddCoordiMode();
         }
-         
+
         ImGui::TreePop();
     }
 
@@ -253,7 +255,7 @@ void PropertyEditorPanel::RenderForSceneComponent(USceneComponent* SceneComponen
 
 void PropertyEditorPanel::RenderForCameraComponent(UCameraComponent* InCameraComponent)
 {
-    
+
 }
 
 void PropertyEditorPanel::RenderForPlayerActor(APlayer* InPlayerActor)
@@ -273,10 +275,10 @@ void PropertyEditorPanel::RenderForActor(AActor* SelectedActor, USceneComponent*
         Engine->SelectActor(NewActor);
         Engine->DeselectComponent(Engine->GetSelectedComponent());
     }
-    
+
     FString BasePath = FString(L"LuaScripts\\");
     FString LuaDisplayPath;
-    
+
     if (SelectedActor->GetComponentByClass<ULuaScriptComponent>())
     {
         LuaDisplayPath = SelectedActor->GetComponentByClass<ULuaScriptComponent>()->GetDisplayName();
@@ -299,7 +301,7 @@ void PropertyEditorPanel::RenderForActor(AActor* SelectedActor, USceneComponent*
             ULuaScriptComponent* NewScript = SelectedActor->AddComponent<ULuaScriptComponent>();
             FString LuaFilePath = NewScript->GetScriptPath();
             std::filesystem::path FilePath = std::filesystem::path(GetData(LuaFilePath));
-            
+
             try
             {
                 std::filesystem::path Dir = FilePath.parent_path();
@@ -379,7 +381,7 @@ void PropertyEditorPanel::RenderForStaticMesh(UStaticMeshComponent* StaticMeshCo
                 PreviewName = RenderData->DisplayName;
             }
         }
-        
+
         const TMap<FName, FAssetInfo> Assets = UAssetManager::Get().GetAssetRegistry();
 
         if (ImGui::BeginCombo("##StaticMesh", GetData(PreviewName), ImGuiComboFlags_None))
@@ -497,7 +499,7 @@ void PropertyEditorPanel::RenderForPointLightComponent(UPointLightComponent* Poi
         FShadowCubeMapArrayRHI* pointRHI = FEngineLoop::Renderer.ShadowManager->GetPointShadowCubeMapRHI();
         const char* faceNames[] = { "+X", "-X", "+Y", "-Y", "+Z", "-Z" };
         float imageSize = 128.0f;
-        int index =  PointlightComponent->GetPointLightInfo().ShadowMapArrayIndex;
+        int index = PointlightComponent->GetPointLightInfo().ShadowMapArrayIndex;
         // CubeMap이므로 6개의 ShadowMap을 그립니다.
         for (int i = 0; i < 6; ++i)
         {
@@ -505,7 +507,7 @@ void PropertyEditorPanel::RenderForPointLightComponent(UPointLightComponent* Poi
             if (faceSRV)
             {
                 ImGui::Image(reinterpret_cast<ImTextureID>(faceSRV), ImVec2(imageSize, imageSize));
-                ImGui::SameLine(); 
+                ImGui::SameLine();
                 ImGui::Text("%s", faceNames[i]);
             }
         }
@@ -854,7 +856,7 @@ void PropertyEditorPanel::RenderForShapeComponent(UShapeComponent* ShapeComponen
             ImGui::TreePop();
         }
     }
-    
+
     ImGui::PopStyleColor();
 }
 
@@ -890,9 +892,9 @@ void PropertyEditorPanel::RenderForSpringArmComponent(USpringArmComponent* Sprin
         if (ImGui::Checkbox("UsePawnControlRotation", &UsePawnControlRotation))
             SpringArmComponent->bUsePawnControlRotation = UsePawnControlRotation;
 
-		bool UseAbsolRot = SpringArmComponent->IsUsingAbsoluteRotation();
-		if (ImGui::Checkbox("UseAbsoluteRot", &UseAbsolRot))
-			SpringArmComponent->SetUsingAbsoluteRotation(UseAbsolRot);
+        bool UseAbsolRot = SpringArmComponent->IsUsingAbsoluteRotation();
+        if (ImGui::Checkbox("UseAbsoluteRot", &UseAbsolRot))
+            SpringArmComponent->SetUsingAbsoluteRotation(UseAbsolRot);
 
         bool InheritPitch = SpringArmComponent->bInheritPitch;
         if (ImGui::Checkbox("InheritPitch", &InheritPitch))
@@ -921,7 +923,7 @@ void PropertyEditorPanel::RenderForSpringArmComponent(USpringArmComponent* Sprin
 
         // --- Lag speeds / limits ---
         ImGui::DragFloat("LocSpeed", &SpringArmComponent->CameraLagSpeed, 0.1f, 0.0f, 100.0f);
-        
+
         ImGui::DragFloat("RotSpeed", &SpringArmComponent->CameraRotationLagSpeed, 0.1f, 0.0f, 100.0f);
         //ImGui::NewLine();
         ImGui::DragFloat("LagMxStep", &SpringArmComponent->CameraLagMaxTimeStep, 0.005f, 0.0f, 1.0f);
@@ -934,11 +936,11 @@ void PropertyEditorPanel::RenderForSpringArmComponent(USpringArmComponent* Sprin
 
 void PropertyEditorPanel::RenderForSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent) const
 {
-    if (ImGui::SliderInt("Bone Index", &SkeletalMeshComponent->BoneIndex, 0, SkeletalMeshComponent->GetSkeletalMesh()->GetRefSkeleton().GetNumBones()-1))
+    if (ImGui::SliderInt("Bone Index", &SkeletalMeshComponent->BoneIndex, 0, SkeletalMeshComponent->GetSkeletalMesh()->GetRefSkeleton().GetNumBones() - 1))
     {
         SkeletalMeshComponent->ResetBoneTransform();
     }
-    
+
 }
 
 void PropertyEditorPanel::RenderForMaterial(UStaticMeshComponent* StaticMeshComp)

@@ -7,11 +7,16 @@
 #include "Actors/FireballActor.h"
 
 #include "Components/Light/LightComponent.h"
+#include "Components/Light/PointLightComponent.h"
+#include "Components/Light/SpotLightComponent.h"
 #include "Components/SphereComp.h"
 #include "Components/ParticleSubUVComponent.h"
 #include "Components/TextComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/ProjectileMovementComponent.h"
 
 #include "Engine/FObjLoader.h"
+#include "Engine/StaticMeshActor.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "PropertyEditor/ShowFlags.h"
 #include "UnrealEd/EditorViewportClient.h"
@@ -74,12 +79,7 @@ void ControlEditorPanel::Render()
     CreateFlagButton();
     ImGui::SameLine();
     CreateModifyButton(IconSize, IconFont);
-    if (GEngine->ActiveWorld->WorldType != EWorldType::PIE)
-    {
-        ImGui::SameLine();
-        CreateViewerButton(IconSize, IconFont);
-    }
-
+    ImGui::SameLine();
     ImGui::SameLine();
     CreateLightSpawnButton(IconSize, IconFont);
     ImGui::SameLine();
@@ -308,18 +308,18 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
             int OBJ;
         };
 
-        static const Primitive primitives[] = 
+        static const Primitive primitives[] =
         {
-            { .Label= "Cube",      .OBJ= OBJ_CUBE },
-            { .Label= "Sphere",    .OBJ= OBJ_SPHERE },
-            { .Label= "PointLight", .OBJ= OBJ_POINTLIGHT },
-            { .Label= "SpotLight", .OBJ= OBJ_SPOTLIGHT },
-            { .Label= "DirectionalLight", .OBJ= OBJ_DIRECTIONALLGIHT },
-            { .Label= "AmbientLight", .OBJ= OBJ_AMBIENTLIGHT },
-            { .Label= "Particle",  .OBJ= OBJ_PARTICLE },
-            { .Label= "Text",      .OBJ= OBJ_TEXT },
-            { .Label= "Fireball",  .OBJ = OBJ_FIREBALL},
-            { .Label= "Fog",       .OBJ= OBJ_FOG },
+            {.Label = "Cube",      .OBJ = OBJ_CUBE },
+            {.Label = "Sphere",    .OBJ = OBJ_SPHERE },
+            {.Label = "PointLight", .OBJ = OBJ_POINTLIGHT },
+            {.Label = "SpotLight", .OBJ = OBJ_SPOTLIGHT },
+            {.Label = "DirectionalLight", .OBJ = OBJ_DIRECTIONALLGIHT },
+            {.Label = "AmbientLight", .OBJ = OBJ_AMBIENTLIGHT },
+            {.Label = "Particle",  .OBJ = OBJ_PARTICLE },
+            {.Label = "Text",      .OBJ = OBJ_TEXT },
+            {.Label = "Fireball",  .OBJ = OBJ_FIREBALL},
+            {.Label = "Fog",       .OBJ = OBJ_FOG },
             {.Label = "BoxCol", .OBJ = OBJ_BOX_COLLISION},
             {.Label = "SphereCol", .OBJ = OBJ_SPHERE_COLLISION},
             {.Label = "CapsuleCol", .OBJ = OBJ_CAPSULE_COLLISION},
@@ -400,7 +400,7 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     TextComponent->SetRowColumnCount(106, 106);
                     TextComponent->SetText(L"Default");
                     SpawnedActor->SetRootComponent(TextComponent);
-                    
+
                     break;
                 }
                 case OBJ_FIREBALL:
@@ -479,18 +479,6 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
     }
 }
 
-void ControlEditorPanel::CreateViewerButton(ImVec2 ButtonSize, ImFont* IconFont)
-{
-    ImGui::PushFont(IconFont);
-    if (ImGui::Button("\ue999", ButtonSize))
-    {
-        FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
-        SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
-        LevelEd->SetSkeletalMeshViewportClient(true);
-    }
-    ImGui::PopFont();
-}
-
 void ControlEditorPanel::CreateFlagButton()
 {
     const std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
@@ -523,17 +511,17 @@ void ControlEditorPanel::CreateFlagButton()
         ImGui::EndPopup();
     }
     ImGui::SameLine();
-    const char* ViewModeNames[] = { 
+    const char* ViewModeNames[] = {
         "Lit_Gouraud", "Lit_Lambert", "Lit_Blinn-Phong", "Lit_PBR",
         "Unlit", "Wireframe",
         "Scene Depth", "World Normal", "World Tangent","Light Heat Map"
     };
     constexpr uint32 ViewModeCount = std::size(ViewModeNames);
-    
+
     const int RawViewMode = static_cast<int>(ActiveViewport->GetViewMode());
     const int SafeIndex = (RawViewMode >= 0) ? (RawViewMode % ViewModeCount) : 0;
     FString ViewModeControl = ViewModeNames[SafeIndex];
-    
+
     const ImVec2 ViewModeTextSize = ImGui::CalcTextSize(GetData(ViewModeControl));
     if (ImGui::Button(GetData(ViewModeControl), ImVec2(30 + ViewModeTextSize.x, 32)))
     {
@@ -574,7 +562,7 @@ void ControlEditorPanel::CreatePIEButton(const ImVec2 ButtonSize, ImFont* IconFo
     const float CenterX = (WindowSize.x - ButtonSize.x) / 2.5f;
 
     ImGui::SetCursorScreenPos(ImVec2(CenterX - 40.0f, 10.0f));
-    
+
     if (ImGui::Button("\ue9a8", ButtonSize)) // Play
     {
         UE_LOG(LogLevel::Display, TEXT("PIE Button Clicked"));
@@ -676,7 +664,7 @@ void ControlEditorPanel::CreateLightSpawnButton(const ImVec2 InButtonSize, ImFon
             int Mode;
         };
 
-        static constexpr LightGeneratorMode modes[] = 
+        static constexpr LightGeneratorMode modes[] =
         {
             {.Label = "Generate", .Mode = ELightGridGenerator::Generate },
             {.Label = "Delete", .Mode = ELightGridGenerator::Delete },
