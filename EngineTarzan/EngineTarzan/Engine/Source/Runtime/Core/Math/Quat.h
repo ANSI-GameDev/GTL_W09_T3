@@ -24,6 +24,8 @@ struct FQuat
     {
         *this = InRotator.ToQuaternion();
     }
+
+
     explicit FQuat(const FMatrix& InMatrix);
     //explicit FQuat(const FVector& Rotation);
     // 쿼터니언의 곱셈 연산 (회전 결합)
@@ -55,6 +57,17 @@ struct FQuat
     static FVector4 VectorQuaternionInverseRotatedVector(const FQuat& Q, const FVector4& W0);
     FVector GetEuler() const;
     FQuat Normalized() const;
+
+    static FQuat Identity() { return FQuat( 1, 0, 0, 0 ); }
+
+    static float DotProduct(const FQuat& A, const FQuat& B);
+
+    FQuat operator*(float Scalar) const
+    {
+        return FQuat(X * Scalar, Y * Scalar, Z * Scalar, W * Scalar);
+    }
+
+
 };
 inline FArchive& operator<<(FArchive& Ar, FQuat& Q)
 {
