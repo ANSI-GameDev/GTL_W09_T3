@@ -1,8 +1,11 @@
 #include "SkeletalMeshViewerPanel.h"
 
 #include "ReferenceSkeleton.h"
+#include "BaseGizmos/TransformGizmo.h"
 #include "Engine/EditorEngine.h"
 #include "Engine/Engine.h"
+#include "LevelEditor/SLevelEditor.h"
+#include "UnrealEd/EditorViewportClient.h"
 #include "UnrealEd/ImGuiWidget.h"
 
 // 선택된 본 인덱스 저장
@@ -60,13 +63,27 @@ void USkeletalMeshViewerPanel::Render()
             if (RefSkel.GetBoneInfo()[i].ParentIndex == INDEX_NONE)
                 DrawBoneNode(RefSkel, i);
         }
-    
+        
         ImGui::Separator();
 
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         // 선택된 본 정보 출력
         if (SelectedBoneIndex != INDEX_NONE)
         {
+            // gizmo 위치·회전 갱신 람다
+            auto UpdateActor = [&](AActor* Gizmo)
+            {
+                if (!Gizmo) return;
+                Gizmo->SetActorLocation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetPosition());
+                Gizmo->SetActorRotation(CurrentRefSkeleton->GetBonePose()[SelectedBoneIndex].GetRotation());
+            };
+
+            SLevelEditor* LevelEditor = GEngineLoop.GetLevelEditor();
+            if (const std::shared_ptr<FEditorViewportClient> EditorViewportClient = LevelEditor->GetActiveViewportClient())
+            {
+                UpdateActor(EditorViewportClient->GetGizmoActor());
+            }
+            
             const FMeshBoneInfo& Info = RefSkel.GetBoneInfo()[SelectedBoneIndex];
             FTransform Pose = RefSkel.GetBonePose()[SelectedBoneIndex];
 

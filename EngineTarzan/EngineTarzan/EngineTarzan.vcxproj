@@ -191,6 +191,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClCompile Include="Engine\Source\Editor\UnrealEd\SkeletalMeshViewportClient.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Math\FTransform.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Math\MathUtility.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\CameraEffectRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Contents\Objects\DamageCameraShake.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\CameraModifier.cpp" />
@@ -454,6 +455,7 @@ xcopy /Y /D "$(ProjectDir)Engine\Source\ThirdParty\lib\FBXSDK\x64\$(Configuratio
     <ClInclude Include="Engine\Source\Editor\PropertyEditor\SkeletalMeshViewerPanel.h" />
     <ClInclude Include="Engine\Source\Editor\UnrealEd\SkeletalMeshViewportClient.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Math\FTransform.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\CameraEffectRenderPass.h" />
     <ClInclude Include="Engine\Source\Contents\Objects\DamageCameraShake.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Camera\CameraModifier.h" />

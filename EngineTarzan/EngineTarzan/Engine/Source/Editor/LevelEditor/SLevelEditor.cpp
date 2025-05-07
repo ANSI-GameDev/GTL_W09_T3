@@ -106,8 +106,11 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
     {
         this->RegisterStaticMeshViewerInputDelegates();
         ActiveViewportClient = SkeletalMeshViewportClient;
-        ActiveViewportClient->PerspectiveCamera.SetLocation(FVector(-10.0f, 0.f, 0.0f));
-        ActiveViewportClient->PerspectiveCamera.SetRotation(FRotator(0.0f, 0.0f, 0.0f));
+        ActiveViewportClient->SetCameraSpeed(0.01f);
+        ActiveViewportClient->PerspectiveCamera.SetLocation(FVector(10.0f, 0.f, 5.0f));
+        ActiveViewportClient->PerspectiveCamera.SetRotation(FVector(0.0f, 0.0f, 180.0f));
+        ActiveViewportClient->UpdateViewMatrix();
+        ActiveViewportClient->UpdateProjectionMatrix();
     });
 
     Handler->OnStaticMeshViewerEndDelegate.AddLambda([this]()

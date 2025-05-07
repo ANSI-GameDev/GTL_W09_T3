@@ -33,9 +33,6 @@ UWorld* FSkeletalMeshViewportClient::GetWorld() const
 void FSkeletalMeshViewportClient::Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect)
 {
     FEditorViewportClient::Initialize(InViewportIndex, InRect);
-    
-    PerspectiveCamera.SetLocation(FVector(-10.0f, 0.f, 0.0f));
-    PerspectiveCamera.SetRotation(FRotator(0, 0.f, 0.f));
 }
 
 void FSkeletalMeshViewportClient::Tick(float DeltaTime)
