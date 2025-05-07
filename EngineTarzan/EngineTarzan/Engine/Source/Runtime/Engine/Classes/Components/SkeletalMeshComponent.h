@@ -24,6 +24,8 @@ public:
 
     
 
+    virtual int CheckRayIntersection(const FVector& InRayOrigin, const FVector& InRayDirection, float& OutHitDistance) const override;
+
     int BoneIndex = 0;
 
     void SetSelectedSubMeshIndex(const int& value) { SelectedSubMeshIndex = value; }

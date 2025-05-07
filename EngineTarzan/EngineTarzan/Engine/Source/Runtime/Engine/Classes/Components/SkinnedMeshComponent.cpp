@@ -4,7 +4,7 @@
 #include "Developer/SkeletalMeshBuilder.h"
 #include "Engine/SkeletalMesh.h"
 #include "UnrealEd/FbxImporter.h"
-
+#include "Engine/Asset/SkeletalMeshAsset.h"
 
 USkinnedMeshComponent::USkinnedMeshComponent()
     : MeshObject(nullptr)
@@ -94,6 +94,9 @@ void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMesh* InSkeletalMesh)
         *SkeletalMesh->ImportedModel,
         *SkeletalMesh->SkelMeshRenderData
     );
+
+    AABB.MinLocation = SkeletalMesh->SkelMeshRenderData->BoundingBoxMin;
+    AABB.MaxLocation = SkeletalMesh->SkelMeshRenderData->BoundingBoxMax;
 }
 
 void USkinnedMeshComponent::UpdateChildBoneGlobalTransform(int32 ParentIndex)
