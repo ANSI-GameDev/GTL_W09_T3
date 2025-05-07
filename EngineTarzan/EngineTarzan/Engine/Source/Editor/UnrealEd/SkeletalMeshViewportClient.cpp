@@ -10,7 +10,7 @@ FSkeletalMeshViewportClient::FSkeletalMeshViewportClient()
     : FEditorViewportClient()
 {
     using Flags = EEngineShowFlags::Type;
-    Flags OnlyPrimsAndShadow = static_cast<Flags>(Flags(EEngineShowFlags::SF_Primitives) | Flags(EEngineShowFlags::SF_Shadow));
+    Flags OnlyPrimsAndShadow = static_cast<Flags>(Flags(EEngineShowFlags::SF_Primitives) | Flags(EEngineShowFlags::SF_Shadow) | Flags(EEngineShowFlags::SF_SkeletalMesh));
     SetShowFlag(OnlyPrimsAndShadow);
     SetViewMode(EViewModeIndex::VMI_Unlit);
     SetViewportType(ELevelViewportType::LVT_Perspective);

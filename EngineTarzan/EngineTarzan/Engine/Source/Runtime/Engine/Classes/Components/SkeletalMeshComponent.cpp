@@ -133,7 +133,6 @@ int USkeletalMeshComponent::CheckRayIntersection(const FVector& InRayOrigin, con
             Idx2 = Indices[Idx2];
         }
 
-        // 각 삼각형의 버텍스 위치를 FVector로 불러옵니다.
         FVector v0 = FVector(Vertices[Idx0].X, Vertices[Idx0].Y, Vertices[Idx0].Z);
         FVector v1 = FVector(Vertices[Idx1].X, Vertices[Idx1].Y, Vertices[Idx1].Z);
         FVector v2 = FVector(Vertices[Idx2].X, Vertices[Idx2].Y, Vertices[Idx2].Z);
