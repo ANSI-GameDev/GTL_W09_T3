@@ -88,7 +88,11 @@ void USkeletalMeshViewerPanel::Render()
                 DrawBoneNode(RefSkel, i);
         }
         
-        ImGui::Separator();
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(PanelPosX, PanelPosY + PanelHeight + padding), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(PanelWidth, 200.0f), ImGuiCond_Always);
+        ImGui::Begin("BoneTransform", nullptr, PanelFlags);
 
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         

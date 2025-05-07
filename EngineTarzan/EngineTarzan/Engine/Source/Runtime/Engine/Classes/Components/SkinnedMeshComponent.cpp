@@ -19,7 +19,7 @@ void USkinnedMeshComponent::TickComponent(float DeltaTime)
 
     if (MeshObject)
     {
-        MeshObject->Update(this, DeltaTime);
+        MeshObject->Update(this);
     }
 
     // Update ComponentSpaceTransforms();
@@ -40,6 +40,8 @@ void USkinnedMeshComponent::SetBoneLocalTransform(const int InBoneIndex, const F
 {
     ComponentSpaceTransformsArray[InBoneIndex] = InTransform;
     UpdateChildBoneGlobalTransform(InBoneIndex);
+
+    MeshObject->Update(this);
 }
 
 FTransform USkinnedMeshComponent::GetBoneWorldTransform(const int InBoneIndex) const
@@ -51,6 +53,8 @@ void USkinnedMeshComponent::SetBoneWorldTransform(const int InBoneIndex, const F
 {
     WorldSpaceTransformArray[InBoneIndex] = InTransform;
     UpdateChildBoneGlobalTransform(InBoneIndex);
+
+    MeshObject->Update(this);
 }
 
 const TArray<FTransform>& USkinnedMeshComponent::GetWorldSpaceTransforms() const
@@ -68,6 +72,7 @@ void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMesh* InSkeletalMesh)
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
 
+    BindPoseVertices.Empty();
     for (const auto& Vertex : SkeletalMesh->ImportedModel->Vertices)
     {
         BindPoseVertices.Add(Vertex);

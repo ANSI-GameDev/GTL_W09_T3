@@ -65,60 +65,48 @@ void USkeletalMeshComponent::TranslateBone(const int InBoneIndex, const FVector&
 {
     ComponentSpaceTransformsArray[InBoneIndex].Translate(InTranslation);
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
-    for (int32 i = 0; i < NumBones; ++i)
+    const int32 ParentIndex = Bones[InBoneIndex].ParentIndex;
+    if (ParentIndex == -1)
     {
-        const int32 ParentIndex = Bones[i].ParentIndex;
-        const FTransform& Local = ComponentSpaceTransformsArray[i];
-        if (ParentIndex == -1)
-        {
-            WorldSpaceTransformArray[i] = Local;
-        }
-        else
-        {
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
-        }
+        WorldSpaceTransformArray[InBoneIndex] = ComponentSpaceTransformsArray[InBoneIndex];
     }
+    else
+    {
+        WorldSpaceTransformArray[InBoneIndex] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[InBoneIndex];
+    }
+    UpdateChildBoneGlobalTransform(InBoneIndex);
 }
 
 void USkeletalMeshComponent::RotateBone(const int InBoneIndex, const FRotator& InRotation)
 {
     ComponentSpaceTransformsArray[InBoneIndex].Rotate(InRotation);
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
-    for (int32 i = 0; i < NumBones; ++i)
+    const int32 ParentIndex = Bones[InBoneIndex].ParentIndex;
+    if (ParentIndex == -1)
     {
-        const int32 ParentIndex = Bones[i].ParentIndex;
-        const FTransform& Local = ComponentSpaceTransformsArray[i];
-        if (ParentIndex == -1)
-        {
-            WorldSpaceTransformArray[i] = Local;
-        }
-        else
-        {
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
-        }
+        WorldSpaceTransformArray[InBoneIndex] = ComponentSpaceTransformsArray[InBoneIndex];
     }
+    else
+    {
+        WorldSpaceTransformArray[InBoneIndex] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[InBoneIndex];
+    }
+    UpdateChildBoneGlobalTransform(InBoneIndex);
 }
 
 void USkeletalMeshComponent::ScaleBone(const int InBoneIndex, const FVector& InScale)
 {
     ComponentSpaceTransformsArray[InBoneIndex].SetScale(InScale);
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
-    for (int32 i = 0; i < NumBones; ++i)
+    const int32 ParentIndex = Bones[InBoneIndex].ParentIndex;
+    if (ParentIndex == -1)
     {
-        const int32 ParentIndex = Bones[i].ParentIndex;
-        const FTransform& Local = ComponentSpaceTransformsArray[i];
-        if (ParentIndex == -1)
-        {
-            WorldSpaceTransformArray[i] = Local;
-        }
-        else
-        {
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
-        }
+        WorldSpaceTransformArray[InBoneIndex] = ComponentSpaceTransformsArray[InBoneIndex];
     }
+    else
+    {
+        WorldSpaceTransformArray[InBoneIndex] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[InBoneIndex];
+    }
+    UpdateChildBoneGlobalTransform(InBoneIndex);
 }
 
 

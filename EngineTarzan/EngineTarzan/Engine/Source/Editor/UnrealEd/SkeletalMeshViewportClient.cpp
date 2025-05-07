@@ -85,7 +85,7 @@ void FSkeletalMeshViewportClient::HandleGizmoControl(const FPointerEvent& InMous
         const FVector BoneWorldPos = skeletalMeshComp->GetBoneWorldTransform(BoneIndex).GetPosition();
         float Dist     = FVector::Distance(Cam.GetLocation(), BoneWorldPos);
         FVector RayEnd = RayOrigin + RayDir * Dist;
-        FVector Desired = RayEnd + GEngineLoop.GetLevelEditor()->GetTargetDiff();
+        FVector Desired = RayEnd;
         
         // 마우스 드래그량
         const FVector2D Delta2D = InMouseEvent.GetCursorDelta();
@@ -96,7 +96,7 @@ void FSkeletalMeshViewportClient::HandleGizmoControl(const FPointerEvent& InMous
         const FVector Up      = BoneLocalTransform.GetUp();
 
         // 민감도 설정
-        constexpr float TranslSensitivity  = 1.0f;
+        constexpr float TranslSensitivity  = 0.02f;
         constexpr float RotSensitivity     = 0.2f;
         constexpr float ScaleSensitivity   = 0.005f;
 
@@ -112,13 +112,13 @@ void FSkeletalMeshViewportClient::HandleGizmoControl(const FPointerEvent& InMous
         {
             // --- 로컬 축 이동 ---
         case UGizmoBaseComponent::ArrowX:
-            DeltaTrans = Forward * (Delta2D.Y * TranslSensitivity);
+            DeltaTrans = Forward * FVector::DotProduct(Desired - OriginalLocalPos, Forward) * TranslSensitivity;
             break;
         case UGizmoBaseComponent::ArrowY:
-            DeltaTrans = Right   * (Delta2D.Y * TranslSensitivity);
+            DeltaTrans = Right   * (Delta2D.Y * TranslSensitivity) * TranslSensitivity;
             break;
         case UGizmoBaseComponent::ArrowZ:
-            DeltaTrans = Up      * (Delta2D.Y * TranslSensitivity);
+            DeltaTrans = Up      * (Delta2D.Y * TranslSensitivity) * TranslSensitivity;
             break;
 
             // --- 회전 ---

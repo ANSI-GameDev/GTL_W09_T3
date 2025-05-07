@@ -19,7 +19,7 @@ void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComp
     SkelMeshRenderData = InSkelMeshRenderData;
 }
 
-void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, float DeltaTime)
+void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent)
 {
     // @TODO : CPU Skinning 로직을 여기에 구현
     // 1. SkeletalMeshRenderData에서 Vertices, Indices 가져오기
@@ -67,6 +67,12 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(const FSoftSkinVertex& Vertex, TArra
         }
 
         bHasInfluence = true;
+
+        if (BoneGlobalTransforms.Num() <= BoneIndex || InverseBindPose.Num() <= BoneIndex)
+        {
+            int a = 1;
+            return;
+        }
 
         const FMatrix BoneMatrix = BoneGlobalTransforms[BoneIndex].GetMatrix();
         FMatrix SkinningMatrix = InverseBindPose[BoneIndex] * BoneMatrix;
