@@ -94,7 +94,7 @@ void OutlinerEditorPanel::Render()
             {
                 CreateNode(Actor->GetRootComponent());
             }
-                ImGui::TreePop();
+            ImGui::TreePop();
         }
     }
 

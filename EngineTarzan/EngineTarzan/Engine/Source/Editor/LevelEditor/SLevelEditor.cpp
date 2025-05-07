@@ -111,6 +111,7 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
         ActiveViewportClient->PerspectiveCamera.SetRotation(FVector(0.0f, 0.0f, 180.0f));
         ActiveViewportClient->UpdateViewMatrix();
         ActiveViewportClient->UpdateProjectionMatrix();
+        ActiveViewportClient->SetPickedGizmoComponent(nullptr);
     });
 
     Handler->OnSkeletalMeshViewerEndDelegate.AddLambda([this]()

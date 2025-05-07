@@ -45,17 +45,6 @@ void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMesh* InSkeletalMesh)
 
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
-    FFbxImporter::ParseSkeletalMeshLODModel(
-        //TEXT("Contents/FBX/Spider.fbx"),
-        TEXT("Contents/FBX/nathan3.fbx"),
-        //TEXT("Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.fbx"),
-        //TEXT("Contents/FBX/tifa2.fbx"),
-        //TEXT("Contents/FBX/tifa_noglove/tifanoglove.fbx"),
-        //TEXT("Contents/FBX/aerith.fbx"),
-        //TEXT("Contents/FBX/tifamaterial/PC0002_00_BodyB.fbx"),
-        *SkeletalMesh->ImportedModel,
-        &SkeletalMesh->RefSkeleton
-    );
 
     for (const auto& Vertex : SkeletalMesh->ImportedModel->Vertices)
     {

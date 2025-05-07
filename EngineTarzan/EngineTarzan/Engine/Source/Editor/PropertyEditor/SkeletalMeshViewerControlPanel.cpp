@@ -82,7 +82,12 @@ void USkeletalMeshViewerControlPanel::Render()
             return;
         }
 
-        AActor* skeletalActor = GEngine->ActiveWorld->SpawnActor<AActor>();
+        if (skeletalActor != nullptr)
+        {
+            skeletalActor->Destroy();
+        }
+
+        skeletalActor = GEngine->ActiveWorld->SpawnActor<AActor>();
         skeletalActor->SetActorLocation(FVector(0,0,0));
         skeletalActor->SetActorRotation(FRotator(0,0,0));
         
@@ -90,14 +95,22 @@ void USkeletalMeshViewerControlPanel::Render()
 
         USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
         skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+
+        FFbxImporter::ParseSkeletalMeshLODModel(
+        //TEXT("Contents/FBX/Spider.fbx"),
+        FilePath,
+        //TEXT("Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.fbx"),
+        //TEXT("Contents/FBX/tifa2.fbx"),
+        //TEXT("Contents/FBX/tifa_noglove/tifanoglove.fbx"),
+        //TEXT("Contents/FBX/aerith.fbx"),
+        //TEXT("Contents/FBX/tifamaterial/PC0002_00_BodyB.fbx"),
+        *skeletalMesh->ImportedModel,
+        &skeletalMesh->RefSkeleton
+        );
         
         skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
 
-        FSkeletalMeshLODModel TestSkMeshModel;
-        FReferenceSkeleton* TestSkeleton = new FReferenceSkeleton();
-        // TODO : 파일 로드 로직
-        FFbxImporter::ParseSkeletalMeshLODModel(FilePath, TestSkMeshModel, TestSkeleton);
-        SkeletalMeshViewerPanel->SetSkeleton(TestSkeleton);
+        SkeletalMeshViewerPanel->SetSkeleton(&skeletalMesh->RefSkeleton);
     }
     
     ImGui::SameLine();

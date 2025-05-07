@@ -3,6 +3,7 @@
 
 #include "UnrealEd/EditorPanel.h"
 
+class AActor;
 class USkeletalMeshViewerPanel;
 
 class USkeletalMeshViewerControlPanel : public UEditorPanel
@@ -19,4 +20,6 @@ private:
     float CameraSpeed = 0.0f;
     
     std::shared_ptr<USkeletalMeshViewerPanel> SkeletalMeshViewerPanel;
+
+    AActor* skeletalActor = nullptr;
 };
