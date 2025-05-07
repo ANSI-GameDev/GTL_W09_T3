@@ -79,7 +79,13 @@ void ControlEditorPanel::Render()
     CreateFlagButton();
     ImGui::SameLine();
     CreateModifyButton(IconSize, IconFont);
-    ImGui::SameLine();
+    
+    if (GEngine->ActiveWorld->WorldType != EWorldType::PIE)
+    {
+        ImGui::SameLine();
+        CreateViewerButton(IconSize, IconFont);
+    }
+    
     ImGui::SameLine();
     CreateLightSpawnButton(IconSize, IconFont);
     ImGui::SameLine();
@@ -479,6 +485,17 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
     }
 }
 
+void ControlEditorPanel::CreateViewerButton(const ImVec2 ButtonSize, ImFont* IconFont)
+{
+    ImGui::PushFont(IconFont);
+    if (ImGui::Button("\ue999", ButtonSize))
+    {
+        FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
+        SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+        LevelEd->SetSkeletalMeshViewportClient(!LevelEd->IsSkeletalMeshViewMode());
+    }
+    ImGui::PopFont();
+}
 void ControlEditorPanel::CreateFlagButton()
 {
     const std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();

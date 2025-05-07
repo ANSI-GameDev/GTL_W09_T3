@@ -12,7 +12,7 @@ public:
 private:
     void CreateMenuButton(ImVec2 ButtonSize, ImFont* IconFont);
     void CreateModifyButton(ImVec2 ButtonSize, ImFont* IconFont);
-    void CreateViewerButton(ImVec2 ButtonSize, ImFont* IconFont);
+    static void CreateViewerButton(ImVec2 ButtonSize, ImFont* IconFont);
     static void CreateFlagButton();
     static void CreatePIEButton(ImVec2 ButtonSize, ImFont* IconFont);
     static void CreateSRTButton(ImVec2 ButtonSize);
