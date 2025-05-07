@@ -12,9 +12,13 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
-    TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    if(Bones.Num()>0)
-        RotateBone(Bones[BoneIndex], DeltaTime * 100);
+    if (SkeletalMesh)
+    {
+        TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
+        if(Bones.Num()>0)
+            RotateBone(Bones[BoneIndex], DeltaTime * 100);
+    }
+
     Super::TickComponent(DeltaTime);
 }
 

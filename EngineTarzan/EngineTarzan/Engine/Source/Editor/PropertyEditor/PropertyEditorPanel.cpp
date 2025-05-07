@@ -936,6 +936,9 @@ void PropertyEditorPanel::RenderForSpringArmComponent(USpringArmComponent* Sprin
 
 void PropertyEditorPanel::RenderForSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent) const
 {
+    if (SkeletalMeshComponent->GetSkeletalMesh() == nullptr)
+        return;
+    
     if (ImGui::SliderInt("Bone Index", &SkeletalMeshComponent->BoneIndex, 0, SkeletalMeshComponent->GetSkeletalMesh()->GetRefSkeleton().GetNumBones() - 1))
     {
         SkeletalMeshComponent->ResetBoneTransform();
