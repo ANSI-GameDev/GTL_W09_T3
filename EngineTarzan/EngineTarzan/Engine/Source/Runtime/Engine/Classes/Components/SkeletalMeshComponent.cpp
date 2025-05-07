@@ -24,6 +24,7 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
     FFbxImporter::ParseSkeletalMeshLODModel(
+        //TEXT("Contents/FBX/mixmix2.fbx"),
         //TEXT("Contents/FBX/Spider.fbx"),
         TEXT("Contents/FBX/nathan3.fbx"),
         //TEXT("Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.fbx"),
@@ -222,7 +223,8 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 void USkeletalMeshComponent::TickComponent(float DeltaTime)
 {
     TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    RotateBone(Bones[BoneIndex], DeltaTime);
+    if(Bones.Num()>0)
+        RotateBone(Bones[BoneIndex], DeltaTime * 100);
     Super::TickComponent(DeltaTime);
 }
 
@@ -252,17 +254,31 @@ void USkeletalMeshComponent::RotateBone(FMeshBoneInfo Bone, float angle)
     //FRotator CurRot = ComponentSpaceTransformsArray[Bone.MyIndex].GetRotation();
     //ComponentSpaceTransformsArray[Bone.MyIndex].SetRotation(FRotator(CurRot.Pitch, CurRot.Yaw + angle, CurRot.Roll));
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
+    const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
+    for (int32 i = 0; i < NumBones; ++i)
+    {
+        const int32 ParentIndex = Bones[i].ParentIndex;
+        const FTransform& Local = ComponentSpaceTransformsArray[i];
+        if (ParentIndex == -1)
+        {
+            WorldSpaceTransformArray[i] = Local;
+        }
+        else
+        {
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
+        }
+    }
 
-    const int32 ParentIndex = Bones[Bone.MyIndex].ParentIndex;
-    if (ParentIndex == -1)
-    {
-        WorldSpaceTransformArray[Bone.MyIndex] = ComponentSpaceTransformsArray[Bone.MyIndex];
-    }
-    else
-    {
-        WorldSpaceTransformArray[Bone.MyIndex] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[Bone.MyIndex];
-    }
-    UpdateChildBoneGlobalTransform(Bone.MyIndex);
+    //const int32 ParentIndex = Bones[Bone.MyIndex].ParentIndex;
+    //if (ParentIndex == -1)
+    //{
+    //    WorldSpaceTransformArray[Bone.MyIndex] = ComponentSpaceTransformsArray[Bone.MyIndex];
+    //}
+    //else
+    //{
+    //    WorldSpaceTransformArray[Bone.MyIndex] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[Bone.MyIndex];
+    //}
+    //UpdateChildBoneGlobalTransform(Bone.MyIndex);
 }
 
 void USkeletalMeshComponent::UpdateChildBoneGlobalTransform(int32 ParentIndex)

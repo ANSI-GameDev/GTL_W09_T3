@@ -74,6 +74,7 @@ void FFbxImporter::ConvertSceneToUnreal(FbxScene* Scene)
     Scene->GetGlobalSettings().SetAxisSystem(UnrealAxis);
     // [Unused] position 에 scale 값 곱하여 구함 - 단위: FBX 기본(cm) → 언리얼 기본(m) (1/100)
     //FbxSystemUnit::cm.ConvertScene(Scene);
+    //FbxSystemUnit::cm.ConvertScene(Scene);
 }
 
 // --- 추후 구현 예정 ---
@@ -102,14 +103,15 @@ void FFbxImporter::BuildReferenceSkeleton(FbxNode* Node, FReferenceSkeleton& Out
         FName BoneName(Node->GetName());
         FbxAMatrix Local = Node->EvaluateLocalTransform();
         FTransform LocalBonePose(
-            FVector(Local.GetT()[0]/100.f, Local.GetT()[1]/100.f, Local.GetT()[2]/100.f),
-            FQuat(FRotator(Local.GetR()[1], Local.GetR()[2], -Local.GetR()[0])),
+            FVector(Local.GetT()[0], Local.GetT()[1], Local.GetT()[2]) * (1.f / 100.f),
+            FQuat(Local.GetQ()[0], Local.GetQ()[1], Local.GetQ()[2], Local.GetQ()[3]),
             FVector(Local.GetS()[0], Local.GetS()[1], Local.GetS()[2])
         );
+
         FbxAMatrix Global = Node->EvaluateGlobalTransform();
         FTransform GlobalBonePose(
-            FVector(Global.GetT()[0]/100.f, Global.GetT()[1]/100.f, Global.GetT()[2]/100.f),
-            FQuat(FRotator(Global.GetR()[1], Global.GetR()[2], -Global.GetR()[0])),
+            FVector(Global.GetT()[0], Global.GetT()[1], Global.GetT()[2]) * (1.f / 100.f),
+            FQuat(Global.GetQ()[0], Global.GetQ()[1], Global.GetQ()[2], Global.GetQ()[3]),
             FVector(Global.GetS()[0], Global.GetS()[1], Global.GetS()[2])
         );
         //ACube* BoneActor = GEngine->ActiveWorld->SpawnActor<ACube>();
@@ -505,7 +507,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
 
         // --- Position ---
         auto P = Geo.MultT(Mesh->GetControlPoints()[cp]);
-        V.Position = FVector((float)P[0] * UnitScale, (float)P[1] * UnitScale, (float)P[2] * UnitScale);
+        V.Position = FVector((float)P[0], (float)P[1], (float)P[2]) * UnitScale;
 
         // MaterialIndex 할당 
         V.MaterialIndex = static_cast<uint32>(matIdx);
