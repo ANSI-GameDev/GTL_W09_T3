@@ -418,9 +418,9 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODMode
         {
             FbxCluster* Cluster = Skin->GetCluster(ci);
             FbxAMatrix Mlink, Minitial;
-            Cluster->GetTransformLinkMatrix(Mlink);
-            Cluster->GetTransformMatrix(Minitial);
-            FbxAMatrix Bind = Minitial.Inverse() * Mlink; // * JointPostConvert;
+            Cluster->GetTransformLinkMatrix(Mlink);     // 메시에 바인드된 (모델 공간) 변환
+            Cluster->GetTransformMatrix(Minitial);      // Bone의 바인드된 (모델 공간) 변환
+            FbxAMatrix Bind = Minitial.Inverse() * Mlink; // 모델 공간 좌표 -> 메시 로컬 공간 -> 본 로컬 공간
 
             FbxNode* LinkNode = Cluster->GetLink();
             int32* FoundIdx = NodeToBoneIndex.Find(LinkNode);
