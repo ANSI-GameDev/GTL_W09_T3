@@ -21,6 +21,7 @@ class UTextComponent;
 class UHeightFogComponent;
 class UEditorPlayer;
 class UStaticMeshComponent;
+class USkeletalMeshComponent;
 
 // 헬퍼 함수 예시
 template<typename Getter, typename Setter>
@@ -80,6 +81,8 @@ private:
 
     void RenderForShapeComponent(UShapeComponent* ShapeComponent) const;
     void RenderForSpringArmComponent(USpringArmComponent* SpringArmComponent) const;
+
+    void RenderForSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent) const;
     
     template<typename T>
         requires std::derived_from<T, UActorComponent>

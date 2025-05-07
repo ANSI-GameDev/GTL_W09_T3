@@ -1,5 +1,6 @@
 #pragma once
 #include "Components/MeshComponent.h"
+#include "Rendering/SkeletalMeshLODModel.h"
 
 class USkeletalMesh;
 class FSkeletalMeshObjectCPUSkin;
@@ -13,13 +14,21 @@ public:
     void TickComponent(float DeltaTime) override;
 
     const TArray<FTransform>& GetComponentSpaceTransforms() const;
+    const TArray<FTransform>& GetWorldSpaceTransforms() const;
+
+    USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
+
+    const TArray<FSoftSkinVertex> GetBindPoseVertices() const { return BindPoseVertices; }
 
 protected:
     FSkeletalMeshObjectCPUSkin* MeshObject;
     /** 매 프레임 변경되는 Runtime Bone Transform - 렌더 스레드 별도일 때의 Size=2 */
     TArray<FTransform> ComponentSpaceTransformsArray; 
+    TArray<FTransform> WorldSpaceTransformArray;
 
     USkeletalMesh* SkeletalMesh = nullptr;
+
+    TArray<FSoftSkinVertex> BindPoseVertices;
 
 
 protected:

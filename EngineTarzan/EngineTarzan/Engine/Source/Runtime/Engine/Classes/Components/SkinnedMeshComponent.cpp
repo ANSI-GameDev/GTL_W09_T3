@@ -28,3 +28,8 @@ const TArray<FTransform>& USkinnedMeshComponent::GetComponentSpaceTransforms() c
 {
     return ComponentSpaceTransformsArray;
 }
+
+const TArray<FTransform>& USkinnedMeshComponent::GetWorldSpaceTransforms() const
+{
+    return WorldSpaceTransformArray;
+}

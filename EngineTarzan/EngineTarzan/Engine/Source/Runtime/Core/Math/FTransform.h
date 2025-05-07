@@ -165,4 +165,6 @@ public:
 	FVector TransformVector(const FVector& Vector) const;
     
 	FTransform Inverse() const;
+
+    FTransform operator*(const FTransform& Other) const;
 };

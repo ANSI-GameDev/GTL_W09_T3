@@ -1,6 +1,7 @@
 #pragma once
 #include <fbxsdk.h>
 
+#include "Define.h"
 #include "Container/Map.h"
 #include "HAL/PlatformType.h"
 
@@ -27,9 +28,18 @@ public:
         FReferenceSkeleton* OutRefSkeleton = nullptr
     );
 
-    static bool ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel);
+    static bool ParseSkeletalMeshLODModel(FbxMesh* Mesh, FSkeletalMeshLODModel& LodModel, uint32& GlobalIdxCtr, const FString& InFilePath, uint32&
+                                          OverallIndexOffset);
+
+    static bool ParseFbxMaterialTextures(FbxSurfaceMaterial* InMaterial, FStaticMaterial& OutMat, const FString& BasePath);
+
     static bool ParseReferenceSkeleton(const FString& InFilePath, FReferenceSkeleton& OutRefSkeleton);
-    static void ComputeJointPostConvert(FbxScene* Scene);
+
+    // 헬퍼: 씬 전체를 언리얼 좌표계 + 단위로 변환
+    static void ConvertSceneToUnreal(FbxScene* Scene);
+
+    // 헬퍼: FBX 노드 재귀 순회하여 첫 번째 메시 찾기
+    static FbxMesh* FindFirstMeshInScene(FbxScene* Scene);
 
     static USkeletalMesh* ImportSkeletalMesh(const FString& InFilePath);
 

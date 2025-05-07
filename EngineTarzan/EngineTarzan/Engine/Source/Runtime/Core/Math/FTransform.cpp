@@ -185,3 +185,29 @@ FTransform FTransform::Inverse() const
 
     return FTransform(RotatedTranslation, InverseRotation, FVector(InverseScale.X, InverseScale.Y, InverseScale.Z));
 }
+
+FTransform FTransform::operator*(const FTransform& Other) const
+{
+    FMatrix ScaleMat = GetScaleMatrix();
+    FMatrix RotationMat = GetRotation().ToMatrix();
+    FMatrix TranslationMat = FMatrix::GetTranslationMatrix(Position);
+
+    FMatrix OtherScaleMat = Other.GetScaleMatrix();
+    FMatrix OtherRotMat = Other.GetRotation().ToMatrix();
+    FMatrix OtherTranslationMat = FMatrix::GetTranslationMatrix(Other.Position);
+
+    FMatrix RTMat = RotationMat * TranslationMat;
+    FMatrix OtherRTMat = OtherRotMat * OtherTranslationMat;
+
+    ScaleMat = ScaleMat * OtherScaleMat;
+
+    FMatrix ResultRTMat = OtherRTMat * RTMat;
+    FMatrix Result = ScaleMat * ResultRTMat;
+
+    return FTransform(Result.GetTranslation(), Result.GetMatrixWithoutScale().ToQuat().GetNormalized(), Result.GetScaleVector());
+
+    //FMatrix ResultMatrix = GetMatrix() * Other.GetMatrix();
+    //FTransform Result = { ResultMatrix.GetTranslationVector(), ResultMatrix.GetMatrixWithoutScale().ToQuat(), ResultMatrix.GetScaleVector()};
+
+    //return Result;
+}

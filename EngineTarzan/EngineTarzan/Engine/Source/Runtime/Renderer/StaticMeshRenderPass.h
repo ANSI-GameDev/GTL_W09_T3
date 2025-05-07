@@ -6,6 +6,7 @@
 #include "Define.h"
 #include "Components/Light/PointLightComponent.h"
 
+struct FSkeletalMeshRenderData;
 struct FStaticMeshRenderData;
 class FShadowManager;
 class FDXDShaderManager;
@@ -53,6 +54,7 @@ public:
     void ReleaseShader();
 
     void ChangeViewMode(EViewModeIndex ViewMode);
+
     
 protected:
 

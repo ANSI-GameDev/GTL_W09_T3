@@ -3,6 +3,7 @@
 #include "UObject/ObjectMacros.h"
 
 class USkeletalMeshComponent;
+class UStaticMeshComponent;
 
 class ASkeletalActor : public AActor
 {
@@ -10,9 +11,11 @@ class ASkeletalActor : public AActor
 public:
     ASkeletalActor();
     USkeletalMeshComponent* GetSkeletalMeshComponent() const;
+    virtual void Tick(float DeltaTime) override;
 
 protected:
     UPROPERTY
     (USkeletalMeshComponent*, SkeletalMeshComponent, = nullptr);
+    TArray<UStaticMeshComponent*> Bones;
 };
 

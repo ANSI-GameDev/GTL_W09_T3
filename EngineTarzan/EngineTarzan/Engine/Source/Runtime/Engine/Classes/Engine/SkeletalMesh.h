@@ -15,9 +15,15 @@ public:
     void Initialize();
 
     void SetImportedModel(FSkeletalMeshLODModel* InModel);
+    void SetSkeletalMeshRenderData(FSkeletalMeshRenderData* InRenderData);
+    void SetRefSkeleton(const FReferenceSkeleton& InRefSkeleton);
 
-    FSkeletalMeshRenderData* GetSkeletalMeshRenderData() const;
+    FSkeletalMeshRenderData* GetRenderData() const;
+    FSkeletalMeshLODModel* GetImportedModel() const;
+    const FReferenceSkeleton& GetRefSkeleton() const;
 
+    TArray<FStaticMaterial*>& GetMaterials() { return Materials; }
+    FSkeletalMeshRenderData* GetSkeletalMeshRenderData() { return SkelMeshRenderData; }
 
 public:
 
@@ -25,9 +31,13 @@ public:
     FSkeletalMeshLODModel* ImportedModel;
 
     /** 런타임용 렌더링 리소스 */
-     FSkeletalMeshRenderData* SkelMeshRenderData;
+    FSkeletalMeshRenderData* SkelMeshRenderData;
 
     /** 계층구조, Bone Info 및 Transform 배열 저장 */
     FReferenceSkeleton RefSkeleton;
+
+private:
+    // TODO: Skeletal 전용 Material이 나온다면 변경 필요 
+    TArray<FStaticMaterial*> Materials;
 };
 

@@ -11,9 +11,7 @@
 
 ACube::ACube()
 {
-    StaticMeshComponent->SetStaticMesh(FObjManager::GetStaticMesh(L"Contents/Reference/Reference.obj"));
-
-    
+    StaticMeshComponent->SetStaticMesh(FObjManager::GetStaticMesh(L"Contents/helloBlender.obj"));
 }
 
 void ACube::Tick(float DeltaTime)

@@ -39,6 +39,7 @@ struct FRotator
     FRotator& operator-=(const FRotator& Other);
 
     FRotator operator*(float Scalar) const;
+    FRotator operator*(const FRotator& Other) const;
     FRotator& operator*=(float Scalar);
 
     FRotator operator/(const FRotator& Other) const;

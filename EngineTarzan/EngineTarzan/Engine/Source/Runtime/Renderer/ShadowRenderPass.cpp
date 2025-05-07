@@ -2,6 +2,7 @@
 
 #include "ShadowManager.h"
 #include "BaseGizmos/GizmoBaseComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/Light/LightComponent.h"
 #include "Components/Light/PointLightComponent.h"
 #include "D3D11RHI/DXDBufferManager.h"
@@ -98,6 +99,16 @@ void FShadowRenderPass::PrepareRenderArr()
             }
         }
     }
+    /*for (const auto iter : TObjectRange<USkeletalMeshComponent>())
+    {
+        if (!Cast<UGizmoBaseComponent>(iter) && iter->GetWorld() == GEngine->ActiveWorld)
+        {
+            if (iter->GetOwner() && !iter->GetOwner()->IsHidden())
+            {
+                SkeletalMeshComponents.Add(iter);
+            }
+        }
+    }*/
 }
 
 void FShadowRenderPass::UpdateIsShadowConstant(int32 isShadow) const

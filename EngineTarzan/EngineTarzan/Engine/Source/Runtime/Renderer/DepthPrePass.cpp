@@ -1,5 +1,6 @@
 #include "DepthPrePass.h"
 
+#include "SkeletalMeshRenderPass.h"
 #include "HAL/PlatformType.h"
 #include "UnrealClient.h"
 #include "D3D11RHI/DXDBufferManager.h"
@@ -22,6 +23,11 @@ void FDepthPrePass::Initialize(FDXDBufferManager* InBufferManager, FGraphicsDevi
     __super::Initialize(InBufferManager, InGraphics, InShaderManage);
 }
 
+void FDepthPrePass::InitializeSkeletalRenderPass(FSkeletalMeshRenderPass* InSkeletalMeshRenderPass)
+{
+    SkeletalMeshRenderPass = InSkeletalMeshRenderPass;
+}
+
 void FDepthPrePass::PrepareRenderArr()
 {
     __super::PrepareRenderArr();
@@ -30,6 +36,7 @@ void FDepthPrePass::PrepareRenderArr()
 void FDepthPrePass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
     PrepareRenderState(Viewport);
+    SkeletalMeshRenderPass->RenderAllSkeletalMeshes(Viewport);
     __super::RenderAllStaticMeshes(Viewport);
 
     // 렌더 타겟 해제
@@ -77,3 +84,4 @@ void FDepthPrePass::PrepareRenderState(const std::shared_ptr<FEditorViewportClie
 
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, DepthStencilRHI->DSV); // ← 깊이 전용
 }
+
