@@ -13,7 +13,7 @@
 #include "Developer/SkeletalMeshBuilder.h"
 #include "Math/DualQuat.h"
 
-#define DUAL_QUATERNION 
+//#define DUAL_QUATERNION 
 
 void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData)
 {
@@ -220,7 +220,9 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(const FSoftSkinVertex& Vertex, TArra
 
     bool bHasInfluence = false;
 
-    for (int i = 0; i < MAX_TOTAL_INFLUENCES; ++i)
+    FMatrix CombinedSkinMatrix = InverseBindPose[Vertex.InfluenceBones[0]] * BoneGlobalTransforms[Vertex.InfluenceBones[0]].GetMatrix() * Vertex.InfluenceWeights[0];
+
+    for (int i = 1; i < MAX_TOTAL_INFLUENCES; ++i)
     {
         const uint8& BoneIndex = Vertex.InfluenceBones[i];
         const float& Weight = Vertex.InfluenceWeights[i];
@@ -239,11 +241,12 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(const FSoftSkinVertex& Vertex, TArra
 
         const FMatrix BoneMatrix = BoneGlobalTransforms[BoneIndex].GetMatrix();
         FMatrix SkinningMatrix = InverseBindPose[BoneIndex] * BoneMatrix;
-
-        SkinnedPos += SkinningMatrix.TransformPosition(OriginalPos) * Weight;
-        SkinnedNormal += SkinningMatrix.TransformFVector4(OriginalNormal) * Weight;
-        SkinnedTangent += FMatrix::TransformVector(OriginalTangent, SkinningMatrix) * Weight;
+        CombinedSkinMatrix = CombinedSkinMatrix + SkinningMatrix * Weight;
     }
+
+    SkinnedPos = CombinedSkinMatrix.TransformPosition(OriginalPos);
+    SkinnedNormal = CombinedSkinMatrix.TransformFVector4(OriginalNormal);
+    SkinnedTangent = FMatrix::TransformVector(OriginalTangent, CombinedSkinMatrix);
 
     if (bHasInfluence)
     {
@@ -271,8 +274,10 @@ void FSkeletalMeshObjectCPUSkin::SkinVertexOptimized(
     FVector4  Nsum(0, 0, 0, 0);
     FVector   Tsum(0, 0, 0);
 
+    FMatrix CombinedSkinMatrix = SkinnedMatrices[Src.InfluenceBones[0]] * Src.InfluenceWeights[0];
+
     // 각 인플루언스마다 미리 계산된 합성행렬만 사용
-    for (int i = 0; i < MAX_TOTAL_INFLUENCES; ++i)
+    for (int i = 1; i < MAX_TOTAL_INFLUENCES; ++i)
     {
         const float W = Src.InfluenceWeights[i];
         if (W <= KINDA_SMALL_NUMBER) continue;
@@ -280,10 +285,12 @@ void FSkeletalMeshObjectCPUSkin::SkinVertexOptimized(
         const int   Bi = Src.InfluenceBones[i];
         const FMatrix& M = SkinnedMatrices[Bi];
 
-        Psum += M.TransformPosition(Src.Position) * W;
-        Nsum += M.TransformFVector4(Src.TangentZ) * W;
-        Tsum += FMatrix::TransformVector(Src.TangentX, M) * W;
+        CombinedSkinMatrix = CombinedSkinMatrix + SkinnedMatrices[Src.InfluenceBones[i]] * W;
     }
+
+    Psum = CombinedSkinMatrix.TransformPosition(Src.Position);
+    Nsum = CombinedSkinMatrix.TransformFVector4(Src.TangentZ);
+    Tsum = FMatrix::TransformVector(Src.TangentX, CombinedSkinMatrix);
 
     // 결과 정규화 후 아웃풋에 복사
     Out.X = Psum.X;  Out.Y = Psum.Y;  Out.Z = Psum.Z;

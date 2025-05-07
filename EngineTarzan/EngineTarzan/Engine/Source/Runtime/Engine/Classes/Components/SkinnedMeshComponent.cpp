@@ -39,6 +39,15 @@ FTransform USkinnedMeshComponent::GetBoneLocalTransform(const int InBoneIndex) c
 void USkinnedMeshComponent::SetBoneLocalTransform(const int InBoneIndex, const FTransform& InTransform)
 {
     ComponentSpaceTransformsArray[InBoneIndex] = InTransform;
+    const FMeshBoneInfo& Bone = SkeletalMesh->GetRefSkeleton().GetBoneInfo()[InBoneIndex];
+    if (Bone.ParentIndex == -1)
+    {
+        WorldSpaceTransformArray[InBoneIndex] = ComponentSpaceTransformsArray[InBoneIndex];
+    }
+    else
+    {
+        WorldSpaceTransformArray[InBoneIndex] = WorldSpaceTransformArray[Bone.ParentIndex] * ComponentSpaceTransformsArray[InBoneIndex];
+    }
     UpdateChildBoneGlobalTransform(InBoneIndex);
 
     MeshObject->Update(this);
