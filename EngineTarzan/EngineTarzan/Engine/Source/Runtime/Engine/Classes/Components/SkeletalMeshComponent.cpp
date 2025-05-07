@@ -24,8 +24,8 @@ USkeletalMeshComponent::USkeletalMeshComponent()
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX
     FFbxImporter::ParseSkeletalMeshLODModel(
-        TEXT("Contents/FBX/Spider.fbx"),
-        //TEXT("Contents/FBX/nathan3.fbx"),
+        //TEXT("Contents/FBX/Spider.fbx"),
+        TEXT("Contents/FBX/nathan3.fbx"),
         //TEXT("Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.fbx"),
         //TEXT("Contents/FBX/tifa2.fbx"),
         //TEXT("Contents/FBX/tifa_noglove/tifanoglove.fbx"),
@@ -252,19 +252,33 @@ void USkeletalMeshComponent::RotateBone(FMeshBoneInfo Bone, float angle)
     //ComponentSpaceTransformsArray[Bone.MyIndex].Rotate(FRotator(FVector(angle)));
     ComponentSpaceTransformsArray[Bone.MyIndex].RotatePitch((angle));
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    const int32 NumBones = SkeletalMesh->GetRefSkeleton().GetNumBones();
-    for (int32 i = Bone.MyIndex; i < NumBones; ++i)
+
+    const int32 ParentIndex = Bones[Bone.MyIndex].ParentIndex;
+    if (ParentIndex == -1)
     {
-        const int32 ParentIndex = Bones[i].ParentIndex;
-        const FTransform& Local = ComponentSpaceTransformsArray[i];
-        if (ParentIndex == -1)
+        WorldSpaceTransformArray[Bone.MyIndex] = ComponentSpaceTransformsArray[Bone.MyIndex];
+    }
+    else
+    {
+        WorldSpaceTransformArray[Bone.MyIndex] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[Bone.MyIndex];
+    }
+    UpdateChildBoneGlobalTransform(Bone.MyIndex);
+    UE_LOG(LogLevel::Display, "%s", *WorldSpaceTransformArray[BoneIndex].GetPosition().ToString());
+}
+
+void USkeletalMeshComponent::UpdateChildBoneGlobalTransform(int32 ParentIndex)
+{
+    const TArray<FMeshBoneInfo>& Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
+    const int32 NumBones = Bones.Num();
+    for (int32 i = 0; i < NumBones; ++i)
+    {
+        if (Bones[i].ParentIndex == ParentIndex)
         {
-            WorldSpaceTransformArray[i] = Local;
-        }
-        else
-        {
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * Local;
+            // 자식 본의 로컬 트랜스폼 → 월드 트랜스폼 갱신
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
+
+            // 재귀적으로 자식의 자식도 갱신
+            UpdateChildBoneGlobalTransform(i);
         }
     }
-    UE_LOG(LogLevel::Display, "%s", *WorldSpaceTransformArray[BoneIndex].GetPosition().ToString());
 }

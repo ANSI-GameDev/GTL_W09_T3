@@ -197,6 +197,7 @@ bool FFbxImporter::ParseSkeletalMeshLODModel(
     {
         BuildReferenceSkeleton(Scene->GetRootNode(), *OutRefSkeleton, INDEX_NONE, 0);
         UE_LOG(LogLevel::Error, TEXT("ReferenceSkeleton built from existing Scene"));
+        OutRefSkeleton->InitializeInverseBindPose();
         //OutRefSkeleton->ComputeGlobalTransform();
     }
 

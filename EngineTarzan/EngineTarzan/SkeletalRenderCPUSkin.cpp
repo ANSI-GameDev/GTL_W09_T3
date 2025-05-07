@@ -31,19 +31,19 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
     USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
     FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
 
-    TArray<FTransform> BindPoseTransforms = Skeleton.GetBonePose();
+    TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
     TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
 
     FSkeletalMeshLODModel* SkeletalMeshData = SkeletalMesh->GetImportedModel();
     TArray<FSoftSkinVertex> Vertices = InMeshComponent->GetBindPoseVertices();
     for (auto& Vertex : SkeletalMeshData->Vertices)
     {
-        SkinVertex(Vertex, BindPoseTransforms, GlobalTransforms);
+        SkinVertex(Vertex, InverseBindPose, GlobalTransforms);
     }
     FSkeletalMeshBuilder::ConvertLODModelToRenderData(*SkeletalMeshData, *SkeletalMesh->GetRenderData());
 }
 
-void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FTransform> BindPoseTransforms, TArray<FTransform> GlobalTransforms)
+void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> GlobalTransforms)
 {
     FVector ResultPosition = { 0,0,0 };
     FVector4 ResultNormal = { 0,0,0,0 };
@@ -55,7 +55,6 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FTra
     FVector OriginalTangent = Vertex.TangentX;
 
     FMatrix SkeletonPose;
-    FMatrix InverseBindPose;
     FMatrix SkinMatrix;
 
     bool bHasBone = false;
@@ -66,8 +65,7 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FTra
             continue;
         bHasBone = true;
         SkeletonPose = GlobalTransforms[Vertex.InfluenceBones[i]].GetMatrix();
-        InverseBindPose = FMatrix::Inverse(BindPoseTransforms[Vertex.InfluenceBones[i]].GetMatrix());
-        SkinMatrix = InverseBindPose * SkeletonPose;
+        SkinMatrix = InverseBindPose[Vertex.InfluenceBones[i]] * SkeletonPose;
         //ResultPosition += FMatrix::TransformVector(OriginalPos, SkinMatrix) * Vertex.InfluenceWeights[i];
         ResultPosition += SkinMatrix.TransformPosition(OriginalPos) * Vertex.InfluenceWeights[i];
         ResultNormal += SkinMatrix.TransformFVector4(OriginalNormal) * Vertex.InfluenceWeights[i];

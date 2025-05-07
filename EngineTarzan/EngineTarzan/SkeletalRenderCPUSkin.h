@@ -1,5 +1,6 @@
 #pragma once
 #include "Container/Array.h"
+#include "Math/Matrix.h"
 
 class USkinnedMeshComponent;
 
@@ -14,7 +15,7 @@ class FSkeletalMeshObjectCPUSkin
 public:
     void InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData);
     void Update(USkinnedMeshComponent* InMeshComponent, float DeltaTime);
-    void SkinVertex(FSoftSkinVertex& Vertex, TArray<FTransform> BindPoseTransforms, TArray<FTransform> InverseBase);
+    void SkinVertex(FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> GlobalTransforms);
 
 public:
     USkinnedMeshComponent* MeshComponent;

@@ -61,6 +61,14 @@ public:
         }
     }
 
+    void InitializeInverseBindPose()
+    {
+        for (const auto& BindPose : RefBonePose)
+        {
+            InverseBindPose.Add(FMatrix::Inverse(BindPose.GetMatrix()));
+        }
+    }
+
     /** Name으로 Bone을 찾고, 인덱스를 반환 */
     int32 FindRawBoneIndex(FName BoneName) const
     {
@@ -74,11 +82,12 @@ public:
     int32 GetNumBones() const { return RefBoneInfo.Num(); }
     const TArray<FMeshBoneInfo>& GetBoneInfo() const { return RefBoneInfo; }
     const TArray<FTransform>& GetBonePose() const { return RefBonePose; }
+    const TArray<FMatrix>& GetInverseBindPose() const { return InverseBindPose; }
 
 public:
     TArray<FMeshBoneInfo> RefBoneInfo; 
     TArray<FTransform>    RefBonePose; //각 본의 글로벌 트랜스폼
-
+    TArray<FMatrix>       InverseBindPose;
     TMap<FName, int32> BoneNameToIndexMap;
 
     bool bOnlyOneRootAllowed;

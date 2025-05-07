@@ -18,6 +18,8 @@ public:
 
     void RotateBone(FMeshBoneInfo Bone, float angle);
 
+    void UpdateChildBoneGlobalTransform(int32 ParentIndex);
+
     int BoneIndex = 0;
 
     void SetSelectedSubMeshIndex(const int& value) { SelectedSubMeshIndex = value; }
