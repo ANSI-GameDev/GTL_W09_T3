@@ -22,7 +22,7 @@ public:
 
     void ScaleBone(int InBoneIndex, const FVector& InScale);
 
-    void UpdateChildBoneGlobalTransform(int32 ParentIndex);
+    
 
     int BoneIndex = 0;
 

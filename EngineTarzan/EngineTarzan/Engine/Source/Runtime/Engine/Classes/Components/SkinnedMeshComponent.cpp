@@ -39,6 +39,7 @@ FTransform USkinnedMeshComponent::GetBoneLocalTransform(const int InBoneIndex) c
 void USkinnedMeshComponent::SetBoneLocalTransform(const int InBoneIndex, const FTransform& InTransform)
 {
     ComponentSpaceTransformsArray[InBoneIndex] = InTransform;
+    UpdateChildBoneGlobalTransform(InBoneIndex);
 }
 
 FTransform USkinnedMeshComponent::GetBoneWorldTransform(const int InBoneIndex) const
@@ -49,6 +50,7 @@ FTransform USkinnedMeshComponent::GetBoneWorldTransform(const int InBoneIndex) c
 void USkinnedMeshComponent::SetBoneWorldTransform(const int InBoneIndex, const FTransform& InTransform)
 {
     WorldSpaceTransformArray[InBoneIndex] = InTransform;
+    UpdateChildBoneGlobalTransform(InBoneIndex);
 }
 
 const TArray<FTransform>& USkinnedMeshComponent::GetWorldSpaceTransforms() const
@@ -87,4 +89,21 @@ void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMesh* InSkeletalMesh)
         *SkeletalMesh->ImportedModel,
         *SkeletalMesh->SkelMeshRenderData
     );
+}
+
+void USkinnedMeshComponent::UpdateChildBoneGlobalTransform(int32 ParentIndex)
+{
+    const TArray<FMeshBoneInfo>& Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
+    const int32 NumBones = Bones.Num();
+    for (int32 i = 0; i < NumBones; ++i)
+    {
+        if (Bones[i].ParentIndex == ParentIndex)
+        {
+            // 자식 본의 로컬 트랜스폼 → 월드 트랜스폼 갱신
+            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
+
+            // 재귀적으로 자식의 자식도 갱신
+            UpdateChildBoneGlobalTransform(i);
+        }
+    }
 }

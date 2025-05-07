@@ -15,8 +15,8 @@ void USkeletalMeshComponent::TickComponent(float DeltaTime)
     if (SkeletalMesh)
     {
         TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-        if(Bones.Num()>0)
-            RotateBone(Bones[BoneIndex], DeltaTime * 100);
+        //if(Bones.Num()>0)
+        //    RotateBone(Bones[BoneIndex], DeltaTime * 100);
     }
 
     Super::TickComponent(DeltaTime);
@@ -122,19 +122,4 @@ void USkeletalMeshComponent::ScaleBone(const int InBoneIndex, const FVector& InS
 }
 
 
-void USkeletalMeshComponent::UpdateChildBoneGlobalTransform(int32 ParentIndex)
-{
-    const TArray<FMeshBoneInfo>& Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
-    const int32 NumBones = Bones.Num();
-    for (int32 i = 0; i < NumBones; ++i)
-    {
-        if (Bones[i].ParentIndex == ParentIndex)
-        {
-            // 자식 본의 로컬 트랜스폼 → 월드 트랜스폼 갱신
-            WorldSpaceTransformArray[i] = WorldSpaceTransformArray[ParentIndex] * ComponentSpaceTransformsArray[i];
 
-            // 재귀적으로 자식의 자식도 갱신
-            UpdateChildBoneGlobalTransform(i);
-        }
-    }
-}

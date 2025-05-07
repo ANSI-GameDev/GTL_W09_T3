@@ -87,6 +87,22 @@
             "Components": [
                 {
                     "ComponentClass": "USceneComponent",
+                    "ComponentID": "USceneComponent_312",
+                    "Properties": {
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "USceneComponent",
+                        "ComponentName": "USceneComponent_312",
+                        "ComponentOwner": "ADirectionalLight_311",
+                        "ComponentOwnerClass": "ADirectionalLight",
+                        "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
+                        "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
+                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
+                        "bAutoActive": "true",
+                        "bIsActive": "true"
+                    }
+                },
+                {
+                    "ComponentClass": "USceneComponent",
                     "ComponentID": "USceneComponent_144",
                     "Properties": {
                         "AttachParentID": "nullptr",
@@ -142,22 +158,6 @@
                         "bAutoActive": "true",
                         "bIsActive": "true",
                         "m_Type": "UBillboardComponent"
-                    }
-                },
-                {
-                    "ComponentClass": "USceneComponent",
-                    "ComponentID": "USceneComponent_312",
-                    "Properties": {
-                        "AttachParentID": "nullptr",
-                        "ComponentClass": "USceneComponent",
-                        "ComponentName": "USceneComponent_312",
-                        "ComponentOwner": "ADirectionalLight_311",
-                        "ComponentOwnerClass": "ADirectionalLight",
-                        "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
-                        "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
-                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
-                        "bAutoActive": "true",
-                        "bIsActive": "true"
                     }
                 }
             ],

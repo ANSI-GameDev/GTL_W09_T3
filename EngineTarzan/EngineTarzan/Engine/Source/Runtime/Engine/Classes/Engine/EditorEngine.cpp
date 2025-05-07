@@ -60,7 +60,7 @@ void UEditorEngine::Tick(float DeltaTime)
 {
     for (FWorldContext* WorldContext : WorldList)
     {
-        if (WorldContext->WorldType == EWorldType::PIE)
+        if (WorldContext->WorldType != EWorldType::Editor)
         {
             if (UWorld* World = WorldContext->World())
             {
