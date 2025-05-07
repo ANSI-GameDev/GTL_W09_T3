@@ -13,86 +13,56 @@
 #include "Developer/SkeletalMeshBuilder.h"
 #include "Math/DualQuat.h"
 
+#define DUAL_QUATERNION 
 
 void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData)
 {
     MeshComponent = InMeshComponent;
     SkelMeshRenderData = InSkelMeshRenderData;
 }
-//
-//void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, float DeltaTime)
-//{
-//    // @TODO : CPU Skinning 로직을 여기에 구현
-//    // 1. SkeletalMeshRenderData에서 Vertices, Indices 가져오기
-//    // 2. ComponentSpaceTransformsArray에서 Bone Transform 가져오기
-//    // 3. Vertex를 Bone Transform에 맞게 변환
-//    // 4. 변환된 Vertex를 Weight를 적절히 적용하여 Skinning을 구현할 것   
-//
-//    //FSkeletalMeshLODModel*
-//    USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
-//    FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
-//
-//    TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
-//    TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
-//
-//    // 1) 역바인드포즈 × 본글로벌행렬 합성 → SkinnedMatrices 에 저장
-//    const int32 NumBones = InverseBindPose.Num();
-//    TArray<FMatrix> SkinnedMatrices;
-//    SkinnedMatrices.SetNum(NumBones);
-//    for (int32 b = 0; b < NumBones; ++b)
-//    {
-//        FMatrix BoneM = GlobalTransforms[b].GetMatrix();
-//        SkinnedMatrices[b] = InverseBindPose[b] * BoneM;
-//    }
-//
-//    const TArray<FSoftSkinVertex>& Vertices = InMeshComponent->GetBindPoseVertices();
-//    TArray<FSkeletalMeshVertex>& RenderDataVertices = SkeletalMesh->GetRenderData()->Vertices;
-//    //int VertexIndex = 0;
-//    //for (const auto& Vertex : Vertices)
-//    //{
-//    //    SkinVertex(Vertex, InverseBindPose, GlobalTransforms, RenderDataVertices[VertexIndex]);
-//    //    VertexIndex += 1;
-//    //}
-//
-//    const int32 NumVerts = Vertices.Num();
-//    for (int32 i = 0; i < NumVerts; ++i)
-//    {
-//        SkinVertexOptimized(Vertices[i],
-//            SkinnedMatrices,
-//            RenderDataVertices[i]);
-//    }
-//}
 
+#ifdef DUAL_QUATERNION 
 void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, float DeltaTime)
 {
-	USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
-	FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
+    // @TODO : CPU Skinning 로직을 여기에 구현
+    // 1. SkeletalMeshRenderData에서 Vertices, Indices 가져오기
+    // 2. ComponentSpaceTransformsArray에서 Bone Transform 가져오기
+    // 3. Vertex를 Bone Transform에 맞게 변환
+    // 4. 변환된 Vertex를 Weight를 적절히 적용하여 Skinning을 구현할 것   
 
-	TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
-	TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
+    //FSkeletalMeshLODModel*
+    USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
+    FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
 
-	const int32 NumBones = InverseBindPose.Num();
-	TArray<FDualQuat> SkinDQs;
-	SkinDQs.SetNum(NumBones);
+    TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
+    TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
 
-	// 본별로 듀얼 쿼터니언 생성 (InvBind * Global)
-	for (int32 b = 0; b < NumBones; ++b)
-	{
-		FMatrix M = InverseBindPose[b] * GlobalTransforms[b].GetMatrix();
-		// M에서 회전+병렬벡터 분해
-		FQuat    Rot(M);               // FMatrix → 회전 쿼터니언
-		FVector  Trans = M.GetOrigin(); // M의 이동 성분
-		SkinDQs[b] = FDualQuat(Rot, Trans).GetNormalized();
-	}
+    // 1) 역바인드포즈 × 본글로벌행렬 합성 → SkinnedMatrices 에 저장
+    const int32 NumBones = InverseBindPose.Num();
+    TArray<FMatrix> SkinnedMatrices;
+    SkinnedMatrices.SetNum(NumBones);
+    for (int32 b = 0; b < NumBones; ++b)
+    {
+        FMatrix BoneM = GlobalTransforms[b].GetMatrix();
+        SkinnedMatrices[b] = InverseBindPose[b] * BoneM;
+    }
 
-	const TArray<FSoftSkinVertex>& SrcVerts = InMeshComponent->GetBindPoseVertices();
-	TArray<FSkeletalMeshVertex>& DstVerts = SkeletalMesh->GetRenderData()->Vertices;
+    const TArray<FSoftSkinVertex>& Vertices = InMeshComponent->GetBindPoseVertices();
+    TArray<FSkeletalMeshVertex>& RenderDataVertices = SkeletalMesh->GetRenderData()->Vertices;
+    //int VertexIndex = 0;
+    //for (const auto& Vertex : Vertices)
+    //{
+    //    SkinVertex(Vertex, InverseBindPose, GlobalTransforms, RenderDataVertices[VertexIndex]);
+    //    VertexIndex += 1;
+    //}
 
-	const int32 NumVerts = SrcVerts.Num();
-	for (int32 i = 0; i < NumVerts; ++i)
-	{
-		SkinVertexDualQuat(SrcVerts[i], SkinDQs, DstVerts[i]);
-	}
+    const int32 NumVerts = Vertices.Num();
+    for (int32 i = 0; i < NumVerts; ++i)
+    {
+        SkinVertexOptimized(Vertices[i],
+            SkinnedMatrices,
+            RenderDataVertices[i]);
+    }
 }
 
 void FSkeletalMeshObjectCPUSkin::SkinVertex(const FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> BoneGlobalTransforms, FSkeletalMeshVertex& OutVertex)
@@ -142,7 +112,39 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(const FSoftSkinVertex& Vertex, TArra
     }
 }
 
+#else
 
+void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, float DeltaTime)
+{
+	USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
+	FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
+
+	TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
+	TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
+
+	const int32 NumBones = InverseBindPose.Num();
+	TArray<FDualQuat> SkinDQs;
+	SkinDQs.SetNum(NumBones);
+
+	// 본별로 듀얼 쿼터니언 생성 (InvBind * Global)
+	for (int32 b = 0; b < NumBones; ++b)
+	{
+		FMatrix M = InverseBindPose[b] * GlobalTransforms[b].GetMatrix();
+		// M에서 회전+병렬벡터 분해
+		FQuat    Rot(M);               // FMatrix → 회전 쿼터니언
+		FVector  Trans = M.GetOrigin(); // M의 이동 성분
+		SkinDQs[b] = FDualQuat(Rot, Trans).GetNormalized();
+	}
+
+	const TArray<FSoftSkinVertex>& SrcVerts = InMeshComponent->GetBindPoseVertices();
+	TArray<FSkeletalMeshVertex>& DstVerts = SkeletalMesh->GetRenderData()->Vertices;
+
+	const int32 NumVerts = SrcVerts.Num();
+	for (int32 i = 0; i < NumVerts; ++i)
+	{
+		SkinVertexDualQuat(SrcVerts[i], SkinDQs, DstVerts[i]);
+	}
+}
 void FSkeletalMeshObjectCPUSkin::SkinVertexDualQuat(
 	const FSoftSkinVertex& Src,
 	const TArray<FDualQuat>& SkinDQs,
@@ -227,6 +229,11 @@ void FSkeletalMeshObjectCPUSkin::SkinVertexDualQuat(
 	// 위치 변환
 	FVector SkinnedPos = BlendedDQ.TransformPosition(Src.Position);
 
+	// 노말/탄젠트 변환
+	// 참고: Src.TangentZ는 FVector4이지만, 회전만 적용할 때는 FVector로 다루는 것이 일반적.
+	//       만약 TangentZ.W가 특별한 의미를 갖는다면 TransformFVector4가 맞으나,
+	//       보통 노멀/탄젠트는 방향 벡터이므로 Real 파트로만 회전.
+	//       원본 코드에서는 TransformFVector4를 사용했으므로 유지.
 	FVector4 SkinnedN4 = BlendedDQ.TransformFVector4(Src.TangentZ); // Real 파트로만 회전
 	FVector  SkinnedN(SkinnedN4.X, SkinnedN4.Y, SkinnedN4.Z);
 	FVector  SkinnedT = BlendedDQ.TransformVector(Src.TangentX); // Real 파트로만 회전
@@ -240,3 +247,4 @@ void FSkeletalMeshObjectCPUSkin::SkinVertexDualQuat(
 	SkinnedT.Normalize(); // 안전하게 정규화
 	Out.TangentX = SkinnedT.X;  Out.TangentY = SkinnedT.Y;  Out.TangentZ = SkinnedT.Z; // SkinnedT.Z 오타 수정
 }
+#endif 

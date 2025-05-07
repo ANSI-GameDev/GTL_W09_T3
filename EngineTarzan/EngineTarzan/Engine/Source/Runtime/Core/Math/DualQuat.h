@@ -58,7 +58,6 @@ struct FDualQuat
 
     void Normalize()
     {
-        // Real.SizeSquared() 대신 직접 계산 또는 FQuat에 해당 함수가 있다면 사용
         float RealMagSq = Real.X * Real.X + Real.Y * Real.Y + Real.Z * Real.Z + Real.W * Real.W;
         if (RealMagSq <= KINDA_SMALL_NUMBER)
         {
@@ -68,18 +67,16 @@ struct FDualQuat
         }
         float InvRealMag = FMath::InvSqrt(RealMagSq);
 
-        Real = Real * InvRealMag; // FQuat * float 연산자 사용
+        Real = Real * InvRealMag; // Real 파트 정규화
+        Dual = Dual * InvRealMag; // Dual 파트도 동일하게 스케일링
 
-        Dual = Dual * InvRealMag;
-        // float DotRD = Real.Dot(Dual); // FQuat에 Dot 멤버 함수가 있다면 사용
-        float DotRD = FQuat::DotProduct(Real, Dual); // 스태틱 함수 사용 또는 멤버 함수
-
-        FQuat ScaledRealForCorrection = Real * (-DotRD);
-        // FQuat + 연산자 또는 멤버별 덧셈
-        Dual.X += ScaledRealForCorrection.X;
-        Dual.Y += ScaledRealForCorrection.Y;
-        Dual.Z += ScaledRealForCorrection.Z;
-        Dual.W += ScaledRealForCorrection.W;
+        // Dual 파트를 Real 파트에 직교하도록 조정
+        float DotRD = FQuat::DotProduct(Real, Dual);
+        FQuat Correction = Real * DotRD; // (Real · Dual_scaled) * Real
+        Dual.X -= Correction.X;          // Dual_new = Dual_scaled - Correction
+        Dual.Y -= Correction.Y;
+        Dual.Z -= Correction.Z;
+        Dual.W -= Correction.W;
     }
 
     FDualQuat GetNormalized() const

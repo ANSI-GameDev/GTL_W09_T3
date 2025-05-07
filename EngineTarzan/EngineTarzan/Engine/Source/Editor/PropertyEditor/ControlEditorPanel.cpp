@@ -475,7 +475,7 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
 
                         USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
                         skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
-                        FFbxImporter::ParseSkeletalMeshLODModel(TEXT("Contents/FBX/nathan3.fbx"), *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
+                        FFbxImporter::ParseSkeletalMeshLODModel(TEXT("Contents/FBX/nathan.fbx"), *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
                         skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
                         SpawnedActor->SetActorLabel(TEXT("OBJ_SKELETALMESH"));
                     }
