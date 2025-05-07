@@ -182,6 +182,8 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent)
 
     // 1) 역바인드포즈 × 본글로벌행렬 합성 → SkinnedMatrices 에 저장
     const int32 NumBones = InverseBindPose.Num();
+    if (NumBones <= 0)
+        return;
     TArray<FMatrix> SkinnedMatrices;
     SkinnedMatrices.SetNum(NumBones);
     for (int32 b = 0; b < NumBones; ++b)
