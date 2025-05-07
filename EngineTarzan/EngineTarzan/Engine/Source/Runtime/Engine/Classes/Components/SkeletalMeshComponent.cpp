@@ -95,7 +95,8 @@ void USkeletalMeshComponent::RotateBone(const int InBoneIndex, const FRotator& I
 
 void USkeletalMeshComponent::ScaleBone(const int InBoneIndex, const FVector& InScale)
 {
-    ComponentSpaceTransformsArray[InBoneIndex].SetScale(InScale);
+    FVector OriginalScale = ComponentSpaceTransformsArray[InBoneIndex].GetScale();
+    ComponentSpaceTransformsArray[InBoneIndex].SetScale(OriginalScale + InScale);
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
     const int32 ParentIndex = Bones[InBoneIndex].ParentIndex;
     if (ParentIndex == -1)
