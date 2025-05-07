@@ -7,6 +7,22 @@
             "ActorTickInEditor": "false",
             "Components": [
                 {
+                    "ComponentClass": "USceneComponent",
+                    "ComponentID": "USceneComponent_139",
+                    "Properties": {
+                        "AttachParentID": "nullptr",
+                        "ComponentClass": "USceneComponent",
+                        "ComponentName": "USceneComponent_139",
+                        "ComponentOwner": "ASpotLight_506",
+                        "ComponentOwnerClass": "ASpotLight",
+                        "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
+                        "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
+                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
+                        "bAutoActive": "true",
+                        "bIsActive": "true"
+                    }
+                },
+                {
                     "ComponentClass": "USpotLightComponent",
                     "ComponentID": "USpotLightComponent_0",
                     "Properties": {
@@ -35,27 +51,11 @@
                 },
                 {
                     "ComponentClass": "USceneComponent",
-                    "ComponentID": "USceneComponent_139",
+                    "ComponentID": "USceneComponent_384",
                     "Properties": {
                         "AttachParentID": "nullptr",
                         "ComponentClass": "USceneComponent",
-                        "ComponentName": "USceneComponent_139",
-                        "ComponentOwner": "ASpotLight_506",
-                        "ComponentOwnerClass": "ASpotLight",
-                        "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
-                        "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
-                        "RelativeScale3D": "X=1.000 Y=1.000 Z=1.000",
-                        "bAutoActive": "true",
-                        "bIsActive": "true"
-                    }
-                },
-                {
-                    "ComponentClass": "USceneComponent",
-                    "ComponentID": "USceneComponent_507",
-                    "Properties": {
-                        "AttachParentID": "nullptr",
-                        "ComponentClass": "USceneComponent",
-                        "ComponentName": "USceneComponent_507",
+                        "ComponentName": "USceneComponent_384",
                         "ComponentOwner": "ASpotLight_506",
                         "ComponentOwnerClass": "ASpotLight",
                         "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
@@ -89,11 +89,11 @@
                 },
                 {
                     "ComponentClass": "USceneComponent",
-                    "ComponentID": "USceneComponent_384",
+                    "ComponentID": "USceneComponent_507",
                     "Properties": {
                         "AttachParentID": "nullptr",
                         "ComponentClass": "USceneComponent",
-                        "ComponentName": "USceneComponent_384",
+                        "ComponentName": "USceneComponent_507",
                         "ComponentOwner": "ASpotLight_506",
                         "ComponentOwnerClass": "ASpotLight",
                         "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
@@ -108,18 +108,18 @@
         },
         {
             "ActorClass": "ASkeletalActor",
-            "ActorID": "ASkeletalActor_271",
-            "ActorLabel": "OBJ_SKELETALMESH_271",
+            "ActorID": "ASkeletalActor_153",
+            "ActorLabel": "OBJ_SKELETALMESH_153",
             "ActorTickInEditor": "true",
             "Components": [
                 {
                     "ComponentClass": "USceneComponent",
-                    "ComponentID": "USceneComponent_272",
+                    "ComponentID": "USceneComponent_154",
                     "Properties": {
                         "AttachParentID": "nullptr",
                         "ComponentClass": "USceneComponent",
-                        "ComponentName": "USceneComponent_272",
-                        "ComponentOwner": "ASkeletalActor_271",
+                        "ComponentName": "USceneComponent_154",
+                        "ComponentOwner": "ASkeletalActor_153",
                         "ComponentOwnerClass": "ASkeletalActor",
                         "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
                         "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
@@ -130,14 +130,14 @@
                 },
                 {
                     "ComponentClass": "USkeletalMeshComponent",
-                    "ComponentID": "USkeletalMeshComponent_273",
+                    "ComponentID": "USkeletalMeshComponent_155",
                     "Properties": {
                         "AABB_max": "X=0.000 Y=0.000 Z=0.000",
                         "AABB_min": "X=0.000 Y=0.000 Z=0.000",
                         "AttachParentID": "nullptr",
                         "ComponentClass": "USkeletalMeshComponent",
-                        "ComponentName": "USkeletalMeshComponent_273",
-                        "ComponentOwner": "ASkeletalActor_271",
+                        "ComponentName": "USkeletalMeshComponent_155",
+                        "ComponentOwner": "ASkeletalActor_153",
                         "ComponentOwnerClass": "ASkeletalActor",
                         "RelativeLocation": "X=0.000 Y=0.000 Z=0.000",
                         "RelativeRotation": "Pitch=0.000 Yaw=0.000 Roll=0.000",
@@ -148,7 +148,7 @@
                     }
                 }
             ],
-            "RootComponentID": "USkeletalMeshComponent_273"
+            "RootComponentID": "USkeletalMeshComponent_155"
         }
     ],
     "NextUUID": 0,

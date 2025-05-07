@@ -10,13 +10,14 @@ struct FSoftSkinVertex;
 
 struct FTransform;
 
+struct FSkeletalMeshVertex;
+
 class FSkeletalMeshObjectCPUSkin
 {
 public:
     void InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData);
     void Update(USkinnedMeshComponent* InMeshComponent, float DeltaTime);
-    void SkinVertex(FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> GlobalTransforms);
-
+    void SkinVertex(const FSoftSkinVertex& InVertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> BoneGlobalTransforms, FSkeletalMeshVertex& OutVertex);
 public:
     USkinnedMeshComponent* MeshComponent;
     FSkeletalMeshRenderData* SkelMeshRenderData;

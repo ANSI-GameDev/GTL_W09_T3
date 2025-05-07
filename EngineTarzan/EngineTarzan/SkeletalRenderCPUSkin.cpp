@@ -34,36 +34,33 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent, 
     TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
     TArray<FTransform> GlobalTransforms = InMeshComponent->GetWorldSpaceTransforms();
 
-    FSkeletalMeshLODModel* SkeletalMeshData = SkeletalMesh->GetImportedModel();
+    FSkeletalMeshRenderData* SkeletalMeshRenderData = SkeletalMesh->GetRenderData();
     TArray<FSoftSkinVertex> Vertices = InMeshComponent->GetBindPoseVertices();
-    TArray<FSoftSkinVertex>& LODVertices = SkeletalMeshData->Vertices;
-    int vertex = 0;
-    for (auto& Vertex : Vertices)
+    TArray<FSkeletalMeshVertex>& RenderDataVertices = SkeletalMeshRenderData->Vertices;
+    int VertexIndex = 0;
+    for (const auto& Vertex : Vertices)
     {
-        SkinVertex(Vertex, InverseBindPose, GlobalTransforms);
-        LODVertices[vertex] = Vertex;
-        vertex += 1;
+        SkinVertex(Vertex, InverseBindPose, GlobalTransforms, RenderDataVertices[VertexIndex]);
+        VertexIndex += 1;
     }
-    FSkeletalMeshBuilder::ConvertLODModelToRenderData(*SkeletalMeshData, *SkeletalMesh->GetRenderData());
 }
 
-void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> BoneGlobalTransforms)
+void FSkeletalMeshObjectCPUSkin::SkinVertex(const FSoftSkinVertex& Vertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> BoneGlobalTransforms, FSkeletalMeshVertex& OutVertex)
 {
     FVector SkinnedPos = FVector::ZeroVector;
     FVector4 SkinnedNormal = FVector4(0,0,0,0);
     FVector SkinnedTangent = FVector::ZeroVector;
-    FVector SkinnedBiTangent = FVector::ZeroVector;
 
-    FVector& OriginalPos = Vertex.Position;
-    FVector4& OriginalNormal = Vertex.TangentZ;
-    FVector& OriginalTangent = Vertex.TangentX;
+    const FVector& OriginalPos = Vertex.Position;
+    const FVector4& OriginalNormal = Vertex.TangentZ;
+    const FVector& OriginalTangent = Vertex.TangentX;
 
     bool bHasInfluence = false;
 
     for (int i = 0; i < MAX_TOTAL_INFLUENCES; ++i)
     {
-        uint8& BoneIndex = Vertex.InfluenceBones[i];
-        float& Weight = Vertex.InfluenceWeights[i];
+        const uint8& BoneIndex = Vertex.InfluenceBones[i];
+        const float& Weight = Vertex.InfluenceWeights[i];
         if (Weight <= KINDA_SMALL_NUMBER)
         {
             continue;
@@ -81,10 +78,16 @@ void FSkeletalMeshObjectCPUSkin::SkinVertex(FSoftSkinVertex& Vertex, TArray<FMat
     
     if (bHasInfluence)
     {
-        Vertex.Position = SkinnedPos;
+        OutVertex.X = SkinnedPos.X;
+        OutVertex.Y = SkinnedPos.Y;
+        OutVertex.Z = SkinnedPos.Z;
         FVector Normal = FVector(SkinnedNormal.X, SkinnedNormal.Y, SkinnedNormal.Z).GetSafeNormal();
-        Vertex.TangentZ = FVector4(Normal, Vertex.TangentZ.W);
-        Vertex.TangentX = SkinnedTangent.GetSafeNormal();
-        Vertex.TangentY = (FVector::CrossProduct(Normal, Vertex.TangentX)) * Vertex.TangentZ.W;
+        OutVertex.NormalX = Normal.X;
+        OutVertex.NormalY = Normal.Y;
+        OutVertex.NormalZ = Normal.Z;
+        FVector Tangent = SkinnedTangent.GetSafeNormal();
+        OutVertex.TangentX = Tangent.X;
+        OutVertex.TangentY = Tangent.Y;
+        OutVertex.TangentZ = Tangent.Z;
     }
 }

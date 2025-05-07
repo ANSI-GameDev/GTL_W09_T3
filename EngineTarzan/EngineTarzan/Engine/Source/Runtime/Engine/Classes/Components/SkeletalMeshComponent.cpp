@@ -247,9 +247,10 @@ void USkeletalMeshComponent::ResetBoneTransform()
 
 void USkeletalMeshComponent::RotateBone(FMeshBoneInfo Bone, float angle)
 {
-    //ComponentSpaceTransformsArray[Bone.MyIndex].RotatePitch(angle);
-    FRotator CurRot = ComponentSpaceTransformsArray[Bone.MyIndex].GetRotation();
-    ComponentSpaceTransformsArray[Bone.MyIndex].SetRotation(FRotator(CurRot.Pitch, CurRot.Yaw + angle, CurRot.Roll));
+    //ComponentSpaceTransformsArray[Bone.MyIndex].Translate(FVector(0, 0, -angle));
+    ComponentSpaceTransformsArray[Bone.MyIndex].RotatePitch(angle);
+    //FRotator CurRot = ComponentSpaceTransformsArray[Bone.MyIndex].GetRotation();
+    //ComponentSpaceTransformsArray[Bone.MyIndex].SetRotation(FRotator(CurRot.Pitch, CurRot.Yaw + angle, CurRot.Roll));
     const TArray<FMeshBoneInfo> Bones = SkeletalMesh->GetRefSkeleton().GetBoneInfo();
 
     const int32 ParentIndex = Bones[Bone.MyIndex].ParentIndex;
