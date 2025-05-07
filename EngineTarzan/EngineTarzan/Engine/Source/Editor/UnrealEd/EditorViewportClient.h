@@ -186,7 +186,7 @@ public:
     bool GetIsOnRBMouseClick() const { return bRightMouseDown; }
 
     // Flag Test Code
-    static void SetOthoSize(float InValue);
+    static void SetOrthoSize(float InValue);
 
 protected: // Input
     POINT PrevMousePos;

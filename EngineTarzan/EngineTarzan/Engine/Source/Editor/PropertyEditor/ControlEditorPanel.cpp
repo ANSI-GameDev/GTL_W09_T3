@@ -35,13 +35,16 @@
 #include "Actors/SphereActor.h"
 #include "Actors/CapsuleActor.h"
 #include "Actors/SkeletalActor.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Contents/Actors/Fish.h"
 #include "Contents/Actors/ItemActor.h"
 #include "Contents/Actors/PlatformActor.h"
 #include "Contents/Actors/GoalPlatformActor.h"
 #include "Contents/Actors/TriggerBox.h"
+#include "Engine/SkeletalMesh.h"
 #include "Renderer/CompositingPass.h"
+#include "UnrealEd/FbxImporter.h"
 
 void ControlEditorPanel::Render()
 {
@@ -79,7 +82,13 @@ void ControlEditorPanel::Render()
     CreateFlagButton();
     ImGui::SameLine();
     CreateModifyButton(IconSize, IconFont);
-    ImGui::SameLine();
+    
+    if (GEngine->ActiveWorld->WorldType != EWorldType::PIE)
+    {
+        ImGui::SameLine();
+        CreateViewerButton(IconSize, IconFont);
+    }
+    
     ImGui::SameLine();
     CreateLightSpawnButton(IconSize, IconFont);
     ImGui::SameLine();
@@ -458,8 +467,18 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     SpawnedActor->SetActorLabel(TEXT("OBJ_TRIGGERBOX"));
                     break;
                 case OBJ_SKELETALMESH:
-                    SpawnedActor = World->SpawnActor<ASkeletalActor>();
-                    SpawnedActor->SetActorLabel(TEXT("OBJ_SKELETALMESH"));
+                    {
+                        ASkeletalActor* skeletalActor = World->SpawnActor<ASkeletalActor>();
+                        SpawnedActor = skeletalActor;
+                    
+                        USkeletalMeshComponent* skeletalMeshComp = skeletalActor->GetSkeletalMeshComponent();
+
+                        USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
+                        skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+                        FFbxImporter::ParseSkeletalMeshLODModel(TEXT("Contents/FBX/nathan3.fbx"), *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
+                        skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
+                        SpawnedActor->SetActorLabel(TEXT("OBJ_SKELETALMESH"));
+                    }
                     break;
                 case OBJ_CAMERA:
                 case OBJ_PLAYER:
@@ -479,6 +498,17 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
     }
 }
 
+void ControlEditorPanel::CreateViewerButton(const ImVec2 ButtonSize, ImFont* IconFont)
+{
+    ImGui::PushFont(IconFont);
+    if (ImGui::Button("\ue999", ButtonSize))
+    {
+        FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
+        SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+        LevelEd->SetSkeletalMeshViewportClient(!LevelEd->IsSkeletalMeshViewMode());
+    }
+    ImGui::PopFont();
+}
 void ControlEditorPanel::CreateFlagButton()
 {
     const std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();

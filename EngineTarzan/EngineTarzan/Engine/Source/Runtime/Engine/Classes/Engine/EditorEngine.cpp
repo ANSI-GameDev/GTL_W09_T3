@@ -4,11 +4,16 @@
 #include "Level.h"
 #include "Actors/Cube.h"
 #include "Actors/DirectionalLightActor.h"
+#include "Actors/SkeletalActor.h"
+#include "BaseGizmos/TransformGizmo.h"
 #include "GameFramework/Actor.h"
 #include "Classes/Engine/AssetManager.h"
 #include "Components/Light/DirectionalLightComponent.h"
 #include "LevelEditor/SLevelEditor.h"
+#include "UnrealEd/EditorViewportClient.h"
 #include "UObject/UObjectIterator.h"
+
+class ASkeletalActor;
 
 namespace PrivateEditorSelection
 {
@@ -190,22 +195,23 @@ void UEditorEngine::OpenSkeletalMeshViewer()
     
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
-    Handler->OnStaticMeshViewerStartDelegate.Broadcast();
+    Handler->OnSkeletalMeshViewerStartDelegate.Broadcast();
 
     StaticMeshViewerWorld = UWorld::CreateWorld(this, EWorldType::SkeletalMeshViewer, FString("StaticMeshViwerWorld"));
-    // TODO : 일단 Test용 액터 스폰
-    StaticMeshViewerWorld->SpawnActor<ACube>();
+    StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
     
-    ADirectionalLight* dirLight = StaticMeshViewerWorld->SpawnActor<ADirectionalLight>();
+    ActiveWorld = StaticMeshViewerWorld;
+
+    ASkeletalActor* actor = ActiveWorld->SpawnActor<ASkeletalActor>();
+    actor->SetActorLocation(FVector(0, 0, 0));
+    actor->SetActorRotation(FRotator(0, 0, 0));
+    
+    ADirectionalLight* dirLight = ActiveWorld->SpawnActor<ADirectionalLight>();
     dirLight->SetActorRotation(FRotator(30, 0, 0));
     
-
     FWorldContext& ViwerWorldContext = CreateNewWorldContext(EWorldType::SkeletalMeshViewer);
-
-    StaticMeshViewerWorld->WorldType = EWorldType::SkeletalMeshViewer;
-
-    ViwerWorldContext.SetCurrentWorld(StaticMeshViewerWorld);
-    ActiveWorld = StaticMeshViewerWorld;
+    
+    ViwerWorldContext.SetCurrentWorld(ActiveWorld);
 }
 
 void UEditorEngine::CloseSkeletalMeshViewer()
@@ -225,7 +231,7 @@ void UEditorEngine::CloseSkeletalMeshViewer()
 
     FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
-    Handler->OnStaticMeshViewerEndDelegate.Broadcast();
+    Handler->OnSkeletalMeshViewerEndDelegate.Broadcast();
     // 다시 EditorWorld로 돌아옴.
     ActiveWorld = EditorWorld;
 }
@@ -307,10 +313,50 @@ void UEditorEngine::NewLevel()
 
 void UEditorEngine::SelectComponent(USceneComponent* InComponent) const
 {
-    if (InComponent && CanSelectComponent(InComponent))
+    if (!InComponent || !CanSelectComponent(InComponent))
     {
-        PrivateEditorSelection::GComponentSelected = InComponent;
+        return;
     }
+
+    // 현재 선택 컴포넌트 저장
+    PrivateEditorSelection::GComponentSelected = InComponent;
+
+    // 로컬 좌표 모드인지 체크
+    const bool bUseLocal = (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL) || (EditorPlayer->GetControlMode() == EControlMode::CM_SCALE);
+
+    // gizmo 위치·회전 갱신 람다
+    auto UpdateActor = [&](AActor* Gizmo)
+    {
+        if (!Gizmo) return;
+        Gizmo->SetActorLocation(InComponent->GetWorldLocation());
+        Gizmo->SetActorRotation(
+            bUseLocal 
+                ? InComponent->GetWorldRotation() 
+                : FRotator::ZeroRotator
+        );
+    };
+
+    // 여러 뷰포트 지원
+    SLevelEditor* LevelEditor = GEngineLoop.GetLevelEditor();
+    if (LevelEditor->IsMultiViewport())
+    {
+        auto* Viewports = LevelEditor->GetViewports();
+        constexpr size_t NumViewports = sizeof(Viewports) / sizeof(Viewports[0]);
+        for (int i = 0; i < NumViewports; ++i)
+        {
+            if (const std::shared_ptr<FEditorViewportClient> EditorViewportClient = Viewports[i])
+            {
+                UpdateActor(EditorViewportClient->GetGizmoActor());
+            }
+        }
+    }
+    else
+    {
+        if (const std::shared_ptr<FEditorViewportClient> EditorViewportClient = LevelEditor->GetActiveViewportClient())
+        {
+            UpdateActor(EditorViewportClient->GetGizmoActor());
+        }
+    } 
 }
 
 void UEditorEngine::DeselectComponent(USceneComponent* InComponent)

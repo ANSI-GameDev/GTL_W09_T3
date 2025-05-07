@@ -112,7 +112,7 @@ void FGizmoRenderPass::PrepareRenderState() const
 }
 
 void FGizmoRenderPass::PrepareRenderArr()
-{
+{ 
 }
 
 void FGizmoRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)

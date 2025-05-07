@@ -11,9 +11,7 @@ class USkeletalMeshComponent :public USkinnedMeshComponent
 public:
     USkeletalMeshComponent();
     void TickComponent(float DeltaTime) override;
-
-    USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
-
+    
     void ResetBoneTransform();
 
     void RotateBone(FMeshBoneInfo Bone, float angle);

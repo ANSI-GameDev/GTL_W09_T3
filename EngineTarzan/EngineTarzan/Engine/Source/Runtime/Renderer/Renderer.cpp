@@ -299,6 +299,8 @@ void FRenderer::PrepareSkeletalViewerRenderPass() const
     UpdateLightBufferPass->PrepareRenderArr();
     TileLightCullingPass->PrepareRenderArr();
     DepthPrePass->PrepareRenderArr();
+    SkeletalMeshRenderPass->PrepareRenderArr();
+    EditorRenderPass->PrepareRenderArr();
 }
 
 void FRenderer::BeginRender(const std::shared_ptr<FEditorViewportClient>& Viewport)
@@ -486,6 +488,11 @@ void FRenderer::RenderEditorOverlay(const std::shared_ptr<FEditorViewportClient>
     
     if (GEngine->ActiveWorld->WorldType != EWorldType::Editor)
     {
+        if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalMeshViewer)
+        {
+            LineRenderPass->Render(Viewport); // 기존 뎁스를 그대로 사용하지만 뎁스를 클리어하지는 않음
+            GizmoRenderPass->Render(Viewport); // 기존 뎁스를 SRV로 전달해서 샘플 후 비교하기 위해 기즈모 전용 DSV 사용
+        }
         return;
     }
     

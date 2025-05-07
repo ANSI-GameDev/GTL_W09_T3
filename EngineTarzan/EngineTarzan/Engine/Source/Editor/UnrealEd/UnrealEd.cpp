@@ -24,6 +24,8 @@ void UnrealEd::Initialize()
 
     auto SkeletalMeshViewerControlPanel = std::make_shared<USkeletalMeshViewerControlPanel>();
     Panels["SkeletalMeshViewerControlPanel"] = SkeletalMeshViewerControlPanel;
+
+    SkeletalMeshViewerControlPanel->Initialize(SkeletalMeshViewerPanel);
 }
 
 void UnrealEd::Render() const
@@ -33,6 +35,12 @@ void UnrealEd::Render() const
         Panels["ControlPanel"]->Render();
         Panels["OutlinerPanel"]->Render();
         Panels["PropertyPanel"]->Render();
+        const std::shared_ptr<USkeletalMeshViewerPanel> skeletalmeshViewer = std::dynamic_pointer_cast<USkeletalMeshViewerPanel>(Panels["SkeletalMeshViewerPanel"]);
+        if (skeletalmeshViewer != nullptr)
+        {
+            skeletalmeshViewer->SetSkeletalActor(nullptr);
+            skeletalmeshViewer->SetSkeleton(nullptr);
+        }
     }
     else if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalMeshViewer)
     {

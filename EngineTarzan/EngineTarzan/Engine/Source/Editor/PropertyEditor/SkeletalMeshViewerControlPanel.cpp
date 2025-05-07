@@ -1,10 +1,18 @@
 #include "SkeletalMeshViewerControlPanel.h"
 
 #include "SkeletalMeshViewerPanel.h"
+#include "Actors/SkeletalActor.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Container/String.h"
+#include "Engine/AssetManager.h"
+#include "Engine/EditorEngine.h"
+#include "Engine/SkeletalMesh.h"
 #include "ImGUI/imgui.h"
 #include "LevelEditor/SLevelEditor.h"
+#include "Rendering/SkeletalMeshLODModel.h"
 #include "tinyfiledialogs/tinyfiledialogs.h"
+#include "UnrealEd/EditorViewportClient.h"
+#include "UnrealEd/FbxImporter.h"
 #include "UObject/Casts.h"
 
 USkeletalMeshViewerControlPanel::USkeletalMeshViewerControlPanel()
@@ -13,6 +21,11 @@ USkeletalMeshViewerControlPanel::USkeletalMeshViewerControlPanel()
 
 USkeletalMeshViewerControlPanel::~USkeletalMeshViewerControlPanel()
 {
+}
+
+void USkeletalMeshViewerControlPanel::Initialize(const std::shared_ptr<USkeletalMeshViewerPanel>& InSkeletalMeshViewerPanel)
+{
+    SkeletalMeshViewerPanel = InSkeletalMeshViewerPanel;
 }
 
 void USkeletalMeshViewerControlPanel::Render()
@@ -49,36 +62,72 @@ void USkeletalMeshViewerControlPanel::Render()
     /* Load SkeletalMesh via native file dialog */
     if (ImGui::Button("Load SkeletalMesh...", IconSize))
     {
-        // // 파일 오픈 윈도우
-        // const char* filterPatterns[] = { "*.fbx" };
-        // const char* FilePath = tinyfd_openFileDialog(
-        //     "Open SkeletalMesh Asset", // dialog title
-        //     "",                        // initial path
-        //     1, filterPatterns,          // filter patterns
-        //     "fbx Files",     // filter description
-        //     0                           // single selection
-        // );
-        // if (!FilePath)
-        // {
-        //     tinyfd_messageBox("Error", "파일을 불러올 수 없습니다.", "ok", "error", 1);
-        //     ImGui::End();
-        //     return;
-        // }
-        //
-        // // 파일 경로 조정
-        // // Full path to asset path conversion
-        // FString AssetPath = FilePath;
-        // AssetPath = FPaths::ConvertRelativePathToFull(AssetPath);
-        // FString ContentDir = FPaths::ProjectContentDir();
-        // AssetPath = AssetPath.Replace(*ContentDir, TEXT("/Game/"));
-        // AssetPath = AssetPath.Replace(TEXT(".fbx"), TEXT(""));
-        //
-        // // SkeletalMesh Load 및 ViewPanel에 지정
-        // USkeletalMesh* LoadedMesh = Cast<USkeletalMesh>(StaticLoadObject(USkeletalMesh::StaticClass(), nullptr, *AssetPath));
-        // if (LoadedMesh && SkeletalMeshViewerPanel)
-        // {
-        //     SkeletalMeshViewerPanel->SetSkeleton();
-        // }
+        // 파일 오픈 윈도우
+        const char* filterPatterns[] = { "*.fbx" };
+        const char* FilePath = tinyfd_openFileDialog(
+            "Open SkeletalMesh Asset", // dialog title
+            "",                        // initial path
+            1, filterPatterns,          // filter patterns
+            "fbx Files",     // filter description
+            0                           // single selection
+        );
+        if (!FilePath)
+        {
+            tinyfd_messageBox("Error", "파일을 불러올 수 없습니다.", "ok", "error", 1);
+            ImGui::End();
+            return;
+        }
+
+        if (GEngine->ActiveWorld->WorldType != EWorldType::SkeletalMeshViewer)
+        {
+            SkeletalMeshViewerPanel->SetSkeleton(nullptr);
+            SkeletalMeshViewerPanel->SetSkeletalActor(nullptr);
+            return;
+        }
+
+        if (SkeletalMeshViewerPanel->GetSkeletalActor() == nullptr)
+        {
+            for (AActor* Actor : GEngine->ActiveWorld->GetActiveLevel()->Actors)
+            {
+                if (ASkeletalActor* skeletalActor = Cast<ASkeletalActor>(Actor))
+                {
+                    SkeletalMeshViewerPanel->SetSkeletalActor(skeletalActor);
+                    continue;
+                }
+            }
+        }
+        
+        USkeletalMeshComponent* skeletalMeshComp = SkeletalMeshViewerPanel->GetSkeletalActor()->GetSkeletalMeshComponent();
+
+        USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
+        skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+
+        FFbxImporter::ParseSkeletalMeshLODModel(FilePath, *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
+        
+        skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
+        
+        SkeletalMeshViewerPanel->SetSkeleton(&skeletalMesh->RefSkeleton);
+    }
+    
+    ImGui::SameLine();
+
+    ImGui::PushFont(IconFont);
+    if (ImGui::Button("\ue9c4", IconSize)) // Slider
+    {
+        ImGui::OpenPopup("SliderControl");
+    }
+    ImGui::PopFont();
+
+    if (ImGui::BeginPopup("SliderControl"))
+    {
+        ImGui::Text("Camera Speed");
+        CameraSpeed = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetCameraSpeedScalar();
+        ImGui::SetNextItemWidth(120.0f);
+        if (ImGui::DragFloat("##CamSpeed", &CameraSpeed, 0.01f, 0.198f, 192.0f, "%.2f"))
+        {
+            GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->SetCameraSpeed(CameraSpeed);
+        }
+        ImGui::EndPopup();
     }
 
     // Close 버튼 추가: 클릭 시 패널 숨김 처리
@@ -89,7 +138,6 @@ void USkeletalMeshViewerControlPanel::Render()
         SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
         LevelEd->SetSkeletalMeshViewportClient(false);
     }
-
     
     ImGui::End();
 }

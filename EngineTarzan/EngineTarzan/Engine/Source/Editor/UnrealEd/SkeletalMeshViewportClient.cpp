@@ -32,16 +32,7 @@ UWorld* FSkeletalMeshViewportClient::GetWorld() const
 
 void FSkeletalMeshViewportClient::Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect)
 {
-    ViewportIndex = static_cast<int32>(InViewportIndex);
-    
-    PerspectiveCamera.SetLocation(FVector(-10.0f, 0.f, 0.0f));
-    PerspectiveCamera.SetRotation(FRotator(0, 0.f, 0.f));
-    
-    Viewport = new FViewport(InViewportIndex);
-    Viewport->Initialize(InRect);
-
-    GizmoActor = FObjectFactory::ConstructObject<ATransformGizmo>(GEngine); // TODO : EditorEngine 외의 다른 Engine 형태가 추가되면 GEngine 대신 다른 방식으로 넣어주어야 함.
-    GizmoActor->Initialize(this);
+    FEditorViewportClient::Initialize(InViewportIndex, InRect);
 }
 
 void FSkeletalMeshViewportClient::Tick(float DeltaTime)
