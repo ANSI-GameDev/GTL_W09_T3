@@ -1,5 +1,6 @@
 #pragma once
 #include "Components/MeshComponent.h"
+#include "Rendering/SkeletalMeshLODModel.h"
 
 class USkeletalMeshAsset;
 class FSkeletalMeshObjectCPUSkin;
@@ -14,12 +15,29 @@ public:
 
     const TArray<FTransform>& GetComponentSpaceTransforms() const;
 
+    FTransform GetBoneLocalTransform(int InBoneIndex) const;
+    void SetBoneLocalTransform(int InBoneIndex, const FTransform& InTransform);
+
+    FTransform GetBoneWorldTransform(int InBoneIndex) const;
+    void SetBoneWorldTransform(int InBoneIndex, const FTransform& InTransform);
+    
+    const TArray<FTransform>& GetWorldSpaceTransforms() const;
+
+    virtual USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
+    void SetSkeletalMesh(USkeletalMesh* InSkeletalMesh);
+
+    const TArray<FSoftSkinVertex> GetBindPoseVertices() const { return BindPoseVertices; }
+
+    void UpdateChildBoneGlobalTransform(int32 ParentIndex);
 protected:
     FSkeletalMeshObjectCPUSkin* MeshObject;
     /** 매 프레임 변경되는 Runtime Bone Transform - 렌더 스레드 별도일 때의 Size=2 */
     TArray<FTransform> ComponentSpaceTransformsArray; 
+    TArray<FTransform> WorldSpaceTransformArray;
 
     USkeletalMeshAsset* SkeletalMesh = nullptr;
+
+    TArray<FSoftSkinVertex> BindPoseVertices;
 
 
 protected:

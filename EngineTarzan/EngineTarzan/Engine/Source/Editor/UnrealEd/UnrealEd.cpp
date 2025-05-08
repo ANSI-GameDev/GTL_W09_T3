@@ -25,7 +25,6 @@ void UnrealEd::Initialize()
     auto SkeletalMeshViewerControlPanel = std::make_shared<USkeletalMeshViewerControlPanel>();
     Panels["SkeletalMeshViewerControlPanel"] = SkeletalMeshViewerControlPanel;
 
-    SkeletalMeshViewerControlPanel->Initialize(SkeletalMeshViewerPanel);
 }
 
 void UnrealEd::Render() const

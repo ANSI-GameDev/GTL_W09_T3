@@ -4,7 +4,6 @@
 #include "GizmoCircleComponent.h"
 #include "Actors/Player.h"
 #include "GizmoRectangleComponent.h"
-#include "Engine/EditorEngine.h"
 #include "World/World.h"
 #include "Engine/FObjLoader.h"
 
@@ -84,50 +83,6 @@ ATransformGizmo::ATransformGizmo()
 void ATransformGizmo::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
-    // Editor 모드에서만 Tick.
-    if (GEngine->ActiveWorld->WorldType != EWorldType::Editor && GEngine->ActiveWorld->WorldType != EWorldType::SkeletalMeshViewer)
-    {
-        return;
-    }
-
-    UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
-    if (!Engine)
-    {
-        return;
-    }
-    UEditorPlayer* EditorPlayer = Engine->GetEditorPlayer();
-    if (!EditorPlayer)
-    {
-        return;
-    }
-    
-    USceneComponent* SelectedComponent = Engine->GetSelectedComponent();
-    AActor* SelectedActor = Engine->GetSelectedActor();
-
-    USceneComponent* TargetComponent = nullptr;
-
-    if (SelectedComponent != nullptr)
-    {
-        TargetComponent = SelectedComponent;
-    }
-    else if (SelectedActor != nullptr)
-    {
-        TargetComponent = SelectedActor->GetRootComponent();
-    }
-
-    if (TargetComponent)
-    {
-        SetActorLocation(TargetComponent->GetWorldLocation());
-        if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
-        {
-            SetActorRotation(TargetComponent->GetWorldRotation());
-        }
-        else
-        {
-            SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
-        }
-    }
 }
 
 void ATransformGizmo::Initialize(FEditorViewportClient* InViewport)

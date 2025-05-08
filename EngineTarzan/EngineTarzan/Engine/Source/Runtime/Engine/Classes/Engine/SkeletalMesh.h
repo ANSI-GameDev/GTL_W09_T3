@@ -43,7 +43,15 @@ public:
     void Initialize();
 
     void SetImportedModel(const std::shared_ptr<FSkeletalMeshLODModel>& InModel);
+    void SetSkeletalMeshRenderData(FSkeletalMeshRenderData* InRenderData);
+    void SetRefSkeleton(const FReferenceSkeleton& InRefSkeleton);
 
+    FSkeletalMeshRenderData* GetRenderData() const;
+    FSkeletalMeshLODModel* GetImportedModel() const;
+    const FReferenceSkeleton& GetRefSkeleton() const;
+
+    TArray<FStaticMaterial*>& GetMaterials() { return Materials; }
+    FSkeletalMeshRenderData* GetSkeletalMeshRenderData() { return SkelMeshRenderData; }
     std::shared_ptr<FSkeletalMeshRenderData> GetSkeletalMeshRenderData() const;
     
     std::shared_ptr<FSkeletalAssetData> AssetData;
@@ -56,5 +64,9 @@ public:
     
     /** 계층구조, Bone Info 및 Transform 배열 저장 */
     FReferenceSkeleton RefSkeleton;
+
+private:
+    // TODO: Skeletal 전용 Material이 나온다면 변경 필요 
+    TArray<FStaticMaterial*> Materials;
 };
 

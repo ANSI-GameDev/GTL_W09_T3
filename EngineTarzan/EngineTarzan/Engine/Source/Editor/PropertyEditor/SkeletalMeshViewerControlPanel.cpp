@@ -1,13 +1,19 @@
 #include "SkeletalMeshViewerControlPanel.h"
 
 #include "SkeletalMeshViewerPanel.h"
+#include "Actors/SkeletalActor.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Container/String.h"
+#include "Engine/AssetManager.h"
+#include "Engine/EditorEngine.h"
 #include "Engine/SkeletalMesh.h"
 #include "ImGUI/imgui.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "Rendering/SkeletalMeshLODModel.h"
 #include "tinyfiledialogs/tinyfiledialogs.h"
+#include "UnrealEd/EditorViewportClient.h"
 #include "UnrealEd/FbxImporter.h"
+#include "UnrealEd/SkeletalMeshViewportClient.h"
 #include "UObject/Casts.h"
 
 USkeletalMeshViewerControlPanel::USkeletalMeshViewerControlPanel()
@@ -18,13 +24,11 @@ USkeletalMeshViewerControlPanel::~USkeletalMeshViewerControlPanel()
 {
 }
 
-void USkeletalMeshViewerControlPanel::Initialize(const std::shared_ptr<USkeletalMeshViewerPanel>& InSkeletalMeshViewerPanel)
-{
-    SkeletalMeshViewerPanel = InSkeletalMeshViewerPanel;
-}
-
 void USkeletalMeshViewerControlPanel::Render()
 {
+    SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
+    std::shared_ptr<FSkeletalMeshViewportClient> SkeletalMeshViewportClient = LevelEd->GetSkeletalMeshViewportClient();
+    
     /* Pre Setup */
     const ImGuiIO& IO = ImGui::GetIO();
     ImFont* IconFont = IO.Fonts->Fonts[FEATHER_FONT];
@@ -73,12 +77,42 @@ void USkeletalMeshViewerControlPanel::Render()
             return;
         }  
 
-        FSkeletalMeshLODModel TestSkMeshModel;
-        FReferenceSkeleton* TestSkeleton = new FReferenceSkeleton();
-        // TODO : 파일 로드 로직
-        FFbxImporter::ParseSkeletalMeshLODModel(FilePath, TestSkMeshModel, TestSkeleton);
+        if (GEngine->ActiveWorld->WorldType != EWorldType::SkeletalMeshViewer)
+        {
+            SkeletalMeshViewportClient->SetSkeletalActor(nullptr);
+            SkeletalMeshViewportClient->SetSelectedBoneIndex(INDEX_NONE);
+            return;
+        }
+        
+        USkeletalMeshComponent* skeletalMeshComp = SkeletalMeshViewportClient->GetSkeletalActor()->GetSkeletalMeshComponent();
 
-        SkeletalMeshViewerPanel->SetSkeleton(TestSkeleton);
+        USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
+        skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+
+        FFbxImporter::ParseSkeletalMeshLODModel(FilePath, *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
+        
+        skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
+    }
+    
+    ImGui::SameLine();
+
+    ImGui::PushFont(IconFont);
+    if (ImGui::Button("\ue9c4", IconSize)) // Slider
+    {
+        ImGui::OpenPopup("SliderControl");
+    }
+    ImGui::PopFont();
+
+    if (ImGui::BeginPopup("SliderControl"))
+    {
+        ImGui::Text("Camera Speed");
+        CameraSpeed = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetCameraSpeedScalar();
+        ImGui::SetNextItemWidth(120.0f);
+        if (ImGui::DragFloat("##CamSpeed", &CameraSpeed, 0.01f, 0.198f, 192.0f, "%.2f"))
+        {
+            GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->SetCameraSpeed(CameraSpeed);
+        }
+        ImGui::EndPopup();
     }
 
     // Close 버튼 추가: 클릭 시 패널 숨김 처리

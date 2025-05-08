@@ -450,8 +450,6 @@ inline bool FVector::IsZero() const
     return X==0.f && Y==0.f && Z==0.f;
 }
 
-
-
 inline FArchive& operator<<(FArchive& Ar, FVector2D& V)
 {
     return Ar << V.X << V.Y;

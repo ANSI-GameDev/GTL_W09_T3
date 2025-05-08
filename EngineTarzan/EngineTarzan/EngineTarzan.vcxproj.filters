@@ -819,11 +819,6 @@
     <ClCompile Include="Engine\Source\Runtime\Core\Math\MathUtility.cpp" />
     <ClCompile Include="Engine\Source\Contents\Objects\DamageCameraShake.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Camera\PerlinNoiseCameraShakePattern.cpp" />
-    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Engine\SkeletalMesh.cpp" />
-    <ClCompile Include="SkinnedMeshComponent.cpp" />
-    <ClCompile Include="SkeletalMeshCompnent.cpp" />
-    <ClCompile Include="FbxImporter.cpp" />
-    <ClCompile Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineTarzan.natvis" />
@@ -944,11 +939,6 @@
     <ClInclude Include="Engine\Source\Contents\Actors\TriggerBox.h" />
     <ClInclude Include="Engine\Source\Contents\Objects\DamageCameraShake.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Camera\PerlinNoiseCameraShakePattern.h" />
-    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\SkeletalMesh.h" />
-    <ClInclude Include="SkinnedMeshComponent.h" />
-    <ClInclude Include="SkeletalMeshCompnent.h" />
-    <ClInclude Include="FbxImporter.h" />
-    <ClInclude Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\SlateShader.hlsl" />

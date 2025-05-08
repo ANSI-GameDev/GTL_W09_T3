@@ -252,20 +252,13 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
         case 'M':
         {
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
-            
+
             if (Engine->ActiveWorld->WorldType != EWorldType::Editor) return;
-                
+
             FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
             SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
             LevelEd->SetEnableMultiViewport(!LevelEd->IsMultiViewport());
             break;
-        }
-        // TODO : 나중에 UI 버튼으로 빼기
-        case 'P':
-        {
-            FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
-            SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
-            LevelEd->SetSkeletalMeshViewportClient(!LevelEd->IsSkeletalMeshViewMode());
         }
         default:
             break;
@@ -742,7 +735,7 @@ auto FEditorViewportClient::WriteIniFile(const FString& FilePath, const TMap<FSt
 
 void FEditorViewportClient::SetCameraSpeed(const float InValue)
 {
-    CameraSpeed = FMath::Clamp(InValue, 0.1f, 200.0f);
+    CameraSpeed = FMath::Clamp(InValue, 0.01f, 200.0f);
 }
 
 void FEditorViewportClient::SetupRawMouseInputHandler()
@@ -810,8 +803,7 @@ void FEditorViewportClient::HandleGizmoControl(const FPointerEvent& InMouseEvent
         }
 
         // 카메라 정보
-        const FViewportCamera& Cam = (GetViewportType() == LVT_Perspective)
-            ? PerspectiveCamera : OrthogonalCamera;
+        const FViewportCamera& Cam = (GetViewportType() == LVT_Perspective) ? PerspectiveCamera : OrthogonalCamera;
 
         // 스크린 → 월드 레이
         FVector RayOrigin, RayDir;
@@ -897,6 +889,12 @@ void FEditorViewportClient::HandleGizmoControl(const FPointerEvent& InMouseEvent
         TargetComp->SetWorldLocation(NewLoc);
         TargetComp->SetWorldRotation(NewQuat.Rotator());
         TargetComp->SetWorldScale3D(NewScale);
+
+        // → 여기에 추가: 기즈모 액터도 따라오게
+        if (AActor* GizmoActor = Gizmo->GetOwner())
+        {
+            GizmoActor->SetActorLocation(NewLoc);
+        }
     }
 }
 

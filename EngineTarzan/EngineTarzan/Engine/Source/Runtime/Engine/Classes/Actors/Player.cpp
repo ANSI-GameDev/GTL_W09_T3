@@ -87,11 +87,6 @@ void UEditorPlayer::Initialize()
             }
         }
     }));
-
-    InputDelegatesHandles.Add(Handler->OnRawMouseInputDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
-    {
-        
-    }));
 }
 
 void UEditorPlayer::ProcessGizmoIntersection(UStaticMeshComponent* Component, const FVector& PickPosition, FEditorViewportClient* InActiveViewport, bool& bIsPickedGizmo)

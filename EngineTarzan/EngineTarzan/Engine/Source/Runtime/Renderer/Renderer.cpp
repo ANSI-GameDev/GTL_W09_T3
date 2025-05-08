@@ -36,6 +36,8 @@
 #include "Stats/GPUTimingManager.h"
 #include "UnrealEd/SkeletalMeshViewportClient.h"
 
+#include "SkeletalMeshRenderPass.h"
+
 //------------------------------------------------------------------------------
 // 초기화 및 해제 관련 함수
 //------------------------------------------------------------------------------
@@ -70,6 +72,10 @@ void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBuf
     PostProcessCompositingPass = new FPostProcessCompositingPass();
     SlateRenderPass = new FSlateRenderPass();
 
+    SkeletalMeshRenderPass = new FSkeletalMeshRenderPass();
+
+    DepthPrePass->InitializeSkeletalRenderPass(SkeletalMeshRenderPass);
+
     if (false == ShadowManager->Initialize(Graphics, BufferManager))
     {
         static_assert(true, "ShadowManager Initialize Failed");
@@ -96,6 +102,9 @@ void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBuf
     PostProcessCompositingPass->Initialize(BufferManager, Graphics, ShaderManager);
     
     SlateRenderPass->Initialize(BufferManager, Graphics, ShaderManager);
+
+    SkeletalMeshRenderPass->Initialize(BufferManager, Graphics, ShaderManager);
+    SkeletalMeshRenderPass->InitializeShadowManager(ShadowManager);
 }
 
 void FRenderer::Release()
@@ -115,6 +124,7 @@ void FRenderer::Release()
     delete CompositingPass;
     delete PostProcessCompositingPass;
     delete SlateRenderPass;
+    delete SkeletalMeshRenderPass;
 }
 
 //------------------------------------------------------------------------------
@@ -239,6 +249,7 @@ void FRenderer::PrepareAllRenderPass() const
     EditorRenderPass->PrepareRenderArr();
     TileLightCullingPass->PrepareRenderArr();
     DepthPrePass->PrepareRenderArr();
+    SkeletalMeshRenderPass->PrepareRenderArr();
 }
 
 void FRenderer::ClearRenderArr() const
@@ -253,6 +264,7 @@ void FRenderer::ClearRenderArr() const
     EditorRenderPass->ClearRenderArr();
     DepthPrePass->ClearRenderArr();
     TileLightCullingPass->ClearRenderArr();
+    SkeletalMeshRenderPass->ClearRenderArr();
 }
 
 void FRenderer::UpdateCommonBuffer(const std::shared_ptr<FEditorViewportClient>& Viewport) const
@@ -287,6 +299,8 @@ void FRenderer::PrepareSkeletalViewerRenderPass() const
     UpdateLightBufferPass->PrepareRenderArr();
     TileLightCullingPass->PrepareRenderArr();
     DepthPrePass->PrepareRenderArr();
+    SkeletalMeshRenderPass->PrepareRenderArr();
+    EditorRenderPass->PrepareRenderArr();
 }
 
 void FRenderer::BeginRender(const std::shared_ptr<FEditorViewportClient>& Viewport)
@@ -404,6 +418,14 @@ void FRenderer::RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& V
             QUICK_GPU_SCOPE_CYCLE_COUNTER(UpdateLightBufferPass_GPU, *GPUTimingManager)
             UpdateLightBufferPass->Render(Viewport);
         }
+        if (ShowFlag & EEngineShowFlags::SF_SkeletalMesh)
+        {
+            {
+                QUICK_SCOPE_CYCLE_COUNTER(SkeletalMeshPass_CPU)
+                    QUICK_GPU_SCOPE_CYCLE_COUNTER(SkeletalMeshPass_GPU, *GPUTimingManager)
+                    SkeletalMeshRenderPass->Render(Viewport);
+            }
+        }
         {
             QUICK_SCOPE_CYCLE_COUNTER(StaticMeshPass_CPU)
             QUICK_GPU_SCOPE_CYCLE_COUNTER(StaticMeshPass_GPU, *GPUTimingManager)
@@ -471,8 +493,7 @@ void FRenderer::RenderEditorOverlay(const std::shared_ptr<FEditorViewportClient>
     {
         if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalMeshViewer)
         {
-            QUICK_SCOPE_CYCLE_COUNTER(GizmoPass_CPU)
-            QUICK_GPU_SCOPE_CYCLE_COUNTER(GizmoPass_GPU, *GPUTimingManager)
+            LineRenderPass->Render(Viewport); // 기존 뎁스를 그대로 사용하지만 뎁스를 클리어하지는 않음
             GizmoRenderPass->Render(Viewport); // 기존 뎁스를 SRV로 전달해서 샘플 후 비교하기 위해 기즈모 전용 DSV 사용
         }
         return;
