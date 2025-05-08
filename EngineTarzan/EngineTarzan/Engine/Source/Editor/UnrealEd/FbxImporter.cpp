@@ -166,7 +166,7 @@ void FFbxImporter::ConvertSceneToUnreal(FbxScene* Scene)
 }
 
 // --- 추후 구현 예정 ---
-USkeletalMesh* FFbxImporter::ImportSkeletalMesh(const FString& InFilePath)
+USkeletalMeshAsset* FFbxImporter::ImportSkeletalMesh(const FString& InFilePath)
 {
     UE_LOG(LogLevel::Warning, TEXT("ImportSkeletalMesh not yet implemented for %s"), *InFilePath);
     return nullptr;

@@ -43,16 +43,14 @@ public:
     void Initialize();
 
     void SetImportedModel(const std::shared_ptr<FSkeletalMeshLODModel>& InModel);
-    void SetSkeletalMeshRenderData(FSkeletalMeshRenderData* InRenderData);
+    void SetSkeletalMeshRenderData(std::shared_ptr<FSkeletalMeshRenderData> InRenderData);
     void SetRefSkeleton(const FReferenceSkeleton& InRefSkeleton);
-
-    FSkeletalMeshRenderData* GetRenderData() const;
-    FSkeletalMeshLODModel* GetImportedModel() const;
+    
+    std::shared_ptr<FSkeletalMeshLODModel> GetImportedModel() const;
     const FReferenceSkeleton& GetRefSkeleton() const;
 
     TArray<FStaticMaterial*>& GetMaterials() { return Materials; }
-    FSkeletalMeshRenderData* GetSkeletalMeshRenderData() { return SkelMeshRenderData; }
-    std::shared_ptr<FSkeletalMeshRenderData> GetSkeletalMeshRenderData() const;
+    std::shared_ptr<FSkeletalMeshRenderData> GetSkeletalMeshRenderData() const { return SkelMeshRenderData; }
     
     std::shared_ptr<FSkeletalAssetData> AssetData;
 

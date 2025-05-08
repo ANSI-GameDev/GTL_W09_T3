@@ -15,7 +15,7 @@
 
 //#define DUAL_QUATERNION 
 
-void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData)
+void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComponent, std::shared_ptr<FSkeletalMeshRenderData>  InSkelMeshRenderData)
 {
     MeshComponent = InMeshComponent;
     SkelMeshRenderData = InSkelMeshRenderData;
@@ -24,7 +24,7 @@ void FSkeletalMeshObjectCPUSkin::InitResources(USkinnedMeshComponent* InMeshComp
 #ifdef DUAL_QUATERNION 
 void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent)
 {
-    USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
+    USkeletalMeshAsset* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
     FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
 
     TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
@@ -174,7 +174,7 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent)
     // 4. 변환된 Vertex를 Weight를 적절히 적용하여 Skinning을 구현할 것   
 
     //FSkeletalMeshLODModel*
-    USkeletalMesh* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
+    USkeletalMeshAsset* SkeletalMesh = InMeshComponent->GetSkeletalMesh();
     FReferenceSkeleton& Skeleton = SkeletalMesh->RefSkeleton;
 
     TArray<FMatrix> InverseBindPose = Skeleton.GetInverseBindPose();
@@ -193,7 +193,7 @@ void FSkeletalMeshObjectCPUSkin::Update(USkinnedMeshComponent* InMeshComponent)
     }
 
     const TArray<FSoftSkinVertex>& Vertices = InMeshComponent->GetBindPoseVertices();
-    TArray<FSkeletalMeshVertex>& RenderDataVertices = SkeletalMesh->GetRenderData()->Vertices;
+    TArray<FSkeletalMeshVertex>& RenderDataVertices = SkeletalMesh->GetSkeletalMeshRenderData()->Vertices;
     //int VertexIndex = 0;
     //for (const auto& Vertex : Vertices)
     //{

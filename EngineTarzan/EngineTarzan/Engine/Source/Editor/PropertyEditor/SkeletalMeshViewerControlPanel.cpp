@@ -86,12 +86,12 @@ void USkeletalMeshViewerControlPanel::Render()
         
         USkeletalMeshComponent* skeletalMeshComp = SkeletalMeshViewportClient->GetSkeletalActor()->GetSkeletalMeshComponent();
 
-        USkeletalMesh* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMesh>(nullptr);
-        skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
-
-        FFbxImporter::ParseSkeletalMeshLODModel(FilePath, *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
-        
-        skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
+        // USkeletalMeshAsset* skeletalMesh = FObjectFactory::ConstructObject<USkeletalMeshAsset>(nullptr);
+        // skeletalMesh->Initialize(); // ImportedModel과 SkelMeshRenderData 생성
+        //
+        // FFbxImporter::ParseSkeletalMeshLODModel(FilePath, *skeletalMesh->ImportedModel, &skeletalMesh->RefSkeleton);
+        //
+        // skeletalMeshComp->SetSkeletalMesh(skeletalMesh);
     }
     
     ImGui::SameLine();

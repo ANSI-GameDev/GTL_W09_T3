@@ -271,7 +271,7 @@ void FSkeletalMeshRenderPass::UpdateLitUnlitConstant(int32 isLit) const
     BufferManager->UpdateConstantBuffer(TEXT("FLitUnlitConstants"), Data);
 }
 
-void FSkeletalMeshRenderPass::RenderSkeletalPrimitive(FSkeletalMeshRenderData* RenderData) const
+void FSkeletalMeshRenderPass::RenderSkeletalPrimitive(std::shared_ptr<FSkeletalMeshRenderData>  RenderData) const
 {
     UINT Stride = sizeof(FStaticMeshVertex);
     UINT Offset = 0;
@@ -338,7 +338,7 @@ void FSkeletalMeshRenderPass::RenderAllSkeletalMeshes(const std::shared_ptr<FEdi
             continue;
         }
 
-        FSkeletalMeshRenderData* RenderData = Comp->GetSkeletalMesh()->GetSkeletalMeshRenderData();
+        std::shared_ptr<FSkeletalMeshRenderData> RenderData = Comp->GetSkeletalMesh()->GetSkeletalMeshRenderData();
         if (RenderData == nullptr)
         {
             continue;
@@ -430,7 +430,7 @@ void FSkeletalMeshRenderPass::RenderAllSkeletalMeshesForPointLight(const std::sh
     {
         if (!Comp || !Comp->GetSkeletalMesh()) { continue; }
 
-        FSkeletalMeshRenderData* RenderData = Comp->GetSkeletalMesh()->GetSkeletalMeshRenderData();
+        std::shared_ptr<FSkeletalMeshRenderData>  RenderData = Comp->GetSkeletalMesh()->GetSkeletalMeshRenderData();
         if (RenderData == nullptr) { continue; }
 
         UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);

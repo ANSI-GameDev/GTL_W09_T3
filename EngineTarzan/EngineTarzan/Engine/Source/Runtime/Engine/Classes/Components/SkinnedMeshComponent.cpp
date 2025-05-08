@@ -71,12 +71,12 @@ const TArray<FTransform>& USkinnedMeshComponent::GetWorldSpaceTransforms() const
     return WorldSpaceTransformArray;
 }
 
-void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMesh* InSkeletalMesh)
+void USkinnedMeshComponent::SetSkeletalMesh(USkeletalMeshAsset* InSkeletalMesh)
 {
     SkeletalMesh = InSkeletalMesh;
     
     MeshObject = new FSkeletalMeshObjectCPUSkin;
-    MeshObject->InitResources(this, SkeletalMesh->GetRenderData());
+    MeshObject->InitResources(this, SkeletalMesh->GetSkeletalMeshRenderData());
 
     //FFbxImporter::ParseReferenceSkeleton("Contents/FBX/Anime_character.fbx", SkeletalMesh->RefSkeleton);
     //Contents/FBX/Mir4/source/Mon_BlackDragon31_Skeleton.FBX

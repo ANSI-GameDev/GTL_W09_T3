@@ -16,7 +16,7 @@ struct FSkeletalMeshVertex;
 class FSkeletalMeshObjectCPUSkin
 {
 public:
-    void InitResources(USkinnedMeshComponent* InMeshComponent, FSkeletalMeshRenderData* InSkelMeshRenderData);
+    void InitResources(USkinnedMeshComponent* InMeshComponent, std::shared_ptr<FSkeletalMeshRenderData>  InSkelMeshRenderData);
     void Update(USkinnedMeshComponent* InMeshComponent);
     void SkinVertex(const FSoftSkinVertex& InVertex, TArray<FMatrix> InverseBindPose, TArray<FTransform> BoneGlobalTransforms, FSkeletalMeshVertex& OutVertex);
 
@@ -28,6 +28,6 @@ public:
         FSkeletalMeshVertex& Out);
 public:
     USkinnedMeshComponent* MeshComponent;
-    FSkeletalMeshRenderData* SkelMeshRenderData;
+    std::shared_ptr<FSkeletalMeshRenderData>  SkelMeshRenderData;
 };
 

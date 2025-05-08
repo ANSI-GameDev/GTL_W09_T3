@@ -53,28 +53,22 @@ void USkeletalMeshAsset::SetImportedModel(const std::shared_ptr<FSkeletalMeshLOD
     ImportedModel = InModel;
 }
 
-void USkeletalMesh::SetSkeletalMeshRenderData(FSkeletalMeshRenderData* InRenderData)
+void USkeletalMeshAsset::SetSkeletalMeshRenderData(std::shared_ptr<FSkeletalMeshRenderData> InRenderData)
 {
     SkelMeshRenderData = InRenderData;
 }
 
-void USkeletalMesh::SetRefSkeleton(const FReferenceSkeleton& InRefSkeleton)
+void USkeletalMeshAsset::SetRefSkeleton(const FReferenceSkeleton& InRefSkeleton)
 {
     RefSkeleton = InRefSkeleton;
 }
 
-FSkeletalMeshRenderData* USkeletalMesh::GetRenderData() const
-//std::shared_ptr<FSkeletalMeshRenderData> USkeletalMeshAsset::GetSkeletalMeshRenderData() const
-{
-    return SkelMeshRenderData;
-}
-
-FSkeletalMeshLODModel* USkeletalMesh::GetImportedModel() const
+std::shared_ptr<FSkeletalMeshLODModel> USkeletalMeshAsset::GetImportedModel() const
 {
     return ImportedModel;
 }
 
-const FReferenceSkeleton& USkeletalMesh::GetRefSkeleton() const
+const FReferenceSkeleton& USkeletalMeshAsset::GetRefSkeleton() const
 {
     return RefSkeleton;
 }

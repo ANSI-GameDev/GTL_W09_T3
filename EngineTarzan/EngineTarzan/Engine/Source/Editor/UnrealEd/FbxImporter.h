@@ -11,7 +11,6 @@ struct FReferenceSkeleton;
 
 class FSkeletalMeshLODModel;
 class FString;
-class USkeletalMesh;
 class FMatrix;
 
 class FFbxImporter : public IAssetImporter<USkeletalMeshAsset>
@@ -43,7 +42,7 @@ public:
     // 헬퍼: FBX 노드 재귀 순회하여 첫 번째 메시 찾기
     static FbxMesh* FindFirstMeshInScene(FbxScene* Scene);
 
-    static USkeletalMesh* ImportSkeletalMesh(const FString& InFilePath);
+    static USkeletalMeshAsset* ImportSkeletalMesh(const FString& InFilePath);
 
 private:
     // FBX 노드 재귀 순회하여 Skeleton 노드만 RefSkeleton에 추가

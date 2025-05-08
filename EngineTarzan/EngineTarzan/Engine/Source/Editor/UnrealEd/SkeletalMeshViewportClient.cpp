@@ -58,7 +58,7 @@ void FSkeletalMeshViewportClient::HandleGizmoControl(const FPointerEvent& InMous
     {
         if (SkeletalActor == nullptr || SkeletalActor->IsActorBeingDestroyed()) return;
         
-        USkeletalMesh* skeletalMesh = SkeletalActor->GetSkeletalMeshComponent()->GetSkeletalMesh();
+        USkeletalMeshAsset* skeletalMesh = SkeletalActor->GetSkeletalMeshComponent()->GetSkeletalMesh();
         if (skeletalMesh == nullptr) return;
 
         // 선택된 본 인덱스

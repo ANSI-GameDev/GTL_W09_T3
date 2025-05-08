@@ -125,7 +125,7 @@ int USkeletalMeshComponent::CheckRayIntersection(const FVector& InRayOrigin, con
 
     int IntersectionNum = 0;
 
-    FSkeletalMeshRenderData* RenderData = SkeletalMesh->GetRenderData();
+    std::shared_ptr<FSkeletalMeshRenderData> RenderData = SkeletalMesh->GetSkeletalMeshRenderData();
 
     const TArray<FSkeletalMeshVertex>& Vertices = RenderData->Vertices;
     const int32 VertexNum = Vertices.Num();

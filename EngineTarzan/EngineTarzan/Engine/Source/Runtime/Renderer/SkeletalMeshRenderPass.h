@@ -46,7 +46,7 @@ public:
 
     void UpdateLitUnlitConstant(int32 isLit) const;
 
-    void RenderSkeletalPrimitive(FSkeletalMeshRenderData* RenderData) const;
+    void RenderSkeletalPrimitive(std::shared_ptr<FSkeletalMeshRenderData>  RenderData) const;
 
     // Shader 관련 함수 (생성/해제 등)
     void CreateShader();

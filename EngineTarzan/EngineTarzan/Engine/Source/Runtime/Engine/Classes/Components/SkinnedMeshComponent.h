@@ -23,8 +23,8 @@ public:
     
     const TArray<FTransform>& GetWorldSpaceTransforms() const;
 
-    virtual USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
-    void SetSkeletalMesh(USkeletalMesh* InSkeletalMesh);
+    virtual USkeletalMeshAsset* GetSkeletalMesh() const { return SkeletalMesh; }
+    void SetSkeletalMesh(USkeletalMeshAsset* InSkeletalMesh);
 
     const TArray<FSoftSkinVertex> GetBindPoseVertices() const { return BindPoseVertices; }
 

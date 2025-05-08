@@ -50,7 +50,7 @@ void USkeletalMeshViewerPanel::Render()
     
     // gizmo 위치·회전 갱신 람다
     ASkeletalActor* skeletalActor = nullptr;
-    USkeletalMesh* skeletalMesh = nullptr;
+    USkeletalMeshAsset* skeletalMesh = nullptr;
 
     skeletalActor = SkeletalMeshViewportClient->GetSkeletalActor();
     if (skeletalActor && !skeletalActor->IsActorBeingDestroyed())
